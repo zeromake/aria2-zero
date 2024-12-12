@@ -1,5 +1,6 @@
 #include "strncasecmp.h"
 
+#ifdef HAVE_STRNCASECMP
 #include <ctype.h>
 
 int strncasecmp(const char *s1, const char *s2, size_t n)
@@ -16,3 +17,4 @@ int strncasecmp(const char *s1, const char *s2, size_t n)
     return tolower(*(const unsigned char *)s1)
         - tolower(*(const unsigned char *)s2);
 }
+#endif

@@ -47,7 +47,7 @@
 
 static CRITICAL_SECTION asctime_r_cs;
 
-static void asctime_r_atexit() { DeleteCriticalSection(&asctime_r_cs); }
+static void asctime_r_atexit(void) { DeleteCriticalSection(&asctime_r_cs); }
 
 char* asctime_r(const struct tm* tyme, char* buf)
 {

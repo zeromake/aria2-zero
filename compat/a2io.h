@@ -155,8 +155,9 @@
 #  define a2dup(fd) _dup(fd)
 #  define a2dup2(fd) _dup2(fd)
 #  define a2fileno(fp) _fileno(fp)
-
+#  ifdef _MSC_VER
 typedef int mode_t;
+#  endif // _MSC_VER
 
 #ifndef S_ISTYPE
 #define S_ISTYPE(mode, mask) (((mode) & S_IFMT) == (mask))

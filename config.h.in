@@ -81,6 +81,8 @@ ${define HAVE_TIMEGM}
 ${define HAVE_ASCTIME_R}
 ${define HAVE_MMAP}
 ${define HAVE_GAI_STRERROR}
+${define HAVE_STRCASECMP}
+${define HAVE_STRNCASECMP}
 
 ${define HAVE_LIBUV}
 ${define HAVE_EPOLL}

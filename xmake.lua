@@ -1,6 +1,8 @@
 includes("@builtin/check")
 add_rules("mode.debug", "mode.release")
 
+add_repositories("zeromake https://github.com/zeromake/xrepo.git")
+
 add_requires(
     "ssh2",
     "expat",
@@ -215,7 +217,8 @@ local removes = {
 
 target("aria2c")
     add_files("deps/wslay/lib/*.c")
-    add_files("src/*.cc", "src/uri_split.c", "src/gai_strerror.c")
+    add_files("src/*.cc", "src/uri_split.c", "compat/gai_strerror.c")
+    add_includedirs("compat", "src")
     add_defines("WSLAY_VERSION=\""..PROJECT_VERSION.."\"")
     on_config(function (target)
         local variables = target:get("configvar") or {}
@@ -239,14 +242,14 @@ target("aria2c")
         set_configvar("TARGET", vformat("$(arch)-pc-$(os)"))
         local is_msvc = is_plat("windows")
         local compat_sources = {
-            ["HAVE_ASCTIME_R"] = {"src/asctime_r.c"},
-            ["HAVE_GETADDRINFO"] = {"src/getaddrinfo.c"},
-            ["HAVE_GETTIMEOFDAY"] = {"compat/msvc/gettimeofday.c"},
-            ["HAVE_LOCALTIME_R"] = {"src/localtime_r.c"},
-            ["HAVE_STRPTIME"] = {"src/strptime.c"},
-            ["HAVE_TIMEGM"] = {"src/timegm.c"},
-            ["HAVE_STRNCASECMP"] = {"compat/msvc/strncasecmp.c"},
-            ["HAVE_GETOPT_H"] = {"compat/msvc/_getopt.c"}
+            ["HAVE_ASCTIME_R"] = {"compat/asctime_r.c"},
+            ["HAVE_GETADDRINFO"] = {"compat/getaddrinfo.c"},
+            ["HAVE_GETTIMEOFDAY"] = {"compat/gettimeofday.c"},
+            ["HAVE_LOCALTIME_R"] = {"compat/localtime_r.c"},
+            ["HAVE_STRPTIME"] = {"compat/strptime.c"},
+            ["HAVE_TIMEGM"] = {"compat/timegm.c"},
+            ["HAVE_STRNCASECMP"] = {"compat/strncasecmp.c"},
+            ["HAVE_GETOPT_H"] = {"compat/_getopt.c"}
         }
         for k, v in pairs(compat_sources) do
             if not variables[k] then
@@ -257,7 +260,7 @@ target("aria2c")
     local skip = {}
     if is_plat("windows", "mingw") then
         skip["src/WinConsoleFile.cc"] = true
-        add_syslinks("iphlpapi")
+        add_syslinks("shell32", "iphlpapi")
     end
     if get_config("uv") then
         set_configvar("HAVE_LIBUV", 1)
@@ -300,7 +303,4 @@ target("aria2c")
     end
     if is_plat("mingw") then
         add_ldflags("-static")
-    elseif is_plat("windows") then
-        add_includedirs("compat/msvc")
-        add_syslinks("shell32")
     end
