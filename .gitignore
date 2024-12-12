@@ -48,3 +48,4 @@ build
 .xmake
 .vscode
 !config.h.in
+.DS_Store

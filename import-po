@@ -45,5 +45,3 @@ done
 
 rm -rf "$WORK_DIR"
 
-cd "$PO_DIR"
-make update-po

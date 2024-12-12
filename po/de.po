@@ -1,0 +1,4583 @@
+# translation of de.po to deutsch
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR Tatsuhiro Tsujikawa.
+# Hermann J. Beckers <hj.beckers@onlinehome.de>, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: de\n"
+"Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
+"POT-Creation-Date: 2017-10-17 22:28+0900\n"
+"PO-Revision-Date: 2022-02-07 00:33+0000\n"
+"Last-Translator: Daniel Diehn <Unknown>\n"
+"Language-Team: deutsch <de@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2024-11-29 08:24+0000\n"
+"X-Generator: Launchpad (build 419ba3bacb6daab6277d21076d6369a2b1ffe680)\n"
+
+#: src/DownloadEngine.cc:247
+msgid ""
+"Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
+msgstr "Abschaltsequenz beginnt … Strg-C für Notabschaltung drücken."
+
+#: src/DownloadEngine.cc:257
+msgid "Emergency shutdown sequence commencing..."
+msgstr "Notabschaltungsequenz beginnt …"
+
+#: src/MultiUrlRequestInfo.cc:171
+msgid "aria2 will resume download if the transfer is restarted."
+msgstr ""
+"aria2 wird das Herunterladen wieder aufnehmen, wenn die Übertragung neu "
+"gestartet wird."
+
+#: src/MultiUrlRequestInfo.cc:172
+msgid ""
+"If there are any errors, then see the log file. See '-l' option in help/man "
+"page for details."
+msgstr ""
+"Sollten Fehler aufgetreten sein, bitte die Protokolldatei beachten. Für "
+"Details hierzu bitte die Option »help/man -l« in der Hilfe- und "
+"Bedienungsanleitung beachten."
+
+#: src/MultiUrlRequestInfo.cc:342
+#, c-format
+msgid "Serialized session to '%s' successfully."
+msgstr "Sitzung wurde erfolgreich zu »%s« serialisiert."
+
+#: src/MultiUrlRequestInfo.cc:346
+#, c-format
+msgid "Failed to serialize session to '%s'."
+msgstr "Sitzung zu »%s« zu serialisieren ist fehlgeschlagen."
+
+#: src/RequestGroupMan.cc:374
+#, c-format
+msgid "Download GID#%s paused"
+msgstr "Übertragung GID#%s angehalten"
+
+#: src/RequestGroupMan.cc:425
+#, c-format
+msgid "Download GID#%s not complete: %s"
+msgstr "Übertragung GID#%s nicht vollständig: %s"
+
+#: src/RequestGroupMan.cc:704
+msgid "Download Results:"
+msgstr "Übertragungsergebnisse:"
+
+#: src/RequestGroupMan.cc:753
+msgid "Status Legend:"
+msgstr "Statuserläuterung:"
+
+#: src/RequestGroupMan.cc:755
+msgid "(OK):download completed."
+msgstr "(OK):Herunterladen vollständig."
+
+#: src/RequestGroupMan.cc:758
+msgid "(ERR):error occurred."
+msgstr "(ERR):ein Fehler ist unterlaufen."
+
+#: src/RequestGroupMan.cc:761
+msgid "(INPR):download in-progress."
+msgstr "(INPR):wird heruntergeladen."
+
+#: src/RequestGroupMan.cc:764
+msgid "(RM):download removed."
+msgstr "(RM):Übertragung entfernt."
+
+#: src/OptionHandler.cc:38
+msgid "                              Default: "
+msgstr "                              Voreinstellung: "
+
+#: src/OptionHandler.cc:39
+msgid "                              Tags: "
+msgstr "                              Schlagwörter: "
+
+#: src/OptionHandler.cc:40
+msgid "                              Possible Values: "
+msgstr "                              Mögliche Werte: "
+
+#: src/usage_text.h:39
+msgid ""
+" -d, --dir=DIR                The directory to store the downloaded file."
+msgstr ""
+" -d, --dir=DIR                Verzeichnis zum Speichern der abgerufenen "
+"Datei."
+
+#: src/usage_text.h:41
+msgid ""
+" -o, --out=FILE               The file name of the downloaded file. It is\n"
+"                              always relative to the directory given in -d\n"
+"                              option. When the -Z option is used, this "
+"option\n"
+"                              will be ignored."
+msgstr ""
+" -o, --out=DATEI Der Dateiname der heruntergeladenen Datei. Er ist\n"
+"                              immer relativ zum Verzeichnis, das mit der "
+"Option »-d«\n"
+"                              angegeben wird. Wenn die Option »-Z« genutzt "
+"wird,\n"
+"                              wird diese Option ignoriert."
+
+#: src/usage_text.h:46
+msgid ""
+" -l, --log=LOG                The file name of the log file. If '-' is\n"
+"                              specified, log is written to stdout."
+msgstr ""
+" -l, --log=LOG                Der Dateiname der Protokolldatei. Wenn »-« "
+"angegeben wird,\n"
+"                              wird das Protokoll auf die Standardausgabe "
+"geschrieben."
+
+#: src/usage_text.h:49
+msgid ""
+" -D, --daemon[=true|false]    Run as daemon. The current working directory "
+"will\n"
+"                              be changed to \"/\" and standard input, "
+"standard\n"
+"                              output and standard error will be redirected "
+"to\n"
+"                              \"/dev/null\"."
+msgstr ""
+" -D, --daemon[=true|false]    Als Dienst ausführen.\n"
+"                              Das aktuelle Arbeitsverzeichnis wird zu »/«\n"
+"                              und Standardeingabe geändert,\n"
+"                              Standardausgabe und Standardfehler werden\n"
+"                              nach »/dev/null« umgeleitet."
+
+#: src/usage_text.h:54
+msgid ""
+" -s, --split=N                Download a file using N connections. If more\n"
+"                              than N URIs are given, first N URIs are used "
+"and\n"
+"                              remaining URLs are used for backup. If less "
+"than\n"
+"                              N URIs are given, those URLs are used more "
+"than\n"
+"                              once so that N connections total are made\n"
+"                              simultaneously. The number of connections to "
+"the\n"
+"                              same host is restricted by the \n"
+"                              --max-connection-per-server option. See also "
+"the\n"
+"                              --min-split-size option."
+msgstr ""
+" -s, --split=N                Eine Datei unter Benutzung von N Verbindungen "
+"\n"
+"                              herunterladen. Wenn mehr als N Adressen "
+"gegeben\n"
+"                              sind, dann werden die ersten N Adressen "
+"benutzt\n"
+"                              und die restlichen werden als Sicherung "
+"benutzt.\n"
+"                              Wenn weniger als N Adressen gegeben sind, "
+"dann\n"
+"                              werden diese Adressen mehr als einmal "
+"benutzt,\n"
+"                              so dass insgesamt N Verbindungen gleichzeitig\n"
+"                              vorhanden sind. Die Anzahl der Verbindungen "
+"zum\n"
+"                              selben Rechner sind durch die Option\n"
+"                              --max-connection-per-server begrenzt.\n"
+"                              Siehe ebenfalls die Option\n"
+"                              --min-split-size."
+
+#: src/usage_text.h:64
+msgid ""
+" --retry-wait=SEC             Set the seconds to wait between retries. \n"
+"                              With SEC > 0, aria2 will retry download when "
+"the\n"
+"                              HTTP server returns 503 response."
+msgstr ""
+" --retry-wait=SEKUNDE         Die Wartezeit zwischen Wiederholungen "
+"einstellen. \n"
+"                              Mit SEKUNDE > 0, wird aria2 das Herunterladen\n"
+"                              wiederholen, wenn der HTTP-Server 503 "
+"antwortet."
+
+#: src/usage_text.h:68
+msgid " -t, --timeout=SEC            Set timeout in seconds."
+msgstr " -t, --timeout=SEKUNDE Zeitüberschreitung in Sekunden einstellen."
+
+#: src/usage_text.h:70
+msgid " -m, --max-tries=N            Set number of tries. 0 means unlimited."
+msgstr ""
+" -m, --max-tries=N            Festlegen der maximalen Anzahl an "
+"Versuchen.\n"
+"                              Keine Begrenzung mit 0."
+
+#: src/usage_text.h:72
+msgid ""
+" --http-proxy=PROXY           Use a proxy server for HTTP. To override a\n"
+"                              previously defined proxy, use \"\".\n"
+"                              See also the --all-proxy option.\n"
+"                              This affects all http downloads."
+msgstr ""
+" --http-proxy=PROXY Einen Vermittlungsserver für HTTP benutzen.\n"
+"                              Um einen bereits bestimmten Vermittlungsserver "
+"zu\n"
+"                              überschreiben, bitte \"\" benutzen.\n"
+"                              Siehe ebenfalls die Option --all-proxy.\n"
+"                              Das betrifft alle HTTP-Übertragungen."
+
+#: src/usage_text.h:77
+msgid ""
+" --https-proxy=PROXY          Use a proxy server for HTTPS. To override a \n"
+"                              previously defined proxy, use \"\".\n"
+"                              See also the --all-proxy option.\n"
+"                              This affects all https downloads."
+msgstr ""
+" --https-proxy=PROXY          Einen Vermittlungsserver für HTTPS verwenden. "
+"Um\n"
+"                              einen vorher festgelegten Server zu "
+"überschreiben,\n"
+"                              bitte \"\" verwenden.\n"
+"                              Alle Vermittlungsserveroptionen mit der "
+"Option\n"
+"                              --all-proxy anzeigen. Das betrifft alle\n"
+"                              HTTPS-Übertragungen."
+
+#: src/usage_text.h:82
+msgid ""
+" --ftp-proxy=PROXY            Use a proxy server for FTP. To override a \n"
+"                              previously defined proxy, use \"\".\n"
+"                              See also the --all-proxy option.\n"
+"                              This affects all ftp downloads."
+msgstr ""
+" --ftp-proxy=PROXY Einen Vermittlungsserver für FTP benutzen.\n"
+"                              Um einen zuvor festgelegten "
+"Vermittlungsserver\n"
+"                              zu überschreiben, bitte \"\" benutzen.\n"
+"                              Siehe auch die Option --all-proxy.\n"
+"                              Das betrifft alle FTP-Übertragungen."
+
+#: src/usage_text.h:87
+msgid ""
+" --all-proxy=PROXY            Use a proxy server for all protocols. To "
+"override\n"
+"                              a previously defined proxy, use \"\".\n"
+"                              You also can override this setting and specify "
+"a\n"
+"                              proxy server for a particular protocol using "
+"the\n"
+"                              --http-proxy, --https-proxy and --ftp-proxy\n"
+"                              options.\n"
+"                              This affects all downloads."
+msgstr ""
+" --all-proxy=PROXY            Einen Vermittlungsserver für alle Protokolle\n"
+"                              verwenden. Um einen vorher festgelegten zu\n"
+"                              überschreiben bitte \"\" verwenden.\n"
+"                              Sie können diese Einstellung mit\n"
+"                              --http-proxy, --https-proxy und --ftp-proxy\n"
+"                              für ein bestimmtes Protokoll überschreiben.\n"
+"                              Das betrifft alle Übertragungen."
+
+#: src/usage_text.h:95
+msgid " --http-user=USER             Set HTTP user. This affects all URLs."
+msgstr ""
+" --http-user=BENUTZER HTTP-Anwendername einstellen. Das beeinflusst alle "
+"Adressen."
+
+#: src/usage_text.h:97
+msgid ""
+" --http-passwd=PASSWD         Set HTTP password. This affects all URLs."
+msgstr ""
+" --http-passwd=PASSWORT HTTP-Passwort einstellen. Das beeinflusst alle "
+"Adressen."
+
+#: src/usage_text.h:99
+msgid " --proxy-method=METHOD        Set the method to use in proxy request."
+msgstr " --proxy-method=METHODE       METHODE für Proxy-Anfragen einstellen."
+
+#: src/usage_text.h:101
+msgid ""
+" --referer=REFERER            Set an http referrrer (Referer). This affects\n"
+"                              all http/https downloads. If \"*\" is given,\n"
+"                              the download URI is also used as the "
+"referrer.\n"
+"                              This may be useful when used together with\n"
+"                              the -P option."
+msgstr ""
+" --referer=REFERER            Legt einen HTTP-Referrer fest. Das "
+"beeinflusst\n"
+"                              alle HTTP-/HTTPS-Übertragungen. Wenn »*«\n"
+"                              angegeben wird, wird die Übertragungsadresse\n"
+"                              ebenfalls als Referrer verwendet. Das könnte\n"
+"                              nützlich sein, wenn es mit der Option »-P«\n"
+"                              verwendet wird."
+
+#: src/usage_text.h:107
+msgid " --ftp-user=USER              Set FTP user. This affects all URLs."
+msgstr ""
+" --ftp-user=BENUTZER FTP-Benutzernamens einstellen. Das beeinflusst alle "
+"Adressen."
+
+#: src/usage_text.h:109
+msgid ""
+" --ftp-passwd=PASSWD          Set FTP password. This affects all URLs."
+msgstr ""
+" --ftp-passwd=PASSWORT FTP-Passwort einstellen. Das beeinflusst alle "
+"Adressen."
+
+#: src/usage_text.h:111
+msgid " --ftp-type=TYPE              Set FTP transfer type."
+msgstr " --ftp-type=TYP               Festlegen des FTP-Übertragungstyps."
+
+#: src/usage_text.h:113
+msgid ""
+" -p, --ftp-pasv[=true|false]  Use the passive mode in FTP. If false is "
+"given,\n"
+"                              the active mode will be used."
+msgstr ""
+" -p, --ftp-pasv[=true|false] Passiven Modus für FTP nutzen. Wenn der Wert "
+"false ist\n"
+"                              wird aktives FTP verwendet."
+
+#: src/usage_text.h:116
+msgid ""
+" --lowest-speed-limit=SPEED   Close connection if download speed is lower "
+"than\n"
+"                              or equal to this value(bytes per sec).\n"
+"                              0 means aria2 does not have a lowest speed "
+"limit.\n"
+"                              You can append K or M(1K = 1024, 1M = 1024K).\n"
+"                              This option does not affect BitTorrent "
+"downloads."
+msgstr ""
+" --lowest-speed-limit=GESCHWINDIGKEIT Wenn die Geschwindigkeit kleiner oder\n"
+"                              gleich diesem Wert (Bytes pro s) ist, die\n"
+"                              Verbindung beenden. 0 bedeutet, aria2 hat "
+"keine\n"
+"                              Mindestgeschwindigkeit. Sie können K oder M\n"
+"                              (1K = 1024, 1M = 1024K) anhängen. Diese Option "
+"hat\n"
+"                              keine Auswirkungen auf BitTorrent-"
+"Übertragungen."
+
+#: src/usage_text.h:122
+msgid ""
+" --max-overall-download-limit=SPEED Set max overall download speed in "
+"bytes/sec.\n"
+"                              0 means unrestricted.\n"
+"                              You can append K or M(1K = 1024, 1M = 1024K).\n"
+"                              To limit the download speed per download, use\n"
+"                              --max-download-limit option."
+msgstr ""
+" --max-overall-download-limit=GESCHWINDIGKEIT Die maximale "
+"Gesamtherunterlade-\n"
+"                              geschwindigkeit in Bytes/s. 0 bedeutet "
+"unbegrenzt.\n"
+"                              Sie können K oder M (1K = 1024, 1M = 1024K)\n"
+"                              anhängen. Um die Herunterladegeschwindigkeit "
+"pro\n"
+"                              einzelner Übertragung zu begrenzen, bitte die\n"
+"                              Option --max-download-limit verwenden."
+
+#: src/usage_text.h:128
+msgid ""
+" --max-download-limit=SPEED   Set max download speed per each download in\n"
+"                              bytes/sec. 0 means unrestricted.\n"
+"                              You can append K or M(1K = 1024, 1M = 1024K).\n"
+"                              To limit the overall download speed, use\n"
+"                              --max-overall-download-limit option."
+msgstr ""
+" --max-download-limit=GESCHWINDIGKEIT Die maximal Geschwindigkeit pro "
+"einzelner\n"
+"                              Übertragung in Bytes/s. 0 bedeutet "
+"unbegrenzt.\n"
+"                              Sie können K oder M (1K = 1024, 1M = 1024K)\n"
+"                              anhängen. Um die "
+"Gesamtherunterladegeschwindigkeit\n"
+"                              zu begrenzen, bitte die Option \n"
+"                              --max-overall-download-limit verwenden."
+
+#: src/usage_text.h:134
+msgid ""
+" --file-allocation=METHOD     Specify file allocation method.\n"
+"                              'none' doesn't pre-allocate file space. "
+"'prealloc'\n"
+"                              pre-allocates file space before download "
+"begins.\n"
+"                              This may take some time depending on the size "
+"of\n"
+"                              the file.\n"
+"                              If you are using newer file systems such as "
+"ext4\n"
+"                              (with extents support), btrfs, xfs or NTFS\n"
+"                              (MinGW build only), 'falloc' is your best\n"
+"                              choice. It allocates large(few GiB) files\n"
+"                              almost instantly. Don't use 'falloc' with "
+"legacy\n"
+"                              file systems such as ext3 and FAT32 because "
+"it\n"
+"                              takes almost same time as 'prealloc' and it\n"
+"                              blocks aria2 entirely until allocation "
+"finishes.\n"
+"                              'falloc' may not be available if your system\n"
+"                              doesn't have posix_fallocate() function.\n"
+"                              'trunc' uses ftruncate() system call or\n"
+"                              platform-specific counterpart to truncate a "
+"file\n"
+"                              to a specified length."
+msgstr ""
+" --file-allocation=METHODE Geben Sie die Dateizuordnungsmethode an.\n"
+"                               'none' weist Dateispeicherplatz nicht vorab "
+"zu.  'prealloc'\n"
+"                               weist Dateispeicherplatz vor Beginn des "
+"Downloads zu.\n"
+"                               Dies kann je nach Größe einige Zeit in "
+"Anspruch nehmen\n"
+"                               die Datei.\n"
+"                               Wenn Sie neuere Dateisysteme wie ext4\n"
+"                               (mit Extent-Unterstützung), btrfs, xfs oder "
+"NTFS\n"
+"                               (nur MinGW-Build), 'falloc' ist dein Bestes\n"
+"                               Auswahl.  Es weist große (wenige GiB) Dateien "
+"zu\n"
+"                               fast sofort.  Verwenden Sie 'falloc' nicht "
+"mit Legacy\n"
+"                               Dateisysteme wie ext3 und FAT32, weil es\n"
+"                               dauert fast genauso lange wie 'prealloc' und "
+"it\n"
+"                               blockiert aria2 vollständig, bis die "
+"Zuweisung abgeschlossen ist.\n"
+"                               'falloc' ist möglicherweise nicht verfügbar, "
+"wenn Ihr System\n"
+"                               hat keine Funktion posix_fallocate().\n"
+"                               'trunc' verwendet den Systemaufruf "
+"ftruncate() oder\n"
+"                               plattformspezifisches Gegenstück zum "
+"Abschneiden einer Datei\n"
+"                               auf eine bestimmte Länge."
+
+#: src/usage_text.h:153
+msgid ""
+" --no-file-allocation-limit=SIZE No file allocation is made for files whose\n"
+"                              size is smaller than SIZE.\n"
+"                              You can append K or M(1K = 1024, 1M = 1024K)."
+msgstr ""
+" --no-file-allocation-limit=GRÖßE Es wird keine Platzvorbelegung für "
+"Dateien\n"
+"                              vorgenommen, die kleiner als GRÖßE sind. Man "
+"kann\n"
+"                              K oder M an den Wert anhängen (1K = 1024, 1M = "
+"1024K)."
+
+#: src/usage_text.h:157
+msgid ""
+" --enable-direct-io[=true|false] Enable directI/O, which lowers cpu usage "
+"while\n"
+"                              allocating files.\n"
+"                              Turn off if you encounter any error"
+msgstr ""
+" --enable-direct-io[=true|false] Verwendet »Direct I/O«, was die CPU-Last\n"
+"                              während der Vorbelegung von Dateispeicherplatz "
+"verringert.\n"
+"                              Deaktivieren, falls dabei Fehler auftreten."
+
+#: src/usage_text.h:161
+msgid ""
+" --allow-overwrite[=true|false] Restart download from scratch if the\n"
+"                              corresponding control file doesn't exist.  "
+"See\n"
+"                              also --auto-file-renaming option."
+msgstr ""
+" --allow-overwrite[=true|false] Startet die Übertragung von vorne, wenn die\n"
+"                              entsprechende Steuerdatei nicht vorhanden "
+"ist.\n"
+"                              Siehe auch --auto-file-renaming."
+
+#: src/usage_text.h:165
+msgid ""
+" --allow-piece-length-change[=true|false] If false is given, aria2 aborts\n"
+"                              download when a piece length is different "
+"from\n"
+"                              one in a control file. If true is given, you "
+"can\n"
+"                              proceed but some download progress will be "
+"lost."
+msgstr ""
+" --allow-piece-length-change[=true|false] Bei »false« bricht aria2 die "
+"Übertragung ab,\n"
+"                              wenn die Teilgröße anders als die in der "
+"Steuerdatei ist.\n"
+"                              Wenn »true« angegeben ist, können Sie "
+"fortfahren, aber\n"
+"                              einiger Übertragungsfortschritt wird verloren "
+"gehen."
+
+#: src/usage_text.h:170
+msgid ""
+" -Z, --force-sequential[=true|false] Fetch URIs in the command-line "
+"sequentially\n"
+"                              and download each URI in a separate session, "
+"like\n"
+"                              the usual command-line download utilities."
+msgstr ""
+" -Z, --force-sequential[=true|false] Die Adressen nacheinander\n"
+"                              von der Befehlszeile abrufen und jede Adresse "
+"in\n"
+"                              einer einzelnen Sitzung herunterladen, wie "
+"übliche\n"
+"                              Befehlszeilenprogramme zum Herunterladen."
+
+#: src/usage_text.h:174
+msgid ""
+" --auto-file-renaming[=true|false] Rename file name if the same file "
+"already\n"
+"                              exists. This option works only in http(s)/ftp\n"
+"                              download.\n"
+"                              The new file name has a dot and a "
+"number(1..9999)\n"
+"                              appended after the name, but before the file\n"
+"                              extension, if any."
+msgstr ""
+" --auto-file-renaming[=true|false] Benennt die Datei um, wenn die gleiche "
+"Datei\n"
+"                              schon vorhanden ist. Diese Option "
+"funktioniert\n"
+"                              nur bei HTTP(S)-/FTP-Übertragungen.\n"
+"                              Der neue Dateiname hat einen Punkt und eine "
+"Zahl\n"
+"                              (1–9999) zwischen Namen und Dateiendung, falls "
+"vorhanden."
+
+#: src/usage_text.h:181
+msgid ""
+" -P, --parameterized-uri[=true|false] Enable parameterized URI support.\n"
+"                              You can specify set of parts:\n"
+"                              http://{sv1,sv2,sv3}/foo.iso\n"
+"                              Also you can specify numeric sequences with "
+"step\n"
+"                              counter:\n"
+"                              http://host/image[000-100:2].img\n"
+"                              A step counter can be omitted.\n"
+"                              If all URIs do not point to the same file, "
+"such\n"
+"                              as the second example above, -Z option is\n"
+"                              required."
+msgstr ""
+" -P, --parameterized-uri[=true|false] Aktiviert die parametrisierter\n"
+"                              Adressunterstützung. Sie können Teilensätze\n"
+"                              verwenden: http://{sv1,sv2,sv3}/foo.iso\n"
+"                              Außerdem können Sie numerische Sequenzen\n"
+"                              mit Schrittzählern verwenden:\n"
+"                              http://host/image[000-100:2].img\n"
+"                              Der Schrittzähler kann weggelassen werden.\n"
+"                              Wenn nicht alle Adressen auf die selbe Datei \n"
+"                              zeigen, wie im zweiten Beispiel oberhalb,\n"
+"                              wird die Option »-Z« benötigt."
+
+#: src/usage_text.h:192
+msgid ""
+" --enable-http-keep-alive[=true|false] Enable HTTP/1.1 persistent connection."
+msgstr ""
+" --enable-http-keep-alive[=true|false]  Dauerhafte HTTP/1.1-Verbindung "
+"halten."
+
+#: src/usage_text.h:194
+msgid " --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining."
+msgstr ""
+" --enable-http-pipelining[=true|false] HTTP/1.1-Pipelining "
+"(Parallelverarbeitung) aktivieren."
+
+#: src/usage_text.h:196
+msgid ""
+" -V, --check-integrity[=true|false] Check file integrity by validating "
+"piece\n"
+"                              hashes or a hash of entire file. This option "
+"has\n"
+"                              effect only in BitTorrent, Metalink downloads\n"
+"                              with checksums or HTTP(S)/FTP downloads with\n"
+"                              --checksum option. If piece hashes are "
+"provided,\n"
+"                              this option can detect damaged portions of a "
+"file\n"
+"                              and re-download them. If a hash of entire file "
+"is\n"
+"                              provided, hash check is only done when file "
+"has\n"
+"                              been already download. This is determined by "
+"file\n"
+"                              length. If hash check fails, file is\n"
+"                              re-downloaded from scratch. If both piece "
+"hashes\n"
+"                              and a hash of entire file are provided, only\n"
+"                              piece hashes are used."
+msgstr ""
+" -V, --check-integrity[=true|false] Prüft die Dateiunversehrtheit über "
+"Hashwerte\n"
+"                              der einzelnen Teile oder der ganzen Datei. "
+"Diese Option\n"
+"                              ist nur bei BitTorrent, Metalink-"
+"Übertragungen\n"
+"                              mit Prüfsumme oder HTTP(S)-/FTP-Übertragungen "
+"mit der\n"
+"                              Option »--checksum« wirksam. Wenn Hashes für "
+"Teile\n"
+"                              bereitgestellt werden, kann diese Option "
+"beschädigte\n"
+"                              Teile einer Datei erkennen und sie erneut "
+"herunterladen.\n"
+"                              Wenn ein Hash der gesamten Datei "
+"bereitgestellt wird,\n"
+"                              wird die Hash-Prüfung nur durchgeführt, wenn "
+"die Datei\n"
+"                              bereits heruntergeladen wurde. Das wird über "
+"die Dateigröße\n"
+"                              bestimmt. Wenn die Hash-Prüfung fehlschlägt, "
+"wird die Datei\n"
+"                              von vorne heruntergeladen. Wenn sowohl Teile-"
+"Hashes als auch\n"
+"                              ein Hash der gesamten Datei bereitgestellt "
+"werden,\n"
+"                              werden nur Teil-Hashes verwendet."
+
+#: src/usage_text.h:210
+msgid ""
+" --bt-hash-check-seed[=true|false] If true is given, after hash check using\n"
+"                              --check-integrity option and file is "
+"complete,\n"
+"                              continue to seed file. If you want to check "
+"file\n"
+"                              and download it only when it is damaged or\n"
+"                              incomplete, set this option to false.\n"
+"                              This option has effect only on BitTorrent\n"
+"                              download."
+msgstr ""
+" --bt-hash-check-seed[=true|false] Wenn »true« angegeben ist, wird nach "
+"einer\n"
+"                              Integritätsprüfung mit der Option --check-"
+"integrity\n"
+"                              und nach dem vollständigen Herunterladen die "
+"Datei\n"
+"                              verteilt. Wollen Sie die Datei überprüfen und "
+"nur\n"
+"                              herunterladen wenn sie beschädigt oder "
+"unvollständig\n"
+"                              ist, dann bitte die Option auf »false« "
+"stellen.\n"
+"                              Diese Option hat nur Auswirkungen auf\n"
+"                              BitTorrent-Übertragungen."
+
+#: src/usage_text.h:218
+msgid ""
+" --realtime-chunk-checksum[=true|false]  Validate chunk of data by "
+"calculating\n"
+"                              checksum while downloading a file if chunk\n"
+"                              checksums are provided."
+msgstr ""
+" --realtime-chunk-checksum[=true|false]  Teilstück überprüfen, durch "
+"Berechnen\n"
+"                              der Prüfsumme beim Herunterladen einer Datei,\n"
+"                              wenn Prüfsummen vom Teilstück zur Verfügung "
+"steht."
+
+#: src/usage_text.h:222
+msgid ""
+" -c, --continue[=true|false]  Continue downloading a partially downloaded\n"
+"                              file. Use this option to resume a download\n"
+"                              started by a web browser or another program\n"
+"                              which downloads files sequentially from the\n"
+"                              beginning. Currently this option is only\n"
+"                              applicable to http(s)/ftp downloads."
+msgstr ""
+" -c, --continue[=true|false] Download einer teilweise heruntergeladenen "
+"Datei fortsetzten.\n"
+"                              Verwende diese Option um einen Download wieder "
+"aufzunehmen der in\n"
+"                              einem Web Browser, oder einem anderen Program, "
+"welches Dateien in linearer\n"
+"                              Abfolge vom Anfang an herunterlädt, gestartet "
+"wurde. Derzeit ist diese Option\n"
+"                              nur auf http(s)/ftp Downloads anwendbar."
+
+#: src/usage_text.h:229
+msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
+msgstr ""
+" -U, --user-agent=USER_AGENT  Benutzerkennung (User Agent) für http(s)-"
+"Übertragungen einstellen."
+
+#: src/usage_text.h:231
+msgid " -n, --no-netrc[=true|false]  Disables netrc support."
+msgstr " -n, --no-netrc[=true|false]  Deaktiviert netrc-Unterstützung."
+
+#: src/usage_text.h:233
+msgid " --netrc-path=FILE            Specify the path to the netrc file."
+msgstr " --netrc-path=Datei            Den Pfad zur netrc-Datei festlegen."
+
+#: src/usage_text.h:235
+msgid ""
+" -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
+"                              multiple URIs for a single entity: separate\n"
+"                              URIs on a single line using the TAB "
+"character.\n"
+"                              Reads input from stdin when '-' is specified.\n"
+"                              Additionally, options can be specified after "
+"each\n"
+"                              line of URI. This optional line must start "
+"with\n"
+"                              one or more white spaces and have one option "
+"per\n"
+"                              single line. See INPUT FILE section of man "
+"page\n"
+"                              for details. See also --deferred-input option."
+msgstr ""
+" -i, --input-file=DATEI Lädt URIs herunter, die in DATEI gefunden wurden.  "
+"Sie können angeben \n"
+"                              mehrere URIs für eine einzelne Entität: "
+"getrennt \n"
+"                              URIs in einer einzelnen Zeile mit dem TAB-"
+"Zeichen. \n"
+"                              Liest Eingaben von stdin, wenn '-' angegeben "
+"ist. \n"
+"                              Zusätzlich können nach jeder Option Optionen "
+"angegeben werden \n"
+"                              URI-Zeile.  Diese optionale Zeile muss mit "
+"beginnen \n"
+"                              ein oder mehrere Leerzeichen und haben eine "
+"Option pro \n"
+"                              einzelne Zeile.  Siehe Abschnitt INPUT FILE "
+"der Manpage \n"
+"                              für Details.  Siehe auch Option --deferred-"
+"input."
+
+#: src/usage_text.h:245
+msgid ""
+" -j, --max-concurrent-downloads=N Set maximum number of parallel downloads "
+"for\n"
+"                              every static (HTTP/FTP) URL, torrent and "
+"metalink.\n"
+"                              See also --split and --optimize-concurrent-"
+"downloads options."
+msgstr ""
+" -j, --max-concurrent-downloads=N Legt die maximale Anzahl paralleler "
+"Downloads fest für \n"
+"                              jede statische (HTTP/FTP) URL, Torrent und "
+"Metalink. \n"
+"                              Siehe auch die Optionen --split und --optimize-"
+"concurrent-downloads."
+
+#: src/usage_text.h:249
+msgid ""
+" --optimize-concurrent-downloads[=true|false|A:B] Optimizes the number of\n"
+"                              concurrent downloads according to the "
+"bandwidth\n"
+"                              available. aria2 uses the download speed "
+"observed\n"
+"                              in the previous downloads to adapt the number "
+"of\n"
+"                              downloads launched in parallel according to "
+"the\n"
+"                              rule N = A + B Log10(speed in Mbps). The\n"
+"                              coefficients A and B can be customized in the\n"
+"                              option arguments with A and B separated by a\n"
+"                              colon. The default values (A=5,B=25) lead to\n"
+"                              using typically 5 parallel downloads on 1Mbps\n"
+"                              networks and above 50 on 100Mbps networks. "
+"The\n"
+"                              number of parallel downloads remains "
+"constrained\n"
+"                              under the maximum defined by the\n"
+"                              max-concurrent-downloads parameter."
+msgstr ""
+" --optimize-concurrent-downloads[=true|false|A:B] Optimiert die Anzahl von \n"
+"                              gleichzeitige Downloads entsprechend der "
+"Bandbreite \n"
+"                              erhältlich.  aria2 verwendet die beobachtete "
+"Download-Geschwindigkeit \n"
+"                              in den vorherigen Downloads, um die Anzahl "
+"anzupassen \n"
+"                              parallel gestartete Downloads gem \n"
+"                              Regel N = A + B Log10 (Geschwindigkeit in "
+"Mbps).  Der \n"
+"                              Koeffizienten A und B können in angepasst "
+"werden \n"
+"                              Optionsargumente mit A und B getrennt durch a "
+"\n"
+"                              Doppelpunkt.  Die Standardwerte (A=5,B=25) "
+"führen zu \n"
+"                              mit typischerweise 5 parallelen Downloads bei "
+"1Mbps \n"
+"                              Netzwerke und über 50 in 100Mbps-Netzwerken.  "
+"Der \n"
+"                              Anzahl paralleler Downloads bleibt begrenzt \n"
+"                              unter dem Maximum definiert durch die \n"
+"                              max-concurrent-downloads-Parameter."
+
+#: src/usage_text.h:264
+msgid ""
+" --load-cookies=FILE          Load Cookies from FILE using the Firefox3 "
+"format\n"
+"                              and Mozilla/Firefox(1.x/2.x)/Netscape format."
+msgstr ""
+" --load-cookies=DATEI         Profildateien (Cookies) aus einer DATEI laden, "
+"im\n"
+"                              Firefox3- und Mozilla-"
+"/Firefox(1.x/2.x)/Netscape-Format."
+
+#: src/usage_text.h:267
+msgid ""
+" --save-cookies=FILE          Save Cookies to FILE in "
+"Mozilla/Firefox(1.x/2.x)/\n"
+"                              Netscape format. If FILE already exists, it "
+"is\n"
+"                              overwritten. Session Cookies are also saved "
+"and\n"
+"                              their expiry values are treated as 0."
+msgstr ""
+" --save-cookies=DATEI         Profildateien (Cookies) in DATEI als Mozilla-"
+"/Firefox-(1.x/2.x)/\n"
+"                              Netscape-Format speichern. Falls DATEI bereits "
+"vorhanden ist,\n"
+"                              wird sie überschrieben. Sitzungs-Cookies "
+"werden ebenfalls\n"
+"                              gespeichert und ihre Ablaufwerte werden als 0 "
+"behandelt."
+
+#: src/usage_text.h:272
+msgid ""
+" -S, --show-files[=true|false] Print file listing of .torrent, .meta4 and\n"
+"                              .metalink file and exit. More detailed\n"
+"                              information will be listed in case of torrent\n"
+"                              file."
+msgstr ""
+" -S, --show-files[=true|false] Dateiliste von .torrent, .meta4 und \n"
+"                              .metalink-Datei und beenden.  Genauer \n"
+"                              Informationen werden im Falle von Torrent "
+"aufgelistet \n"
+"                              Datei."
+
+#: src/usage_text.h:277
+msgid ""
+" --select-file=INDEX...       Set file to download by specifying its index.\n"
+"                              You can find the file index using the\n"
+"                              --show-files option. Multiple indexes can be\n"
+"                              specified by using ',', for example: \"3,6\".\n"
+"                              You can also use '-' to specify a range: \"1-"
+"5\".\n"
+"                              ',' and '-' can be used together.\n"
+"                              When used with the -M option, index may vary\n"
+"                              depending on the query(see --metalink-* "
+"options)."
+msgstr ""
+" --select-file=INDEX... Legt die herunterzuladende Datei fest, indem ihr "
+"Index angegeben wird. \n"
+"                              Den Dateiindex finden Sie über die \n"
+"                              --show-files-Option.  Es können mehrere "
+"Indizes sein \n"
+"                              angegeben durch Verwendung von ',', zum "
+"Beispiel: \"3,6\". \n"
+"                              Sie können auch '-' verwenden, um einen "
+"Bereich anzugeben: \"1-5\". \n"
+"                              ',' und '-' können zusammen verwendet werden. "
+"\n"
+"                              Bei Verwendung mit der Option -M kann der "
+"Index variieren \n"
+"                              abhängig von der Abfrage (siehe --metalink-* "
+"Optionen)."
+
+#: src/usage_text.h:286
+msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
+msgstr " -T, --torrent-file=TORRENT_FILE  Datenpfad zur torrent-Datei."
+
+#: src/usage_text.h:288
+msgid ""
+" --follow-torrent=true|false|mem If true or mem is specified, when a file\n"
+"                              whose suffix is .torrent or content type is\n"
+"                              application/x-bittorrent is downloaded, aria2\n"
+"                              parses it as a torrent file and downloads "
+"files\n"
+"                              mentioned in it.\n"
+"                              If mem is specified, a torrent file is not\n"
+"                              written to the disk, but is just kept in "
+"memory.\n"
+"                              If false is specified, the .torrent file is\n"
+"                              downloaded to the disk, but is not parsed as "
+"a\n"
+"                              torrent and its contents are not downloaded."
+msgstr ""
+" --follow-torrent=true|false|mem Wenn true oder mem angegeben ist, wenn eine "
+"Datei \n"
+"                              dessen Suffix .torrent oder Inhaltstyp ist \n"
+"                              application/x-bittorrent wird heruntergeladen, "
+"aria2 \n"
+"                              parst es als Torrent-Datei und lädt Dateien "
+"herunter \n"
+"                              darin erwähnt. \n"
+"                              Wenn mem angegeben ist, wird eine Torrent-"
+"Datei nicht angegeben \n"
+"                              auf die Festplatte geschrieben, sondern nur im "
+"Speicher gehalten. \n"
+"                              Wenn false angegeben ist, ist die .torrent-"
+"Datei \n"
+"                              auf die Festplatte heruntergeladen, aber nicht "
+"als analysiert \n"
+"                              torrent und seine Inhalte werden nicht "
+"heruntergeladen."
+
+#: src/usage_text.h:299
+msgid ""
+" --listen-port=PORT...        Set TCP port number for BitTorrent downloads.\n"
+"                              Multiple ports can be specified by using ',',\n"
+"                              for example: \"6881,6885\". You can also use '-"
+"'\n"
+"                              to specify a range: \"6881-6999\". ',' and '-' "
+"can\n"
+"                              be used together."
+msgstr ""
+" --listen-port=ANSCHLUSS      TCP-ANSCHLUSSnummer (Port) für BitTorrent-"
+"Übertragungen\n"
+"                              einstellen. Mehrere Anschlüsse können mit "
+"Kommatrennung\n"
+"                              »,« angegeben werden (z.B.: »6881,6885«). Mit "
+"»-« kann\n"
+"                              ein Anschlussbereich angegeben werden (z.B.: "
+"»6881-6999«).\n"
+"                              »,« und »-« können gemeinsam benutzt werden."
+
+#: src/usage_text.h:305
+msgid ""
+" --max-overall-upload-limit=SPEED Set max overall upload speed in "
+"bytes/sec.\n"
+"                              0 means unrestricted.\n"
+"                              You can append K or M(1K = 1024, 1M = 1024K).\n"
+"                              To limit the upload speed per torrent, use\n"
+"                              --max-upload-limit option."
+msgstr ""
+" --max-overall-upload-limit=GESCHWINDIGKEIT Setze die maximale Gesamt-Upload-"
+"Geschwindigkeit in Bytes/Sek. \n"
+"                              0 bedeutet uneingeschränkt. \n"
+"                              Sie können K oder M anhängen (1K = 1024, 1M = "
+"1024K). \n"
+"                              Um die Upload-Geschwindigkeit pro Torrent zu "
+"begrenzen, verwenden Sie \n"
+"                              --max-upload-limit option."
+
+#: src/usage_text.h:311
+msgid ""
+" -u, --max-upload-limit=SPEED Set max upload speed per each torrent in\n"
+"                              bytes/sec. 0 means unrestricted.\n"
+"                              You can append K or M(1K = 1024, 1M = 1024K).\n"
+"                              To limit the overall upload speed, use\n"
+"                              --max-overall-upload-limit option."
+msgstr ""
+" -u, --max-upload-limit=GESCHWINDIGKEIT Legt die maximale Upload-"
+"Geschwindigkeit pro eingehendem Torrent fest \n"
+"                              Byte/Sek.  0 bedeutet uneingeschränkt. \n"
+"                              Sie können K oder M anhängen (1K = 1024, 1M = "
+"1024K). \n"
+"                              Um die Gesamt-Upload-Geschwindigkeit zu "
+"begrenzen, verwenden Sie \n"
+"                              --max-overall-upload-limit-Option."
+
+#: src/usage_text.h:317
+msgid ""
+" --seed-time=MINUTES          Specify seeding time in (fractional) minutes.\n"
+"                              Also see the --seed-ratio option."
+msgstr ""
+" --seed-time=MINUTEN Bestimme Seeding Zeit in Minuten.\n"
+"                              Siehe auch die --seed-ratio Option."
+
+#: src/usage_text.h:320
+msgid ""
+" --seed-ratio=RATIO           Specify share ratio. Seed completed torrents\n"
+"                              until share ratio reaches RATIO.\n"
+"                              You are strongly encouraged to specify equals "
+"or\n"
+"                              more than 1.0 here. Specify 0.0 if you intend "
+"to\n"
+"                              do seeding regardless of share ratio.\n"
+"                              If --seed-time option is specified along with\n"
+"                              this option, seeding ends when at least one "
+"of\n"
+"                              the conditions is satisfied."
+msgstr ""
+" --seed-ratio=VERHÄLTNIS Geben Sie das Anteilsverhältnis an. Seed "
+"abgeschlossene Torrents\n"
+"                              bis das Aktienverhältnis RATIO erreicht.\n"
+"                              Es wird dringend empfohlen, gleich oder "
+"anzugeben\n"
+"                              hier mehr als 1,0. Geben Sie 0,0 an, wenn Sie "
+"dies beabsichtigen\n"
+"                              Aussaat unabhängig vom Anteilsverhältnis.\n"
+"                              Wenn die Option --seed-time zusammen mit "
+"angegeben wird\n"
+"                              Bei dieser Option endet das Seeding, wenn "
+"mindestens einer von\n"
+"                              die Bedingungen erfüllt sind."
+
+#: src/usage_text.h:329
+msgid ""
+" --peer-id-prefix=PEER_ID_PREFIX Specify the prefix of peer ID. The peer ID "
+"in\n"
+"                              BitTorrent is 20 byte length. If more than 20\n"
+"                              bytes are specified, only first 20 bytes are\n"
+"                              used. If less than 20 bytes are specified, "
+"random\n"
+"                              byte data are added to make its length 20 "
+"bytes."
+msgstr ""
+" --peer-id-prefix=PEER_ID_PREFIX Geben Sie das Präfix der Peer-ID an. Die "
+"Peer-ID in\n"
+"                              BitTorrent ist 20 Byte lang. Wenn mehr als 20\n"
+"                              Bytes angegeben sind, sind es nur die ersten "
+"20 Bytes\n"
+"                              Gebraucht. Wenn weniger als 20 Bytes angegeben "
+"sind, zufällig\n"
+"                              Byte-Daten werden hinzugefügt, um seine Länge "
+"auf 20 Bytes zu bringen."
+
+#: src/usage_text.h:335
+msgid ""
+" --peer-agent=PEER_AGENT  Set client reported during Extended torrent "
+"handshakes"
+msgstr ""
+" --peer-agent=PEER_AGENT Legt den Client fest, der während erweiterter "
+"Torrent-Handshakes gemeldet wird"
+
+#: src/usage_text.h:337
+msgid " --enable-peer-exchange[=true|false] Enable Peer Exchange extension."
+msgstr ""
+" --enable-peer-exchange[=true|false] Gegenstellenaustauscherweiterung "
+"aktivieren."
+
+#: src/usage_text.h:339
+msgid ""
+" --enable-dht[=true|false]    Enable IPv4 DHT functionality. It also "
+"enables\n"
+"                              UDP tracker support. If a private flag is set\n"
+"                              in a torrent, aria2 doesn't use DHT for that\n"
+"                              download even if ``true`` is given."
+msgstr ""
+" --enable-dht[=true|false] Aktiviert die IPv4-DHT-Funktionalität. Es "
+"ermöglicht auch\n"
+"                              UDP-Tracker-Unterstützung. Wenn ein privates "
+"Flag gesetzt ist\n"
+"                              in einem Torrent verwendet aria2 dafür kein "
+"DHT\n"
+"                              herunterladen, auch wenn \"true\" angegeben "
+"ist."
+
+#: src/usage_text.h:344
+msgid ""
+" --dht-listen-port=PORT...    Set UDP listening port used by DHT(IPv4, "
+"IPv6)\n"
+"                              and UDP tracker. Multiple ports can be "
+"specified\n"
+"                              by using ',', for example: \"6881,6885\". You "
+"can\n"
+"                              also use '-' to specify a range: \"6881-"
+"6999\".\n"
+"                              ',' and '-' can be used together."
+msgstr ""
+" --dht-listen-port=PORT... Legt den UDP-Listening-Port fest, der von DHT "
+"verwendet wird (IPv4, IPv6)\n"
+"                              und UDP-Tracker. Es können mehrere Ports "
+"angegeben werden\n"
+"                              durch Verwendung von ',', zum Beispiel: "
+"\"6881,6885\". Sie können\n"
+"                              Verwenden Sie auch '-', um einen Bereich "
+"anzugeben: \"6881-6999\".\n"
+"                              ',' und '-' können zusammen verwendet werden."
+
+#: src/usage_text.h:350
+msgid ""
+" --dht-entry-point=HOST:PORT  Set host and port as an entry point to IPv4 "
+"DHT\n"
+"                              network."
+msgstr ""
+" --dht-entry-point=HOST:PORT Legt Host und Port als Einstiegspunkt für IPv4-"
+"DHT fest\n"
+"                              Netzwerk."
+
+#: src/usage_text.h:353
+msgid ""
+" --dht-file-path=PATH         Change the IPv4 DHT routing table file to PATH."
+msgstr ""
+" --dht-file-path=PATH Ändert die IPv4-DHT-Routing-Tabellendatei in PATH."
+
+#: src/usage_text.h:355
+msgid ""
+" --bt-min-crypto-level=plain|arc4 Set minimum level of encryption method.\n"
+"                              If several encryption methods are provided by "
+"a\n"
+"                              peer, aria2 chooses the lowest one which "
+"satisfies\n"
+"                              the given level."
+msgstr ""
+" --bt-min-crypto-level=plain|arc4 Legt die Mindeststufe der "
+"Verschlüsselungsmethode fest.\n"
+"                              Werden mehrere Verschlüsselungsverfahren von "
+"a\n"
+"                              peer, aria2 wählt den niedrigsten, der "
+"zufriedenstellend ist\n"
+"                              das angegebene Niveau."
+
+#: src/usage_text.h:360
+msgid ""
+" --bt-require-crypto[=true|false] If true is given, aria2 doesn't accept "
+"and\n"
+"                              establish connection with legacy BitTorrent\n"
+"                              handshake. Thus aria2 always uses Obfuscation\n"
+"                              handshake."
+msgstr ""
+" --bt-require-crypto[=true|false] Wenn true angegeben ist, akzeptiert aria2 "
+"and nicht\n"
+"                              Verbindung mit altem BitTorrent herstellen\n"
+"                              Händedruck. Daher verwendet aria2 immer "
+"Verschleierung\n"
+"                              Händedruck."
+
+#: src/usage_text.h:365
+msgid ""
+" --bt-request-peer-speed-limit=SPEED If the whole download speed of every\n"
+"                              torrent is lower than SPEED, aria2 "
+"temporarily\n"
+"                              increases the number of peers to try for more\n"
+"                              download speed. Configuring this option with "
+"your\n"
+"                              preferred download speed can increase your\n"
+"                              download speed in some cases.\n"
+"                              You can append K or M(1K = 1024, 1M = 1024K)."
+msgstr ""
+" --bt-request-peer-speed-limit=GESCHWINDIGKEIT Wenn die gesamte "
+"Downloadgeschwindigkeit von jedem\n"
+"                              torrent ist vorübergehend niedriger als SPEED, "
+"aria2\n"
+"                              erhöht die Anzahl der Peers, um mehr zu "
+"versuchen\n"
+"                              Download-Geschwindigkeit. Konfigurieren Sie "
+"diese Option mit Ihrem\n"
+"                              bevorzugte Download-Geschwindigkeit kann Ihre "
+"erhöhen\n"
+"                              Download-Geschwindigkeit in einigen Fällen.\n"
+"                              Sie können K oder M anhängen (1K = 1024, 1M = "
+"1024K)."
+
+#: src/usage_text.h:373
+msgid ""
+" --bt-max-open-files=NUM      Specify maximum number of files to open in\n"
+"                              multi-file BitTorrent/Metalink downloads\n"
+"                              globally."
+msgstr ""
+" --bt-max-open-files=NUM Gibt die maximale Anzahl von Dateien an, in denen "
+"geöffnet werden soll\n"
+"                              BitTorrent/Metalink-Downloads mit mehreren "
+"Dateien\n"
+"                              global."
+
+#: src/usage_text.h:377
+msgid ""
+" --bt-seed-unverified[=true|false] Seed previously downloaded files without\n"
+"                              verifying piece hashes."
+msgstr ""
+" --bt-seed-unverified[=true|false] Bereits heruntergeladene Dateien "
+"verteilen,\n"
+"                              ohne die Hashes zu überprüfen."
+
+#: src/usage_text.h:380
+msgid ""
+" --bt-max-peers=NUM           Specify the maximum number of peers per "
+"torrent.\n"
+"                              0 means unlimited.\n"
+"                              See also --bt-request-peer-speed-limit option."
+msgstr ""
+" --bt-max-peers=ZAHL          Höchste Anzahl der Gegenstellen pro Torrent.\n"
+"                              0 bedeutet unbegrenzt.\n"
+"                              Siehe auch --bt-request-peer-speed-limit."
+
+#: src/usage_text.h:384
+msgid ""
+" -M, --metalink-file=METALINK_FILE The file path to the .meta4 and "
+".metalink\n"
+"                              file. Reads input from stdin when '-' is\n"
+"                              specified."
+msgstr ""
+" -M, --metalink-file=METALINK_FILE Der Dateipfad zu den .meta4- und "
+".metalink\n"
+"                              Datei. Liest Eingaben von stdin, wenn '-' ist\n"
+"                              angegeben."
+
+#: src/usage_text.h:388
+msgid ""
+" -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
+"                              simultaneously. Some Metalinks regulate the\n"
+"                              number of servers to connect. aria2 strictly\n"
+"                              respects them. This means that if Metalink "
+"defines\n"
+"                              the maxconnections attribute lower than\n"
+"                              NUM_SERVERS, then aria2 uses the value of\n"
+"                              maxconnections attribute instead of "
+"NUM_SERVERS.\n"
+"                              See also -s and -j options."
+msgstr ""
+" -C, --metalink-servers=NUM_SERVER Die Anzahl der Server, zu denen eine "
+"Verbindung hergestellt werden soll\n"
+"                              gleichzeitig. Einige Metalinks regeln das\n"
+"                              Anzahl der zu verbindenden Server. aria2 "
+"streng\n"
+"                              respektiert sie. Dies bedeutet, dass wenn "
+"Metalink definiert\n"
+"                              das maxconnections-Attribut kleiner als\n"
+"                              NUM_SERVERS, dann verwendet aria2 den Wert "
+"von\n"
+"                              maxconnections-Attribut anstelle von "
+"NUM_SERVERS.\n"
+"                              Siehe auch die Optionen -s und -j."
+
+#: src/usage_text.h:397
+msgid " --metalink-version=VERSION   The version of the file to download."
+msgstr ""
+" --metalink-version=VERSION   Die Version der Datei zum Herunterladen."
+
+#: src/usage_text.h:399
+msgid " --metalink-language=LANGUAGE The language of the file to download."
+msgstr ""
+" --metalink-language=LANGUAGE Die Sprache der Datei zum Herunterladen."
+
+#: src/usage_text.h:401
+msgid ""
+" --metalink-os=OS             The operating system of the file to download."
+msgstr ""
+" --metalink-os=OS             Das Betriebssystem der Datei zum Herunterladen."
+
+#: src/usage_text.h:403
+msgid ""
+" --metalink-location=LOCATION[,...] The location of the preferred server.\n"
+"                              A comma-delimited list of locations is\n"
+"                              acceptable."
+msgstr ""
+" --metalink-location=ORT[,…] Der bevorzugte Standort des Servers.\n"
+"                              Eine durch Kommata getrennte Liste ist "
+"zulässig."
+
+#: src/usage_text.h:407
+msgid ""
+" --metalink-preferred-protocol=PROTO Specify preferred protocol. Specify "
+"'none'\n"
+"                              if you don't have any preferred protocol."
+msgstr ""
+" --metalink-preferred-protocol=PROTO Legt das bevorzugte Protokoll fest. "
+"Geben\n"
+"                              Sie »none« an, wenn Sie kein bevorzugtes "
+"Protokoll haben."
+
+#: src/usage_text.h:410
+msgid ""
+" --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
+"                              whose suffix is .meta4 or .metalink, or "
+"content\n"
+"                              type of application/metalink4+xml or\n"
+"                              application/metalink+xml is downloaded, aria2\n"
+"                              parses it as a metalink file and downloads "
+"files\n"
+"                              mentioned in it.\n"
+"                              If mem is specified, a metalink file is not\n"
+"                              written to the disk, but is just kept in "
+"memory.\n"
+"                              If false is specified, the .metalink file is\n"
+"                              downloaded to the disk, but is not parsed as "
+"a\n"
+"                              metalink file and its contents are not\n"
+"                              downloaded."
+msgstr ""
+" --follow-metalink=true|false|mem Wenn true oder mem angegeben ist, wenn "
+"eine Datei\n"
+"                              dessen Suffix .meta4 oder .metalink oder "
+"content ist\n"
+"                              Art der Anwendung/metalink4+xml oder\n"
+"                              application/metalink+xml wird heruntergeladen, "
+"aria2\n"
+"                              parst es als Metalink-Datei und lädt Dateien "
+"herunter\n"
+"                              darin erwähnt.\n"
+"                              Wenn mem angegeben ist, wird eine Metalink-"
+"Datei nicht angegeben\n"
+"                              auf die Festplatte geschrieben, sondern nur im "
+"Speicher gehalten.\n"
+"                              Wenn false angegeben ist, ist die .metalink-"
+"Datei\n"
+"                              auf die Festplatte heruntergeladen, aber nicht "
+"als analysiert\n"
+"                              metallink-Datei und ihr Inhalt sind es nicht\n"
+"                              heruntergeladen."
+
+#: src/usage_text.h:423
+msgid ""
+" --metalink-enable-unique-protocol[=true|false] If true is given and "
+"several\n"
+"                              protocols are available for a mirror in a "
+"metalink\n"
+"                              file, aria2 uses one of them.\n"
+"                              Use --metalink-preferred-protocol option to\n"
+"                              specify the preference of protocol."
+msgstr ""
+" --metalink-enable-unique-protocol[=true|false] Wenn true angegeben ist und "
+"mehrere\n"
+"                              Protokolle sind für einen Spiegel in einem "
+"Metalink verfügbar\n"
+"                              Datei, aria2 verwendet eine davon.\n"
+"                              Verwenden Sie dazu die Option --metalink-"
+"preferred-protocol\n"
+"                              Geben Sie die Präferenz des Protokolls an."
+
+#: src/usage_text.h:429
+msgid " -v, --version                Print the version number and exit."
+msgstr " -v, --version                Versionsnummer ausgeben und beenden."
+
+#: src/usage_text.h:431
+msgid ""
+" -h, --help[=TAG|KEYWORD]     Print usage and exit.\n"
+"                              The help messages are classified with tags. A "
+"tag\n"
+"                              starts with \"#\". For example, type \"--"
+"help=#http\"\n"
+"                              to get the usage for the options tagged with\n"
+"                              \"#http\". If non-tag word is given, print the "
+"usage\n"
+"                              for the options whose name includes that word."
+msgstr ""
+" -h, --help[=SCHLAGWORT]      Benutzungshinweise ausgeben und beenden.\n"
+"                              Die Hilfetexte sind mit Schlagwörtern\n"
+"                              gekennzeichnet. Ein Schlagwort beginnt mit "
+"»#«.\n"
+"                              Geben Sie beispielsweise »--help=#http« ein, "
+"um\n"
+"                              die Benutzungshinweise für die Optionen, die "
+"mit\n"
+"                              »#http« markiert sind, zu erhalten. Wenn kein\n"
+"                              Schlagwort angegeben wurde, werden die "
+"Hilfetexte\n"
+"                              der Optionen ausgegeben, in deren Namen das "
+"Wort\n"
+"                              vorkommt."
+
+#: src/usage_text.h:438
+msgid " --no-conf[=true|false]       Disable loading aria2.conf file."
+msgstr ""
+" --no-conf[=true|false]       Das laden der aria2.conf-Datei deaktivieren."
+
+#: src/usage_text.h:440
+msgid ""
+" --conf-path=PATH             Change the configuration file path to PATH."
+msgstr ""
+" --conf-path=PFAD             Den Konfigurationsdateipfad zu PFAD ändern."
+
+#: src/usage_text.h:442
+msgid ""
+" --stop=SEC                   Stop application after SEC seconds has "
+"passed.\n"
+"                              If 0 is given, this feature is disabled."
+msgstr ""
+" --stop=SEKUNDEN              Anwendung nach SEKUNDEN anhalten.\n"
+"                              Bei 0 ist diese Funktion deaktiviert."
+
+#: src/usage_text.h:445
+msgid ""
+" --header=HEADER              Append HEADER to HTTP request header. You can "
+"use\n"
+"                              this option repeatedly to specify more than "
+"one\n"
+"                              header:\n"
+"                              aria2c --header=\"X-A: b78\" --header=\"X-B: "
+"9J1\"\n"
+"                              http://host/file"
+msgstr ""
+" --header=HEADER Hängt HEADER an den HTTP-Request-Header an. Sie können "
+"verwenden\n"
+"                              diese Option wiederholt, um mehr als eine "
+"anzugeben\n"
+"                              Header:\n"
+"                              aria2c --header=\"XA: b78\" --header=\"XB: "
+"9J1\"\n"
+"                              http://host/datei"
+
+#: src/usage_text.h:451
+msgid " -q, --quiet[=true|false]     Make aria2 quiet(no console output)."
+msgstr ""
+" -q, --quiet[=true|false]     aria2 lautlos schalten (keine "
+"Konsolenausgaben)."
+
+#: src/usage_text.h:453
+msgid " --async-dns[=true|false]     Enable asynchronous DNS."
+msgstr " --async-dns[=true|false]     Asynchrones DNS aktivieren."
+
+#: src/usage_text.h:455
+msgid " --ftp-reuse-connection[=true|false] Reuse connection in FTP."
+msgstr " --ftp-reuse-connection[=true|false] FTP-Verbindung wiederverwenden."
+
+#: src/usage_text.h:457
+msgid ""
+" --summary-interval=SEC       Set interval to output download progress "
+"summary.\n"
+"                              Setting 0 suppresses the output."
+msgstr ""
+" --summary-interval=SEKUNDE   Zeit zur Ausgabe der "
+"Übertragungsfortschrittszusammenfassung einstellen.\n"
+"                              Mit 0 wird die Ausgabe unterdrückt."
+
+#: src/usage_text.h:460
+msgid ""
+" --log-level=LEVEL            Set log level to output to file specified "
+"using\n"
+"                             --log option."
+msgstr ""
+" --log-level=LEVEL Legt die Protokollebene fest, die in die Datei ausgegeben "
+"wird, die mit angegeben wurde\n"
+"                             --log option."
+
+#: src/usage_text.h:463
+msgid ""
+" -R, --remote-time[=true|false] Retrieve timestamp of the remote file from "
+"the\n"
+"                              remote HTTP/FTP server and if it is "
+"available,\n"
+"                              apply it to the local file."
+msgstr ""
+" -R, --remote-time[=true|false] Ruft den Zeitstempel der entfernten Datei "
+"aus der ab\n"
+"                              entfernter HTTP/FTP-Server und falls "
+"verfügbar,\n"
+"                              wenden Sie es auf die lokale Datei an."
+
+#: src/usage_text.h:467
+msgid ""
+" --connect-timeout=SEC        Set the connect timeout in seconds to "
+"establish\n"
+"                              connection to HTTP/FTP/proxy server. After "
+"the\n"
+"                              connection is established, this option makes "
+"no\n"
+"                              effect and --timeout option is used instead."
+msgstr ""
+" --connect-timeout=SEC Legt das Verbindungs-Timeout in Sekunden für den "
+"Aufbau fest\n"
+"                              Verbindung zum HTTP/FTP/Proxy-Server. Nach "
+"dem\n"
+"                              Verbindung hergestellt wird, macht diese "
+"Option keine\n"
+"                              Effekt und die Option --timeout werden "
+"stattdessen verwendet."
+
+#: src/usage_text.h:472
+msgid ""
+" --max-file-not-found=NUM     If aria2 receives `file not found' status from "
+"the\n"
+"                              remote HTTP/FTP servers NUM times without "
+"getting\n"
+"                              a single byte, then force the download to "
+"fail.\n"
+"                              Specify 0 to disable this option.\n"
+"                              This options is effective only when using\n"
+"                              HTTP/FTP servers. The number of retry attempt "
+"is\n"
+"                              counted toward --max-tries, so it should be\n"
+"                              configured too."
+msgstr ""
+" --max-file-not-found=NUM Wenn aria2 den Status „Datei nicht gefunden“ von "
+"der\n"
+"                              Remote-HTTP/FTP-Server NUM Mal ohne zu "
+"bekommen\n"
+"                              ein einzelnes Byte, und erzwingen Sie dann, "
+"dass der Download fehlschlägt.\n"
+"                              Geben Sie 0 an, um diese Option zu "
+"deaktivieren.\n"
+"                              Diese Option ist nur bei Verwendung wirksam\n"
+"                              HTTP/FTP-Server. Die Anzahl der "
+"Wiederholungsversuche ist\n"
+"                              zu --max-tries gezählt, so sollte es sein\n"
+"                              auch konfiguriert."
+
+#: src/usage_text.h:481
+msgid ""
+" --uri-selector=SELECTOR      Specify URI selection algorithm.\n"
+"                              If 'inorder' is given, URI is tried in the "
+"order\n"
+"                              appeared in the URI list.\n"
+"                              If 'feedback' is given, aria2 uses download "
+"speed\n"
+"                              observed in the previous downloads and choose\n"
+"                              fastest server in the URI list. This also\n"
+"                              effectively skips dead mirrors. The observed\n"
+"                              download speed is a part of performance "
+"profile\n"
+"                              of servers mentioned in --server-stat-of and\n"
+"                              --server-stat-if options.\n"
+"                              If 'adaptive' is given, selects one of the "
+"best\n"
+"                              mirrors for the first and reserved "
+"connections.\n"
+"                              For supplementary ones, it returns mirrors "
+"which\n"
+"                              has not been tested yet, and if each of them "
+"has\n"
+"                              already been tested, returns mirrors which has "
+"to\n"
+"                              be tested again. Otherwise, it doesn't select\n"
+"                              anymore mirrors. Like 'feedback', it uses a\n"
+"                              performance profile of servers."
+msgstr ""
+" --uri-selector=SELECTOR Gibt den URI-Auswahlalgorithmus an.\n"
+"                              Wenn 'inorder' angegeben ist, wird URI in der "
+"Reihenfolge ausprobiert\n"
+"                              erschien in der URI-Liste.\n"
+"                              Wenn 'Feedback' gegeben wird, verwendet aria2 "
+"die Download-Geschwindigkeit\n"
+"                              in den vorherigen Downloads beobachtet und "
+"wählen\n"
+"                              schnellster Server in der URI-Liste. Das auch\n"
+"                              Überspringt effektiv tote Spiegel. Das "
+"Beobachtete\n"
+"                              Downloadgeschwindigkeit ist ein Teil des "
+"Leistungsprofils\n"
+"                              von Servern, die in --server-stat-of und "
+"erwähnt werden\n"
+"                              --server-stat-if-Optionen.\n"
+"                              Wenn „adaptiv“ angegeben ist, wird eine der "
+"besten ausgewählt\n"
+"                              Spiegel für die ersten und reservierten "
+"Verbindungen.\n"
+"                              Für ergänzende gibt es Spiegel zurück, die\n"
+"                              wurde noch nicht getestet, und wenn jeder von "
+"ihnen hat\n"
+"                              bereits getestet, Spiegel zurück, was muss\n"
+"                              nochmal getestet werden. Andernfalls wird "
+"nicht ausgewählt\n"
+"                              mehr Spiegel. Wie „Feedback“ verwendet es a\n"
+"                              Leistungsprofil von Servern."
+
+#: src/usage_text.h:500
+msgid ""
+" --server-stat-of=FILE        Specify the filename to which performance "
+"profile\n"
+"                              of the servers is saved. You can load saved "
+"data\n"
+"                              using --server-stat-if option."
+msgstr ""
+" --server-stat-of=DATEI Geben Sie den Dateinamen für das Leistungsprofil an\n"
+"                              der Server gespeichert. Sie können "
+"gespeicherte Daten laden\n"
+"                              mit der Option --server-stat-if."
+
+#: src/usage_text.h:504
+msgid ""
+" --server-stat-if=FILE        Specify the filename to load performance "
+"profile\n"
+"                              of the servers. The loaded data will be used "
+"in\n"
+"                              some URI selector such as 'feedback'.\n"
+"                              See also --uri-selector option"
+msgstr ""
+" --server-stat-if=DATEI Geben Sie den Dateinamen zum Laden des "
+"Leistungsprofils an\n"
+"                              der Server. Die geladenen Daten werden in "
+"verwendet\n"
+"                              einige URI-Selektoren wie „Feedback“.\n"
+"                              Siehe auch Option --uri-selector"
+
+#: src/usage_text.h:509
+msgid ""
+" --server-stat-timeout=SEC    Specifies timeout in seconds to invalidate\n"
+"                              performance profile of the servers since the "
+"last\n"
+"                              contact to them."
+msgstr ""
+" --server-stat-timeout=SEC Gibt die Zeitüberschreitung in Sekunden für die "
+"Invalidierung an\n"
+"                              Leistungsprofil der Server seit dem letzten\n"
+"                              Kontakt zu ihnen."
+
+#: src/usage_text.h:513
+msgid ""
+" --auto-save-interval=SEC     Save a control file(*.aria2) every SEC "
+"seconds.\n"
+"                              If 0 is given, a control file is not saved "
+"during\n"
+"                              download. aria2 saves a control file when it "
+"stops\n"
+"                              regardless of the value."
+msgstr ""
+" --auto-save-interval=SEC Speichert alle SEC Sekunden eine Steuerdatei "
+"(*.aria2).\n"
+"                              Wenn 0 angegeben wird, wird währenddessen "
+"keine Steuerdatei gespeichert\n"
+"                              herunterladen. aria2 speichert eine "
+"Steuerdatei, wenn es stoppt\n"
+"                              unabhängig vom Wert."
+
+#: src/usage_text.h:518
+msgid ""
+" --certificate=FILE           Use the client certificate in FILE.\n"
+"                              The certificate must be in PEM format.\n"
+"                              You may use --private-key option to specify "
+"the\n"
+"                              private key."
+msgstr ""
+" --certificate=DATEI Verwendet das Client-Zertifikat in DATEI.\n"
+"                              Das Zertifikat muss im PEM-Format vorliegen.\n"
+"                              Sie können die Option --private-key verwenden, "
+"um die anzugeben\n"
+"                              Privat Schlüssel."
+
+#: src/usage_text.h:523
+msgid ""
+" --private-key=FILE           Use the private key in FILE.\n"
+"                              The private key must be decrypted and in PEM\n"
+"                              format. See also --certificate option."
+msgstr ""
+" --private-key=DATEI Verwendet den privaten Schlüssel in DATEI.\n"
+"                              Der private Schlüssel muss entschlüsselt und "
+"in PEM vorliegen\n"
+"                              Format. Siehe auch Option --certificate."
+
+#: src/usage_text.h:527
+msgid ""
+" --ca-certificate=FILE        Use the certificate authorities in FILE to "
+"verify\n"
+"                              the peers. The certificate file must be in "
+"PEM\n"
+"                              format and can contain multiple CA "
+"certificates.\n"
+"                              Use --check-certificate option to enable\n"
+"                              verification."
+msgstr ""
+" --ca-certificate=DATEI Verwenden Sie zur Überprüfung die "
+"Zertifizierungsstellen in DATEI\n"
+"                              die Gleichaltrigen. Die Zertifikatsdatei muss "
+"sich in PEM befinden\n"
+"                              Format und kann mehrere CA-Zertifikate "
+"enthalten.\n"
+"                              Verwenden Sie zum Aktivieren die Option --"
+"check-certificate\n"
+"                              Überprüfung."
+
+#: src/usage_text.h:533
+msgid ""
+" --check-certificate[=true|false] Verify the peer using certificates "
+"specified\n"
+"                              in --ca-certificate option."
+msgstr ""
+" --check-certificate[=true|false] Prüft den Peer anhand der angegebenen "
+"Zertifikate\n"
+"                              in --ca-certificate option."
+
+#: src/usage_text.h:536
+msgid ""
+" --no-proxy=DOMAINS           Specify comma separated hostnames, domains or\n"
+"                              network address with or without CIDR block "
+"where\n"
+"                              proxy should not be used."
+msgstr ""
+" --no-proxy=DOMAINS Geben Sie durch Kommas getrennte Hostnamen, Domänen oder "
+"Domains an\n"
+"                              Netzwerkadresse mit oder ohne CIDR-Block wo\n"
+"                              Proxy sollte nicht verwendet werden."
+
+#: src/usage_text.h:540
+msgid ""
+" --use-head[=true|false]      Use HEAD method for the first request to the "
+"HTTP\n"
+"                              server."
+msgstr ""
+" --use-head[=true|false] Verwende die HEAD-Methode für die erste HTTP-"
+"Anfrage\n"
+"                              server."
+
+#: src/usage_text.h:543
+msgid ""
+" --content-disposition-default-utf8[=true|false] Handle quoted string in\n"
+"                              Content-Disposition header as UTF-8 instead "
+"of\n"
+"                              ISO-8859-1, for example, the filename "
+"parameter,\n"
+"                              but not the extended version filename*."
+msgstr ""
+" --content-disposition-default-utf8[=true|false] Handle in "
+"Anführungszeichen\n"
+"                              Content-Disposition-Header als UTF-8 statt\n"
+"                              ISO-8859-1, zum Beispiel der Dateiname-"
+"Parameter,\n"
+"                              aber nicht der Dateiname der erweiterten "
+"Version*."
+
+#: src/usage_text.h:548
+msgid " --event-poll=POLL            Specify the method for polling events."
+msgstr ""
+" --event-poll=POLL            Legt die Methode für die Abfrageereignisse "
+"fest."
+
+#: src/usage_text.h:550
+msgid ""
+" --bt-external-ip=IPADDRESS   Specify the external IP address to use in\n"
+"                              BitTorrent download and DHT. It may be sent "
+"to\n"
+"                              BitTorrent tracker. For DHT, this option "
+"should\n"
+"                              be set to report that local node is "
+"downloading\n"
+"                              a particular torrent. This is critical to use\n"
+"                              DHT in a private network. Although this "
+"function\n"
+"                              is named 'external', it can accept any kind of "
+"IP\n"
+"                              addresses."
+msgstr ""
+" --bt-external-ip=IPADRESSE Geben Sie die externe IP-Adresse an, die "
+"verwendet werden soll\n"
+"                              BitTorrent-Download und DHT. Es kann an "
+"gesendet werden\n"
+"                              BitTorrent-Tracker. Für DHT sollte diese "
+"Option\n"
+"                              eingestellt werden, um zu melden, dass der "
+"lokale Knoten heruntergeladen wird\n"
+"                              ein besonderer Strom. Dies ist entscheidend "
+"für die Verwendung\n"
+"                              DHT in einem privaten Netzwerk. Obwohl diese "
+"Funktion\n"
+"                              'extern' heißt, kann es jede Art von IP "
+"akzeptieren\n"
+"                              Adressen."
+
+#: src/usage_text.h:559
+msgid ""
+" --http-auth-challenge[=true|false] Send HTTP authorization header only when "
+"it\n"
+"                              is requested by the server. If false is set, "
+"then\n"
+"                              authorization header is always sent to the "
+"server.\n"
+"                              There is an exception: if username and "
+"password\n"
+"                              are embedded in URI, authorization header is\n"
+"                              always sent to the server regardless of this\n"
+"                              option."
+msgstr ""
+" --http-auth-challenge[=true|false] HTTP-Autorisierungsheader nur senden, "
+"wenn es\n"
+"                              wird vom Server angefordert. Wenn false "
+"gesetzt ist, dann\n"
+"                              Authorization Header wird immer an den Server "
+"gesendet.\n"
+"                              Es gibt eine Ausnahme: wenn Benutzername und "
+"Passwort\n"
+"                              sind in URI eingebettet, der "
+"Autorisierungsheader ist\n"
+"                              unabhängig davon immer an den Server gesendet\n"
+"                              option."
+
+#: src/usage_text.h:567
+msgid ""
+" -O, --index-out=INDEX=PATH   Set file path for file with index=INDEX. You "
+"can\n"
+"                              find the file index using the --show-files "
+"option.\n"
+"                              PATH is a relative path to the path specified "
+"in\n"
+"                              --dir option. You can use this option "
+"multiple\n"
+"                              times."
+msgstr ""
+" -O, --index-out=INDEX=PFAD Legt den Dateipfad für die Datei mit index=INDEX "
+"fest. Sie können\n"
+"                              Finden Sie den Dateiindex mit der Option --"
+"show-files.\n"
+"                              PATH ist ein relativer Pfad zu dem in "
+"angegebenen Pfad\n"
+"                              --dir-Option. Sie können diese Option mehrfach "
+"verwenden\n"
+"                              mal."
+
+#: src/usage_text.h:573
+msgid ""
+" --dry-run[=true|false]       If true is given, aria2 just checks whether "
+"the\n"
+"                              remote file is available and doesn't download\n"
+"                              data. This option has effect on HTTP/FTP "
+"download.\n"
+"                              BitTorrent downloads are canceled if true is\n"
+"                              specified."
+msgstr ""
+" --dry-run[=true|false] Wenn true angegeben ist, prüft aria2 nur, ob die\n"
+"                              Remote-Datei ist verfügbar und wird nicht "
+"heruntergeladen\n"
+"                              Daten. Diese Option wirkt sich auf den "
+"HTTP/FTP-Download aus.\n"
+"                              BitTorrent-Downloads werden abgebrochen, wenn "
+"wahr ist\n"
+"                              angegeben."
+
+#: src/usage_text.h:579
+msgid ""
+" --bt-tracker-interval=SEC    Set the interval in seconds between tracker\n"
+"                              requests. This completely overrides interval "
+"value\n"
+"                              and aria2 just uses this value and ignores "
+"the\n"
+"                              min interval and interval value in the "
+"response of\n"
+"                              tracker. If 0 is set, aria2 determines "
+"interval\n"
+"                              based on the response of tracker and the "
+"download\n"
+"                              progress."
+msgstr ""
+" --bt-tracker-interval=SEC Legt das Intervall in Sekunden zwischen den "
+"Trackern fest\n"
+"                              Anfragen. Dies überschreibt den Intervallwert "
+"vollständig\n"
+"                              und aria2 verwendet nur diesen Wert und "
+"ignoriert die\n"
+"                              min Intervall und Intervallwert in der Antwort "
+"von\n"
+"                              Tracker. Wenn 0 eingestellt ist, bestimmt "
+"aria2 das Intervall\n"
+"                              basierend auf der Antwort des Trackers und dem "
+"Download\n"
+"                              Fortschritt."
+
+#: src/usage_text.h:587
+msgid ""
+" --on-download-complete=COMMAND Set the command to be executed after "
+"download\n"
+"                              completed.\n"
+"                              See --on-download-start option for the\n"
+"                              requirement of COMMAND.\n"
+"                              See also --on-download-stop option."
+msgstr ""
+" --on-download-complete=BEFEHL Legt den Befehl fest, der nach dem Download "
+"ausgeführt werden soll\n"
+"                              vollendet.\n"
+"                              Siehe die Option --on-download-start für die\n"
+"                              Anforderung von COMMAND.\n"
+"                              Siehe auch Option --on-download-stop."
+
+#: src/usage_text.h:593
+msgid ""
+" --on-download-start=COMMAND  Set the command to be executed after download\n"
+"                              got started. aria2 passes 3 arguments to "
+"COMMAND:\n"
+"                              GID, the number of files and file path. See "
+"Event\n"
+"                              Hook in man page for more details."
+msgstr ""
+" --on-download-start=BEFEHL Legt den Befehl fest, der nach dem Download "
+"ausgeführt werden soll\n"
+"                              angefangen. aria2 übergibt 3 Argumente an "
+"COMMAND:\n"
+"                              GID, die Anzahl der Dateien und der Dateipfad. "
+"Siehe Ereignis\n"
+"                              Weitere Details finden Sie in der Manpage."
+
+#: src/usage_text.h:598
+msgid ""
+" --on-download-pause=COMMAND  Set the command to be executed after download\n"
+"                              was paused.\n"
+"                              See --on-download-start option for the\n"
+"                              requirement of COMMAND."
+msgstr ""
+" --on-download-pause=BEFEHL Legt den Befehl fest, der nach dem Download "
+"ausgeführt werden soll\n"
+"                              wurde pausiert.\n"
+"                              Siehe die Option --on-download-start für die\n"
+"                              Anforderung von COMMAND."
+
+#: src/usage_text.h:603
+msgid ""
+" --on-download-error=COMMAND  Set the command to be executed after download\n"
+"                              aborted due to error.\n"
+"                              See --on-download-start option for the\n"
+"                              requirement of COMMAND.\n"
+"                              See also --on-download-stop option."
+msgstr ""
+" --on-download-error=BEFEHL Legt den Befehl fest, der nach dem Download "
+"ausgeführt werden soll\n"
+"                              wegen Fehler abgebrochen.\n"
+"                              Siehe die Option --on-download-start für die\n"
+"                              Anforderung von COMMAND.\n"
+"                              Siehe auch Option --on-download-stop."
+
+#: src/usage_text.h:609
+msgid ""
+" --on-download-stop=COMMAND   Set the command to be executed after download\n"
+"                              stopped. You can override the command to be\n"
+"                              executed for particular download result using\n"
+"                              --on-download-complete and --on-download-"
+"error. If\n"
+"                              they are specified, command specified in this\n"
+"                              option is not executed.\n"
+"                              See --on-download-start option for the\n"
+"                              requirement of COMMAND."
+msgstr ""
+" --on-download-stop=BEFEHL Legt den Befehl fest, der nach dem Download "
+"ausgeführt werden soll\n"
+"                              gestoppt. Sie können den Befehl to be "
+"überschreiben\n"
+"                              für ein bestimmtes Download-Ergebnis mit "
+"ausgeführt\n"
+"                              --on-download-complete und --on-download-"
+"error. Wenn\n"
+"                              Sie sind angegeben, Befehl in diesem "
+"angegeben\n"
+"                              Option wird nicht ausgeführt.\n"
+"                              Siehe die Option --on-download-start für die\n"
+"                              Anforderung von COMMAND."
+
+#: src/usage_text.h:618
+msgid ""
+" --bt-stop-timeout=SEC        Stop BitTorrent download if download speed is "
+"0 in\n"
+"                              consecutive SEC seconds. If 0 is given, this\n"
+"                              feature is disabled."
+msgstr ""
+" --bt-stop-timeout=SEC Stoppt den BitTorrent-Download, wenn die Download-"
+"Geschwindigkeit 0 beträgt\n"
+"                              aufeinanderfolgende SEC-Sekunden. Wenn 0 "
+"angegeben ist, dann this\n"
+"                              Funktion ist deaktiviert."
+
+#: src/usage_text.h:622
+msgid ""
+" --bt-prioritize-piece=head[=SIZE],tail[=SIZE] Try to download first and "
+"last\n"
+"                              pieces of each file first. This is useful for\n"
+"                              previewing files. The argument can contain 2\n"
+"                              keywords:head and tail. To include both "
+"keywords,\n"
+"                              they must be separated by comma. These "
+"keywords\n"
+"                              can take one parameter, SIZE. For example, if\n"
+"                              head=SIZE is specified, pieces in the range "
+"of\n"
+"                              first SIZE bytes of each file get higher "
+"priority.\n"
+"                              tail=SIZE means the range of last SIZE bytes "
+"of\n"
+"                              each file. SIZE can include K or M(1K = 1024, "
+"1M =\n"
+"                              1024K). If SIZE is omitted, SIZE=1M is used."
+msgstr ""
+" --bt-prioritize-piece=head[=GRÖSSE],tail[=GRÖSSE] Versuche zuerst und "
+"zuletzt herunterzuladen\n"
+"                              Teile jeder Datei zuerst. Dies ist nützlich "
+"für\n"
+"                              Vorschau von Dateien. Das Argument kann 2 "
+"enthalten\n"
+"                              Stichwort: Kopf und Schwanz. Um beide "
+"Schlüsselwörter einzuschließen,\n"
+"                              sie müssen durch Komma getrennt werden. Diese "
+"Schlüsselwörter\n"
+"                              kann einen Parameter annehmen, SIZE. Zum "
+"Beispiel, wenn\n"
+"                              head=SIZE ist angegeben, pieces im Bereich "
+"von\n"
+"                              Die ersten SIZE-Bytes jeder Datei erhalten "
+"eine höhere Priorität.\n"
+"                              tail=SIZE bedeutet den Bereich der letzten "
+"SIZE-Bytes von\n"
+"                              jede Datei. SIZE kann K oder M enthalten (1K = "
+"1024, 1M =\n"
+"                              1024K). Wenn SIZE weggelassen wird, wird "
+"SIZE=1M verwendet."
+
+#: src/usage_text.h:634
+msgid ""
+" --interface=INTERFACE        Bind sockets to given interface. You can "
+"specify\n"
+"                              interface name, IP address and hostname."
+msgstr ""
+" --interface=SCHNITTSTELLE    Sockets an die angegebene Schnittstelle "
+"binden.\n"
+"                              Sie können Schnittstellenname, IP-Adresse und\n"
+"                              Rechnername angeben."
+
+#: src/usage_text.h:637
+msgid ""
+" --multiple-interface=INTERFACES Comma separated list of interfaces to bind\n"
+"                              sockets to. Requests will be splited among "
+"the\n"
+"                              interfaces to achieve link aggregation. You "
+"can\n"
+"                              specify interface name, IP address and "
+"hostname.\n"
+"                              If --interface is used, this option will be\n"
+"                              ignored."
+msgstr ""
+" --multiple-interface=SCHNITTSTELLEN Kommagetrennte Liste der zu bindenden "
+"Schnittstellen\n"
+"                              Steckdosen zu. Anfragen werden unter den "
+"aufgeteilt\n"
+"                              Schnittstellen, um eine Link-Aggregation zu "
+"erreichen. Sie können\n"
+"                              Geben Sie den Schnittstellennamen, die IP-"
+"Adresse und den Hostnamen an.\n"
+"                              Wenn --interface verwendet wird, ist diese "
+"Option\n"
+"                              ignoriert."
+
+#: src/usage_text.h:644
+msgid " --disable-ipv6[=true|false]  Disable IPv6."
+msgstr " --disable-ipv6[=true|false] Deaktiviert IPv6."
+
+#: src/usage_text.h:646
+msgid ""
+" --bt-save-metadata[=true|false] Save metadata as .torrent file. This option "
+"has\n"
+"                              effect only when BitTorrent Magnet URI is "
+"used.\n"
+"                              The filename is hex encoded info hash with "
+"suffix\n"
+"                              .torrent. The directory to be saved is the "
+"same\n"
+"                              directory where download file is saved. If "
+"the\n"
+"                              same file already exists, metadata is not "
+"saved.\n"
+"                              See also --bt-metadata-only option."
+msgstr ""
+" --bt-save-metadata[=true|false] Metadaten als .torrent-Datei speichern. "
+"Diese Option hat\n"
+"                              wirkt sich nur aus, wenn der BitTorrent-Magnet-"
+"URI verwendet wird.\n"
+"                              Der Dateiname ist ein Hex-codierter Info-Hash "
+"mit Suffix\n"
+"                              .torrent. Das zu speichernde Verzeichnis ist "
+"das gleiche\n"
+"                              Verzeichnis, in dem die Download-Datei "
+"gespeichert wird. Wenn die\n"
+"                              dieselbe Datei existiert bereits, Metadaten "
+"werden nicht gespeichert.\n"
+"                              Siehe auch die Option --bt-metadata-only."
+
+#: src/usage_text.h:654
+msgid ""
+" --http-no-cache[=true|false] Send Cache-Control: no-cache and Pragma: no-"
+"cache\n"
+"                              header to avoid cached content.  If false is\n"
+"                              given, these headers are not sent and you can "
+"add\n"
+"                              Cache-Control header with a directive you "
+"like\n"
+"                              using --header option."
+msgstr ""
+" --http-no-cache[=true|false] Sende Cache-Control: no-cache und Pragma: no-"
+"cache\n"
+"                              Kopfzeile, um zwischengespeicherten Inhalt zu "
+"vermeiden. Wenn falsch ist\n"
+"                              gegeben, diese Header werden nicht gesendet "
+"und Sie können hinzufügen\n"
+"                              Cache-Control-Header mit einer Anweisung, die "
+"Ihnen gefällt\n"
+"                              mit der Option --header."
+
+#: src/usage_text.h:660
+msgid ""
+" --bt-metadata-only[=true|false] Download metadata only. The file(s) "
+"described\n"
+"                              in metadata will not be downloaded. This "
+"option\n"
+"                              has effect only when BitTorrent Magnet URI is\n"
+"                              used. See also --bt-save-metadata option."
+msgstr ""
+" --bt-metadata-only[=true|false] Nur Metadaten herunterladen. Die "
+"beschriebene(n) Datei(en).\n"
+"                              in Metadaten werden nicht heruntergeladen. "
+"Diese Option\n"
+"                              hat nur Wirkung, wenn BitTorrent Magnet URI "
+"ist\n"
+"                              Gebraucht. Siehe auch die Option --bt-save-"
+"metadata."
+
+#: src/usage_text.h:665
+msgid ""
+" --human-readable[=true|false] Print sizes and speed in human readable "
+"format\n"
+"                              (e.g., 1.2Ki, 3.4Mi) in the console readout."
+msgstr ""
+" --human-readable[=true|false] Größen und Geschwindigkeiten in lesbarem\n"
+"                               Format (z.B. 1,2 Ki; 3,4 Mi) auf der Konsole "
+"ausgeben."
+
+#: src/usage_text.h:668
+msgid " --bt-enable-lpd[=true|false] Enable Local Peer Discovery."
+msgstr ""
+" --bt-enable-lpd[=true|false] Lokale Gegenstellenerkennung aktivieren."
+
+#: src/usage_text.h:670
+msgid ""
+" --bt-lpd-interface=INTERFACE Use given interface for Local Peer Discovery. "
+"If\n"
+"                              this option is not specified, the default\n"
+"                              interface is chosen. You can specify "
+"interface\n"
+"                              name and IP address."
+msgstr ""
+" --bt-lpd-interface=SCHNITTSTELLE Verwendet die angegebene Schnittstelle für "
+"die lokale Peer-Erkennung. Wenn\n"
+"                              diese Option ist nicht angegeben, die "
+"Standardeinstellung\n"
+"                              Schnittstelle gewählt. Sie können die "
+"Schnittstelle angeben\n"
+"                              Name und IP-Adresse."
+
+#: src/usage_text.h:675
+msgid ""
+" --reuse-uri[=true|false]     Reuse already used URIs if no unused URIs are\n"
+"                              left."
+msgstr ""
+" --reuse-uri[=true|false] Bereits verwendete URIs wiederverwenden, wenn "
+"keine unbenutzten URIs vorhanden sind\n"
+"                              links."
+
+#: src/usage_text.h:678
+msgid " --all-proxy-user=USER        Set user for --all-proxy."
+msgstr " --all-proxy-user=BENUTZER    BENUTZER für --all-proxy einstellen."
+
+#: src/usage_text.h:680
+msgid " --all-proxy-passwd=PASSWD    Set password for --all-proxy."
+msgstr " --all-proxy-passwd=PASSWORT  PASSWORT für --all-proxy einstellen."
+
+#: src/usage_text.h:682
+msgid " --http-proxy-user=USER       Set user for --http-proxy."
+msgstr " --http-proxy-user=BENUTZER   BENUTZER für --http-proxy einstellen."
+
+#: src/usage_text.h:684
+msgid " --http-proxy-passwd=PASSWD   Set password for --http-proxy."
+msgstr " --http-proxy-passwd=PASSW.   PASSWORT für --http-proxy einstellen."
+
+#: src/usage_text.h:686
+msgid " --https-proxy-user=USER      Set user for --https-proxy."
+msgstr " --https-proxy-user=BENUTZER  BENUTZER für --https-proxy einstellen."
+
+#: src/usage_text.h:688
+msgid " --https-proxy-passwd=PASSWD  Set password for --https-proxy."
+msgstr " --https-proxy-passwd=PASSW.  PASSWORT für --https-proxy einstellen."
+
+#: src/usage_text.h:690
+msgid " --ftp-proxy-user=USER        Set user for --ftp-proxy."
+msgstr " --ftp-proxy-user=BENUTZER    BENUTZER für --ftp-proxy einstellen."
+
+#: src/usage_text.h:692
+msgid " --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy."
+msgstr " --ftp-proxy-passwd=PASSW.    PASSWORT für --ftp-proxy einstellen."
+
+#: src/usage_text.h:694
+msgid ""
+" --remove-control-file[=true|false] Remove control file before download. "
+"Using\n"
+"                              with --allow-overwrite=true, download always\n"
+"                              starts from scratch. This will be useful for\n"
+"                              users behind proxy server which disables "
+"resume."
+msgstr ""
+" --remove-control-file[=true|false] Steuerdatei vor dem Download entfernen. "
+"Verwenden\n"
+"                              mit --allow-overwrite=true immer "
+"herunterladen\n"
+"                              beginnt von vorne. Dies wird nützlich sein "
+"für\n"
+"                              Benutzer hinter dem Proxy-Server, der die "
+"Wiederaufnahme deaktiviert."
+
+#: src/usage_text.h:699
+msgid ""
+" --always-resume[=true|false] Always resume download. If true is given, "
+"aria2\n"
+"                              always tries to resume download and if resume "
+"is\n"
+"                              not possible, aborts download. If false is "
+"given,\n"
+"                              when all given URIs do not support resume or\n"
+"                              aria2 encounters N URIs which does not "
+"support\n"
+"                              resume (N is the value specified using\n"
+"                              --max-resume-failure-tries option), aria2\n"
+"                              downloads file from scratch.\n"
+"                              See --max-resume-failure-tries option."
+msgstr ""
+" --always-resume[=true|false] Setzt den Download immer fort. Wenn true "
+"angegeben ist, wird aria2\n"
+"                              versucht immer, den Download fortzusetzen und "
+"wenn Resume ist\n"
+"                              nicht möglich, bricht Download ab. Wenn falsch "
+"angegeben ist,\n"
+"                              wenn alle angegebenen URIs den Lebenslauf "
+"nicht unterstützen oder\n"
+"                              aria2 trifft auf N URIs, die nicht unterstützt "
+"werden\n"
+"                              Resume (N ist der Wert, der mit angegeben "
+"wird\n"
+"                              --max-resume-failure-tries-Option), aria2\n"
+"                              lädt Datei von Grund auf neu herunter.\n"
+"                              Siehe Option --max-resume-failure-tries."
+
+#: src/usage_text.h:709
+msgid ""
+" --max-resume-failure-tries=N When used with --always-resume=false, aria2\n"
+"                              downloads file from scratch when aria2 detects "
+"N\n"
+"                              number of URIs that does not support resume. "
+"If N\n"
+"                              is 0, aria2 downloads file from scratch when "
+"all\n"
+"                              given URIs do not support resume.\n"
+"                              See --always-resume option."
+msgstr ""
+" --max-resume-failure-tries=N Bei Verwendung mit --always-resume=false, "
+"aria2\n"
+"                              lädt die Datei von Grund auf neu herunter, "
+"wenn aria2 N erkennt\n"
+"                              Anzahl von URIs, die Lebenslauf nicht "
+"unterstützen. Wenn n\n"
+"                              0 ist, lädt aria2 die Datei von Grund auf neu "
+"herunter, wenn alle\n"
+"                              angegebene URIs unterstützen keinen "
+"Lebenslauf.\n"
+"                              Siehe Option --always-resume."
+
+#: src/usage_text.h:716
+msgid " --bt-tracker-timeout=SEC     Set timeout in seconds."
+msgstr " --bt-tracker-timeout=SEC Timeout in Sekunden festlegen."
+
+#: src/usage_text.h:718
+msgid ""
+" --bt-tracker-connect-timeout=SEC Set the connect timeout in seconds to\n"
+"                              establish connection to tracker. After the\n"
+"                              connection is established, this option makes "
+"no\n"
+"                              effect and --bt-tracker-timeout option is "
+"used\n"
+"                              instead."
+msgstr ""
+" --bt-tracker-connect-timeout=SEC Setzt das Verbindungs-Timeout in Sekunden "
+"auf\n"
+"                              Verbindung zum Tracker herstellen. Nach dem\n"
+"                              Verbindung hergestellt wird, macht diese "
+"Option keine\n"
+"                              Effekt und die Option --bt-tracker-timeout "
+"wird verwendet\n"
+"                              stattdessen."
+
+#: src/usage_text.h:724
+msgid " --dht-message-timeout=SEC    Set timeout in seconds."
+msgstr " --dht-message-timeout=s          Zeitlimit in Sekunden einstellen."
+
+#: src/usage_text.h:726
+msgid ""
+" --http-accept-gzip[=true|false] Send 'Accept: deflate, gzip' request "
+"header\n"
+"                              and inflate response if remote server "
+"responds\n"
+"                              with 'Content-Encoding: gzip' or\n"
+"                              'Content-Encoding: deflate'."
+msgstr ""
+" --http-accept-gzip[=true|false] Sendet den Anfrage-Header „Accept: deflate, "
+"gzip“.\n"
+"                              und die Antwort aufblähen, wenn der entfernte "
+"Server antwortet\n"
+"                              mit 'Content-Encoding: gzip' bzw\n"
+"                              'Content-Encoding: deflate'."
+
+#: src/usage_text.h:731
+msgid ""
+" --save-session=FILE          Save error/unfinished downloads to FILE on "
+"exit.\n"
+"                              You can pass this output file to aria2c with -"
+"i\n"
+"                              option on restart. Please note that downloads\n"
+"                              added by aria2.addTorrent and "
+"aria2.addMetalink\n"
+"                              RPC method and whose metadata could not be "
+"saved\n"
+"                              as a file will not be saved. Downloads "
+"removed\n"
+"                              using aria2.remove and aria2.forceRemove will "
+"not\n"
+"                              be saved."
+msgstr ""
+" --save-session=DATEI Fehlerhafte/nicht abgeschlossene Downloads beim "
+"Beenden in DATEI speichern.\n"
+"                              Sie können diese Ausgabedatei mit -i an aria2c "
+"übergeben\n"
+"                              Option beim Neustart. Bitte beachten Sie, dass "
+"Downloads\n"
+"                              hinzugefügt von aria2.addTorrent und "
+"aria2.addMetalink\n"
+"                              RPC-Methode verwendet und deren Metadaten "
+"nicht gespeichert werden konnten\n"
+"                              als Datei wird nicht gespeichert. Downloads "
+"entfernt\n"
+"                              die Verwendung von aria2.remove und "
+"aria2.forceRemove wird dies nicht tun\n"
+"                              gerettet werden."
+
+#: src/usage_text.h:740
+msgid ""
+" -x, --max-connection-per-server=NUM The maximum number of connections to "
+"one\n"
+"                              server for each download."
+msgstr ""
+" Text kopieren \t\n"
+" -x, --max-connection-per-server=NUM Die maximale Anzahl von Verbindungen zu "
+"einem\n"
+"                              Server für jeden Download."
+
+#: src/usage_text.h:743
+msgid ""
+" -k, --min-split-size=SIZE    aria2 does not split less than 2*SIZE byte "
+"range.\n"
+"                              For example, let's consider downloading 20MiB\n"
+"                              file. If SIZE is 10M, aria2 can split file "
+"into 2\n"
+"                              range [0-10MiB) and [10MiB-20MiB) and download "
+"it\n"
+"                              using 2 sources(if --split >= 2, of course).\n"
+"                              If SIZE is 15M, since 2*15M > 20MiB, aria2 "
+"does\n"
+"                              not split file and download it using 1 "
+"source.\n"
+"                              You can append K or M(1K = 1024, 1M = 1024K)."
+msgstr ""
+" -k, --min-split-size=SIZE aria2 teilt nicht weniger als 2*SIZE Byte-"
+"Bereich.\n"
+"                              Betrachten wir zum Beispiel das Herunterladen "
+"von 20 MiB\n"
+"                              Datei. Wenn SIZE 10M beträgt, kann aria2 die "
+"Datei in 2 teilen\n"
+"                              Bereich [0-10MiB) und [10MiB-20MiB) und laden "
+"Sie es herunter\n"
+"                              Verwenden von 2 Quellen (wenn --split >= 2 "
+"natürlich).\n"
+"                              Wenn SIZE 15 MB beträgt, da 2*15 MB > 20 MB, "
+"tut aria2 dies\n"
+"                              nicht geteilte Datei und laden Sie sie mit 1 "
+"Quelle herunter.\n"
+"                              Sie können K oder M anhängen (1K = 1024, 1M = "
+"1024K)."
+
+#: src/usage_text.h:752
+msgid ""
+" --conditional-get[=true|false] Download file only when the local file is "
+"older\n"
+"                              than remote file. Currently, this function "
+"has\n"
+"                              many limitations. See man page for details."
+msgstr ""
+" --conditional-get[=true|false] Datei nur herunterladen, wenn die lokale "
+"Datei älter ist\n"
+"                              als Remote-Datei. Derzeit hat diese Funktion\n"
+"                              viele Einschränkungen. Siehe Manpage für "
+"Details."
+
+#: src/usage_text.h:756
+msgid ""
+" --on-bt-download-complete=COMMAND For BitTorrent, a command specified in\n"
+"                              --on-download-complete is called after "
+"download\n"
+"                              completed and seeding is over. On the other "
+"hand,\n"
+"                              this option sets the command to be executed "
+"after\n"
+"                              download completed but before seeding.\n"
+"                              See --on-download-start option for the\n"
+"                              requirement of COMMAND."
+msgstr ""
+" --on-bt-download-complete=BEFEHL Für BitTorrent ist ein Befehl angegeben "
+"in\n"
+"                              --on-download-complete wird nach dem Download "
+"aufgerufen\n"
+"                              abgeschlossen und die Aussaat ist beendet. Auf "
+"der anderen Seite,\n"
+"                              Diese Option legt den Befehl fest, der danach "
+"ausgeführt werden soll\n"
+"                              Download abgeschlossen, aber vor dem Seeding.\n"
+"                              Siehe die Option --on-download-start für die\n"
+"                              Anforderung von COMMAND."
+
+#: src/usage_text.h:764
+msgid ""
+" --enable-async-dns6[=true|false] Enable IPv6 name resolution in "
+"asynchronous\n"
+"                              DNS resolver. This option will be ignored "
+"when\n"
+"                              --async-dns=false."
+msgstr ""
+" --enable-async-dns6[=true|false] Aktivieren Sie die asynchrone IPv6-"
+"Namensauflösung\n"
+"                              DNS-Resolver. Diese Option wird ignoriert, "
+"wenn\n"
+"                              --async-dns=false."
+
+#: src/usage_text.h:768
+msgid ""
+" --enable-dht6[=true|false]   Enable IPv6 DHT functionality.\n"
+"                              Use --dht-listen-port option to specify port\n"
+"                              number to listen on. See also --dht-listen-"
+"addr6\n"
+"                              option."
+msgstr ""
+" --enable-dht6[=true|false] Aktiviert die IPv6-DHT-Funktionalität.\n"
+"                              Verwenden Sie die Option --dht-listen-port, um "
+"den Port anzugeben\n"
+"                              Nummer zum anhören. Siehe auch --dht-listen-"
+"addr6\n"
+"                              option."
+
+#: src/usage_text.h:773
+msgid ""
+" --dht-listen-addr6=ADDR      Specify address to bind socket for IPv6 DHT. \n"
+"                              It should be a global unicast IPv6 address of "
+"the\n"
+"                              host."
+msgstr ""
+" --dht-listen-addr6=ADDR Geben Sie die Adresse zum Binden des Sockets für "
+"IPv6-DHT an.  \n"
+"                              Es sollte eine globale Unicast-IPv6-Adresse "
+"sein\n"
+"                              Gastgeber."
+
+#: src/usage_text.h:777
+msgid ""
+" --dht-entry-point6=HOST:PORT Set host and port as an entry point to IPv6 "
+"DHT\n"
+"                              network."
+msgstr ""
+" --dht-entry-point6=HOST:PORT Legt Host und Port als Einstiegspunkt für IPv6 "
+"DHT fest\n"
+"                              Netzwerk."
+
+#: src/usage_text.h:780
+msgid ""
+" --dht-file-path6=PATH        Change the IPv6 DHT routing table file to PATH."
+msgstr ""
+" --dht-file-path6=PATH Ändert die IPv6-DHT-Routing-Tabellendatei in PATH."
+
+#: src/usage_text.h:782
+msgid ""
+" --bt-tracker=URI[,...]       Comma separated list of additional BitTorrent\n"
+"                              tracker's announce URI. These URIs are not\n"
+"                              affected by --bt-exclude-tracker option "
+"because\n"
+"                              they are added after URIs in --bt-exclude-"
+"tracker\n"
+"                              option are removed."
+msgstr ""
+" --bt-tracker=URI[,...] Kommagetrennte Liste zusätzlicher BitTorrent\n"
+"                              Ankündigungs-URI des Trackers. Diese URIs sind "
+"es nicht\n"
+"                              von der Option --bt-exclude-tracker betroffen, "
+"weil\n"
+"                              Sie werden nach URIs in --bt-exclude-tracker "
+"hinzugefügt\n"
+"                              Option werden entfernt."
+
+#: src/usage_text.h:788
+msgid ""
+" --bt-exclude-tracker=URI[,...] Comma separated list of BitTorrent "
+"tracker's\n"
+"                              announce URI to remove. You can use special "
+"value\n"
+"                              '*' which matches all URIs, thus removes all\n"
+"                              announce URIs. When specifying '*' in shell\n"
+"                              command-line, don't forget to escape or quote "
+"it.\n"
+"                              See also --bt-tracker option."
+msgstr ""
+" --bt-exclude-tracker=URI[,...] Kommagetrennte Liste von BitTorrent-"
+"Trackern\n"
+"                              zu entfernenden URI ankündigen. Sie können "
+"einen Sonderwert verwenden\n"
+"                              '*', das mit allen URIs übereinstimmt, also "
+"alle entfernt\n"
+"                              URIs ankündigen. Bei Angabe von '*' in der "
+"Shell\n"
+"                              Befehlszeile, vergessen Sie nicht, es zu "
+"entkommen oder zu zitieren.\n"
+"                              See also --bt-tracker option."
+
+#: src/usage_text.h:795
+msgid ""
+" --max-download-result=NUM    Set maximum number of download result kept in\n"
+"                              memory. The download results are "
+"completed/error/\n"
+"                              removed downloads. The download results are "
+"stored\n"
+"                              in FIFO queue and it can store at most NUM\n"
+"                              download results. When queue is full and new\n"
+"                              download result is created, oldest download "
+"result\n"
+"                              is removed from the front of the queue and new "
+"one\n"
+"                              is pushed to the back. Setting big number in "
+"this\n"
+"                              option may result high memory consumption "
+"after\n"
+"                              thousands of downloads. Specifying 0 means no\n"
+"                              download result is kept. Note that unfinished\n"
+"                              downloads are kept in memory regardless of "
+"this\n"
+"                              option value. See\n"
+"                              --keep-unfinished-download-result option."
+msgstr ""
+" --max-download-result=NUM Legt die maximale Anzahl von Download-Ergebnissen "
+"fest, die gespeichert werden\n"
+"                              Erinnerung. Die Download-Ergebnisse sind "
+"abgeschlossen/Fehler/\n"
+"                              Downloads entfernt. Die Download-Ergebnisse "
+"werden gespeichert\n"
+"                              in der FIFO-Warteschlange und kann höchstens "
+"NUM speichern\n"
+"                              Ergebnisse herunterladen. Wenn die "
+"Warteschlange voll und neu ist\n"
+"                              Download-Ergebnis wird erstellt, ältestes "
+"Download-Ergebnis\n"
+"                              wird von der Vorderseite der Warteschlange "
+"entfernt und neu\n"
+"                              wird nach hinten geschoben. Setzen Sie hier "
+"eine große Zahl\n"
+"                              Die Option kann nachher zu einem hohen "
+"Speicherverbrauch führen\n"
+"                              Tausende von Downloads. Die Angabe 0 bedeutet "
+"nein\n"
+"                              Download-Ergebnis wird beibehalten. Beachten "
+"Sie, dass unvollendet\n"
+"                              Downloads bleiben unabhängig davon im "
+"Speicher\n"
+"                              Optionswert. Sehen\n"
+"                              --keep-unfinished-download-result-Option."
+
+#: src/usage_text.h:810
+msgid ""
+" --async-dns-server=IPADDRESS[,...] Comma separated list of DNS server "
+"address\n"
+"                              used in asynchronous DNS resolver. Usually\n"
+"                              asynchronous DNS resolver reads DNS server\n"
+"                              addresses from /etc/resolv.conf. When this "
+"option\n"
+"                              is used, it uses DNS servers specified in "
+"this\n"
+"                              option instead of ones in /etc/resolv.conf. "
+"You\n"
+"                              can specify both IPv4 and IPv6 address. This\n"
+"                              option is useful when the system does not "
+"have\n"
+"                              /etc/resolv.conf and user does not have the\n"
+"                              permission to create it."
+msgstr ""
+" --async-dns-server=IPADRESSE[,...] Kommagetrennte Liste der DNS-"
+"Serveradresse \n"
+"                              Wird im asynchronen DNS-Resolver verwendet.  "
+"Meistens \n"
+"                              asynchroner DNS-Resolver liest DNS-Server \n"
+"                              Adressen aus /etc/resolv.conf.  Wenn diese "
+"Option \n"
+"                              verwendet wird, verwendet es die darin "
+"angegebenen DNS-Server \n"
+"                              Option anstelle von denen in /etc/resolv.conf. "
+" Sie \n"
+"                              kann sowohl IPv4- als auch IPv6-Adressen "
+"angeben.  Dies \n"
+"                              Option ist nützlich, wenn das System nicht hat "
+"\n"
+"                              /etc/resolv.conf und der Benutzer hat die "
+"nicht \n"
+"                              Erlaubnis, es zu erstellen."
+
+#: src/usage_text.h:821
+msgid ""
+" --enable-rpc[=true|false]    Enable JSON-RPC/XML-RPC server.\n"
+"                              It is strongly recommended to set secret\n"
+"                              authorization token using --rpc-secret "
+"option.\n"
+"                              See also --rpc-listen-port option."
+msgstr ""
+" --enable-rpc[=true|false] JSON-RPC/XML-RPC-Server aktivieren. \n"
+"                              Es wird dringend empfohlen, geheim zu setzen \n"
+"                              Autorisierungstoken mit der Option --rpc-"
+"secret. \n"
+"                              Siehe auch die Option --rpc-listen-port."
+
+#: src/usage_text.h:826
+msgid ""
+" --rpc-max-request-size=SIZE  Set max size of JSON-RPC/XML-RPC request. If "
+"aria2\n"
+"                              detects the request is more than SIZE bytes, "
+"it\n"
+"                              drops connection."
+msgstr ""
+" --rpc-max-request-size=GRÖSSE Legt die maximale Größe der JSON-RPC/XML-RPC-"
+"Anfrage fest.  Wenn Arie2 \n"
+"                              erkennt, dass die Anfrage mehr als SIZE Bytes "
+"ist, it \n"
+"                              bricht die Verbindung ab."
+
+#: src/usage_text.h:830
+msgid ""
+" --rpc-user=USER              Set JSON-RPC/XML-RPC user. This option will "
+"be\n"
+"                              deprecated in the future release. Migrate to\n"
+"                              --rpc-secret option as soon as possible."
+msgstr ""
+" --rpc-user=BENUTZER Legt den JSON-RPC/XML-RPC-Benutzer fest.  Diese Option "
+"wird \n"
+"                              in der zukünftigen Version veraltet.  "
+"Migrieren nach \n"
+"                              --rpc-secret so bald wie möglich."
+
+#: src/usage_text.h:834
+msgid ""
+" --rpc-passwd=PASSWD          Set JSON-RPC/XML-RPC password. This option "
+"will\n"
+"                              be deprecated in the future release. Migrate "
+"to\n"
+"                              --rpc-secret option as soon as possible."
+msgstr ""
+" --rpc-passwd=PASSWD Legt das JSON-RPC/XML-RPC-Passwort fest.  Diese Option "
+"wird \n"
+"                              in der zukünftigen Version veraltet sein.  "
+"Migrieren nach \n"
+"                              --rpc-secret so bald wie möglich."
+
+#: src/usage_text.h:838
+msgid ""
+" --rpc-listen-all[=true|false] Listen incoming JSON-RPC/XML-RPC requests on "
+"all\n"
+"                              network interfaces. If false is given, listen "
+"only\n"
+"                              on local loopback interface."
+msgstr ""
+" --rpc-listen-all[=true|false] Hört eingehende JSON-RPC/XML-RPC-Anfragen auf "
+"allen \n"
+"                              Netzwerk Schnittstellen.  Wenn false angegeben "
+"ist, nur zuhören \n"
+"                              auf der lokalen Loopback-Schnittstelle."
+
+#: src/usage_text.h:842
+msgid ""
+" --rpc-listen-port=PORT       Specify a port number for JSON-RPC/XML-RPC "
+"server\n"
+"                              to listen to."
+msgstr ""
+" --rpc-listen-port=PORT Geben Sie eine Portnummer für den JSON-RPC/XML-RPC-"
+"Server an \n"
+"                              zu hören."
+
+#: src/usage_text.h:845
+msgid " --show-console-readout[=true|false] Show console readout."
+msgstr " --show-console-readout[=true|false] Konsolenanzeige anzeigen."
+
+#: src/usage_text.h:847
+msgid ""
+" --metalink-base-uri=URI      Specify base URI to resolve relative URI in\n"
+"                              metalink:url and metalink:metaurl element in "
+"a\n"
+"                              metalink file stored in local disk. If URI "
+"points\n"
+"                              to a directory, URI must end with '/'."
+msgstr ""
+" --metalink-bases = URI Geben Sie den Basis-URI an, um den relativen URI "
+"darin aufzulösen \n"
+"                              metalink:url- und metalink:metaurl-Element in "
+"a \n"
+"                              Metalink-Datei, die auf der lokalen Festplatte "
+"gespeichert ist.  Wenn URI-Punkte \n"
+"                              zu einem Verzeichnis, URI muss mit '/' enden."
+
+#: src/usage_text.h:852
+msgid ""
+" --stream-piece-selector=SELECTOR Specify piece selection algorithm\n"
+"                              used in HTTP/FTP download. Piece means fixed\n"
+"                              length segment which is downloaded in "
+"parallel\n"
+"                              in segmented download. If 'default' is given,\n"
+"                              aria2 selects piece so that it reduces the\n"
+"                              number of establishing connection. This is\n"
+"                              reasonable default behaviour because\n"
+"                              establishing connection is an expensive\n"
+"                              operation.\n"
+"                              If 'inorder' is given, aria2 selects piece "
+"which\n"
+"                              has minimum index. Index=0 means first of the\n"
+"                              file. This will be useful to view movie while\n"
+"                              downloading it. --enable-http-pipelining "
+"option\n"
+"                              may be useful to reduce reconnection "
+"overhead.\n"
+"                              Please note that aria2 honors\n"
+"                              --min-split-size option, so it will be "
+"necessary\n"
+"                              to specify a reasonable value to\n"
+"                              --min-split-size option.\n"
+"                              If 'random' is given, aria2 selects piece\n"
+"                              randomly. Like 'inorder', --min-split-size\n"
+"                              option is honored.\n"
+"                              If 'geom' is given, at the beginning aria2\n"
+"                              selects piece which has minimum index like\n"
+"                              'inorder', but it exponentially increasingly\n"
+"                              keeps space from previously selected piece. "
+"This\n"
+"                              will reduce the number of establishing "
+"connection\n"
+"                              and at the same time it will download the\n"
+"                              beginning part of the file first. This will "
+"be\n"
+"                              useful to view movie while downloading it."
+msgstr ""
+" --stream-piece-selector=SELECTOR Legt den Auswahlalgorithmus für Teile fest "
+"\n"
+"                              Wird beim HTTP/FTP-Download verwendet.  Stück "
+"bedeutet fixiert \n"
+"                              Längensegment, das parallel heruntergeladen "
+"wird \n"
+"                              im segmentierten Download.  Wenn 'Standard' "
+"angegeben ist, \n"
+"                              aria2 wählt Stück so aus, dass es die "
+"reduziert \n"
+"                              Anzahl der Verbindungsaufbau.  Das ist \n"
+"                              vernünftiges Standardverhalten, weil \n"
+"                              Verbindungsaufbau ist teuer \n"
+"                              Betrieb. \n"
+"                              Wenn 'inorder' angegeben ist, wählt aria2 "
+"piece which aus \n"
+"                              hat minimalen Index.  Index=0 bedeutet erster "
+"der \n"
+"                              Datei.  Dies ist nützlich, um währenddessen "
+"Filme anzusehen \n"
+"                              es herunterladen.  --enable-http-pipelining-"
+"Option \n"
+"                              kann nützlich sein, um den "
+"Wiederverbindungsaufwand zu reduzieren. \n"
+"                              Bitte beachten Sie, dass aria2 ehrt \n"
+"                              --min-split-size Option, also wird es "
+"notwendig sein \n"
+"                              um einen angemessenen Wert anzugeben \n"
+"                              --min-split-size option. \n"
+"                              Wenn 'random' angegeben ist, wählt aria2 Stück "
+"aus \n"
+"                              nach dem Zufallsprinzip.  Wie 'inorder', --min-"
+"split-size \n"
+"                              Option wird eingehalten. \n"
+"                              Wenn 'geom' angegeben ist, am Anfang Arie2 \n"
+"                              wählt Stück aus, das einen Mindestindex hat, "
+"wie z \n"
+"                              'inorder', aber exponentiell zunehmend \n"
+"                              hält Platz vom zuvor ausgewählten Stück.  Dies "
+"\n"
+"                              verringert die Anzahl der Verbindungsaufbauten "
+"\n"
+"                              und gleichzeitig wird es die herunterladen \n"
+"                              Anfangsteil der Datei zuerst.  Das wird sein \n"
+"                              nützlich, um den Film anzusehen, während er "
+"heruntergeladen wird."
+
+#: src/usage_text.h:882
+msgid ""
+" --truncate-console-readout[=true|false] Truncate console readout to fit in\n"
+"                              a single line."
+msgstr ""
+" --truncate-console-readout[=true|false] Kürzt die Konsolenanzeige, um sie "
+"einzupassen \n"
+"                              eine einzelne Zeile."
+
+#: src/usage_text.h:885
+msgid ""
+" --pause[=true|false]         Pause download after added. This option is\n"
+"                              effective only when --enable-rpc=true is given."
+msgstr ""
+" --pause[=true|false] Download nach dem Hinzufügen anhalten.  Diese Option "
+"ist \n"
+"                              nur wirksam, wenn --enable-rpc=true angegeben "
+"ist."
+
+#: src/usage_text.h:888
+msgid ""
+" --rpc-allow-origin-all[=true|false] Add Access-Control-Allow-Origin header\n"
+"                              field with value '*' to the RPC response."
+msgstr ""
+" --rpc-allow-origin-all[=true|false] Access-Control-Allow-Origin-Header "
+"hinzufügen \n"
+"                              Feld mit dem Wert '*' an die RPC-Antwort."
+
+#: src/usage_text.h:891
+msgid ""
+" --download-result=OPT        This option changes the way \"Download "
+"Results\"\n"
+"                              is formatted. If OPT is 'default', print GID,\n"
+"                              status, average download speed and path/URI. "
+"If\n"
+"                              multiple files are involved, path/URI of "
+"first\n"
+"                              requested file is printed and remaining ones "
+"are\n"
+"                              omitted.\n"
+"                              If OPT is 'full', print GID, status, average\n"
+"                              download speed, percentage of progress and\n"
+"                              path/URI. The percentage of progress and\n"
+"                              path/URI are printed for each requested file "
+"in\n"
+"                              each row.\n"
+"                              If OPT is 'hide', \"Download Results\" is "
+"hidden."
+msgstr ""
+" --download-result=OPT Diese Option ändert die Art und Weise, wie "
+"\"Ergebnisse herunterladen\" \n"
+"                              formatiert ist.  Wenn OPT 'Standard' ist, gib "
+"GID aus, \n"
+"                              Status, durchschnittliche "
+"Downloadgeschwindigkeit und Pfad/URI.  Wenn \n"
+"                              mehrere Dateien sind beteiligt, Pfad/URI von "
+"zuerst \n"
+"                              Die angeforderte Datei wird gedruckt und die "
+"verbleibenden werden gedruckt \n"
+"                              weggelassen. \n"
+"                              Wenn OPT „voll“ ist, gib GID, Status, "
+"Durchschnitt aus \n"
+"                              Download-Geschwindigkeit, Prozentsatz des "
+"Fortschritts und \n"
+"                              Pfad/URI.  Der Prozentsatz des Fortschritts "
+"und \n"
+"                              Pfad/URI werden für jede angeforderte Datei in "
+"gedruckt \n"
+"                              jede Reihe. \n"
+"                              Wenn OPT 'ausblenden' ist, wird \"Ergebnisse "
+"herunterladen\" ausgeblendet."
+
+#: src/usage_text.h:904
+msgid ""
+" --hash-check-only[=true|false] If true is given, after hash check using\n"
+"                              --check-integrity option, abort download "
+"whether\n"
+"                              or not download is complete."
+msgstr ""
+" --hash-check-only[=true|false] Wenn true angegeben ist, nach der Hash-"
+"Prüfung mit \n"
+"                              --check-integrity Option, Download abbrechen "
+"ob \n"
+"                              oder nicht Download abgeschlossen ist."
+
+#: src/usage_text.h:908
+msgid ""
+" --checksum=TYPE=DIGEST       Set checksum. TYPE is hash type. The "
+"supported\n"
+"                              hash type is listed in \"Hash Algorithms\" in\n"
+"                              \"aria2c -v\". DIGEST is hex digest.\n"
+"                              For example, setting sha-1 digest looks like\n"
+"                              this:\n"
+"                              sha-"
+"1=0192ba11326fe2298c8cb4de616f4d4140213838\n"
+"                              This option applies only to HTTP(S)/FTP\n"
+"                              downloads."
+msgstr ""
+" --checksum=TYPE=DIGEST Prüfsumme setzen.  TYPE ist ein Hash-Typ.  Die "
+"unterstützt \n"
+"                              Hash-Typ ist unter „Hash-Algorithmen“ in "
+"aufgeführt \n"
+"                              \"aria2c -v\".  DIGEST ist Hex-Digest. \n"
+"                              Zum Beispiel sieht das Festlegen von sha-1-"
+"Digest so aus \n"
+"                              Dies: \n"
+"                              sha-1=0192ba11326fe2298c8cb4de616f4d4140213838 "
+"\n"
+"                              Diese Option gilt nur für HTTP(S)/FTP \n"
+"                              downloads."
+
+#: src/usage_text.h:917
+msgid ""
+" --piece-length=LENGTH        Set a piece length for HTTP/FTP downloads. "
+"This\n"
+"                              is the boundary when aria2 splits a file. All\n"
+"                              splits occur at multiple of this length. This\n"
+"                              option will be ignored in BitTorrent "
+"downloads.\n"
+"                              It will be also ignored if Metalink file\n"
+"                              contains piece hashes."
+msgstr ""
+" --piece-length=LENGTH Legt eine Stücklänge für HTTP/FTP-Downloads fest.  "
+"Dies \n"
+"                              ist die Grenze, wenn aria2 eine Datei teilt.  "
+"Alle \n"
+"                              Splits treten bei einem Vielfachen dieser "
+"Länge auf.  Dies \n"
+"                              Option wird bei BitTorrent-Downloads "
+"ignoriert. \n"
+"                              Es wird auch ignoriert, wenn eine Metalink-"
+"Datei vorhanden ist \n"
+"                              enthält Stück-Hashes."
+
+#: src/usage_text.h:924
+msgid ""
+" --stop-with-process=PID      Stop application when process PID is not "
+"running.\n"
+"                              This is useful if aria2 process is forked from "
+"a\n"
+"                              parent process. The parent process can fork "
+"aria2\n"
+"                              with its own pid and when parent process "
+"exits\n"
+"                              for some reason, aria2 can detect it and "
+"shutdown\n"
+"                              itself."
+msgstr ""
+" --stop-with-process=PID Stoppt die Anwendung, wenn der Prozess PID nicht "
+"läuft. \n"
+"                              Dies ist nützlich, wenn der aria2-Prozess von "
+"a gegabelt wird \n"
+"                              übergeordneter Prozess.  Der übergeordnete "
+"Prozess kann aria2 forken \n"
+"                              mit eigener PID und wenn der übergeordnete "
+"Prozess beendet wird \n"
+"                              Aus irgendeinem Grund kann aria2 es erkennen "
+"und herunterfahren \n"
+"                              selbst."
+
+#: src/usage_text.h:931
+msgid ""
+" --deferred-input[=true|false] If true is given, aria2 does not read all "
+"URIs\n"
+"                              and options from file specified by -i option "
+"at\n"
+"                              startup, but it reads one by one when it "
+"needs\n"
+"                              later. This may reduce memory usage if input\n"
+"                              file contains a lot of URIs to download.\n"
+"                              If false is given, aria2 reads all URIs and\n"
+"                              options at startup."
+msgstr ""
+" --deferred-input[=true|false] Wenn true angegeben wird, liest aria2 nicht "
+"alle URIs \n"
+"                              und Optionen aus der Datei, die durch die "
+"Option -i bei angegeben wird \n"
+"                              Start, aber es liest eins nach dem anderen, "
+"wenn es nötig ist \n"
+"                              später.  Dies kann die Speichernutzung bei der "
+"Eingabe reduzieren \n"
+"                              Datei enthält viele URIs zum Herunterladen. \n"
+"                              Wenn false angegeben wird, liest aria2 alle "
+"URIs und \n"
+"                              Optionen beim Start."
+
+#: src/usage_text.h:939
+msgid ""
+" --bt-remove-unselected-file[=true|false] Removes the unselected files when\n"
+"                              download is completed in BitTorrent. To\n"
+"                              select files, use --select-file option. If\n"
+"                              it is not used, all files are assumed to be\n"
+"                              selected. Please use this option with care\n"
+"                              because it will actually remove files from\n"
+"                              your disk."
+msgstr ""
+" --bt-remove-uns selected-file[=true|false] Entfernt die nicht ausgewählten "
+"Dateien, wenn \n"
+"                              Der Download ist in BitTorrent abgeschlossen.  "
+"Zu \n"
+"                              Dateien auswählen, verwenden Sie die Option --"
+"select-file.  Wenn \n"
+"                              Es wird nicht verwendet, alle Dateien werden "
+"angenommen \n"
+"                              ausgewählt.  Bitte verwenden Sie diese Option "
+"mit Vorsicht \n"
+"                              weil es tatsächlich Dateien aus entfernt \n"
+"                              Ihre Festplatte."
+
+#: src/usage_text.h:947
+msgid " --enable-mmap[=true|false]   Map files into memory."
+msgstr " --enable-mmap[=true|false] Map-Dateien in den Speicher."
+
+#: src/usage_text.h:949
+msgid ""
+" --rpc-certificate=FILE       Use the certificate in FILE for RPC server.\n"
+"                              The certificate must be in PEM format.\n"
+"                              Use --rpc-private-key option to specify the\n"
+"                              private key. Use --rpc-secure option to "
+"enable\n"
+"                              encryption."
+msgstr ""
+" --rpc-certificate=DATEI Verwenden Sie das Zertifikat in DATEI für den RPC-"
+"Server. \n"
+"                              Das Zertifikat muss im PEM-Format vorliegen. \n"
+"                              Verwenden Sie die Option --rpc-private-key, um "
+"die \n"
+"                              Privat Schlüssel.  Verwenden Sie zum "
+"Aktivieren die Option --rpc-secure \n"
+"                              Verschlüsselung."
+
+#: src/usage_text.h:955
+msgid ""
+" --rpc-private-key=FILE       Use the private key in FILE for RPC server.\n"
+"                              The private key must be decrypted and in PEM\n"
+"                              format. Use --rpc-secure option to enable\n"
+"                              encryption. See also --rpc-certificate option."
+msgstr ""
+" --rpc-private-key=FILE Verwendet den privaten Schlüssel in FILE für RPC-"
+"Server. \n"
+"                              Der private Schlüssel muss entschlüsselt und "
+"in PEM vorliegen \n"
+"                              Format.  Verwenden Sie zum Aktivieren die "
+"Option --rpc-secure \n"
+"                              Verschlüsselung.  Siehe auch Option --rpc-"
+"certificate."
+
+#: src/usage_text.h:960
+msgid ""
+" --rpc-secure[=true|false]    RPC transport will be encrypted by SSL/TLS.\n"
+"                              The RPC clients must use https scheme to "
+"access\n"
+"                              the server. For WebSocket client, use wss\n"
+"                              scheme. Use --rpc-certificate and\n"
+"                              --rpc-private-key options to specify the\n"
+"                              server certificate and private key."
+msgstr ""
+" --rpc-secure[=true|false] Der RPC-Transport wird durch SSL/TLS "
+"verschlüsselt. \n"
+"                              Die RPC-Clients müssen für den Zugriff das "
+"https-Schema verwenden \n"
+"                              der Kellner.  Verwenden Sie für den WebSocket-"
+"Client wss \n"
+"                              planen.  Verwenden Sie --rpc-certificate und \n"
+"                              --rpc-private-key Optionen zum Angeben der \n"
+"                              Serverzertifikat und privater Schlüssel."
+
+#: src/usage_text.h:967
+msgid ""
+" --rpc-save-upload-metadata[=true|false] Save the uploaded torrent or\n"
+"                              metalink metadata in the directory specified\n"
+"                              by --dir option. The filename consists of\n"
+"                              SHA-1 hash hex string of metadata plus\n"
+"                              extension. For torrent, the extension is\n"
+"                              '.torrent'. For metalink, it is '.meta4'.\n"
+"                              If false is given to this option, the\n"
+"                              downloads added by aria2.addTorrent or\n"
+"                              aria2.addMetalink will not be saved by\n"
+"                              --save-session option."
+msgstr ""
+" --rpc-save-upload-metadata[=true|false] Speichern Sie den hochgeladenen "
+"Torrent oder \n"
+"                              metallink-Metadaten im angegebenen Verzeichnis "
+"\n"
+"                              durch die Option --dir.  Der Dateiname besteht "
+"aus \n"
+"                              SHA-1-Hash-Hex-String von Metadaten plus \n"
+"                              Verlängerung.  Für Torrent ist die Erweiterung "
+"\n"
+"                              '.Torrent'.  Für Metalink ist es '.meta4'. \n"
+"                              Wenn diese Option falsch angegeben wird, wird "
+"die \n"
+"                              Downloads hinzugefügt von aria2.addTorrent "
+"oder \n"
+"                              aria2.addMetalink wird nicht von gespeichert \n"
+"                              --save-session-Option."
+
+#: src/usage_text.h:978
+msgid ""
+" --force-save[=true|false]    Save download with --save-session option even\n"
+"                              if the download is completed or removed. This\n"
+"                              option also saves control file in that\n"
+"                              situations. This may be useful to save\n"
+"                              BitTorrent seeding which is recognized as\n"
+"                              completed state."
+msgstr ""
+" --force-save[=true|false] Download sogar mit der Option --save-session "
+"speichern \n"
+"                              wenn der Download abgeschlossen oder entfernt "
+"wurde.  Dies \n"
+"                              Option speichert auch die Steuerdatei darin \n"
+"                              Situationen.  Dies kann zum Speichern nützlich "
+"sein \n"
+"                              BitTorrent-Seeding, das als erkannt wird \n"
+"                              abgeschlossener Zustand."
+
+#: src/usage_text.h:985
+msgid ""
+" --save-not-found[=true|false] Save download with --save-session option "
+"even\n"
+"                              if the file was not found on the server. This\n"
+"                              option also saves control file in that\n"
+"                              situations."
+msgstr ""
+" --save-not-found[=true|false] Download sogar mit der Option --save-session "
+"speichern \n"
+"                              wenn die Datei auf dem Server nicht gefunden "
+"wurde.  Dies \n"
+"                              Option speichert auch die Steuerdatei darin \n"
+"                              Situationen."
+
+#: src/usage_text.h:990
+msgid ""
+" --disk-cache=SIZE            Enable disk cache. If SIZE is 0, the disk "
+"cache\n"
+"                              is disabled. This feature caches the "
+"downloaded\n"
+"                              data in memory, which grows to at most SIZE\n"
+"                              bytes. The cache storage is created for aria2\n"
+"                              instance and shared by all downloads. The one\n"
+"                              advantage of the disk cache is reduce the "
+"disk\n"
+"                              I/O because the data are written in larger "
+"unit\n"
+"                              and it is reordered by the offset of the "
+"file.\n"
+"                              If hash checking is involved and the data are\n"
+"                              cached in memory, we don't need to read them\n"
+"                              from the disk.\n"
+"                              SIZE can include K or M(1K = 1024, 1M = 1024K)."
+msgstr ""
+" --disk-cache=GRÖSSE Disk-Cache aktivieren.  Wenn SIZE 0 ist, der "
+"Festplatten-Cache \n"
+"                              ist behindert.  Diese Funktion speichert die "
+"heruntergeladenen \n"
+"                              Daten im Speicher, die auf höchstens SIZE "
+"anwächst \n"
+"                              Byte.  Der Cache-Speicher wird für aria2 "
+"erstellt \n"
+"                              Instanz und wird von allen Downloads geteilt.  "
+"Der Eine \n"
+"                              Vorteil des Festplatten-Cache ist die "
+"Reduzierung der Festplatte \n"
+"                              E/A, weil die Daten in größeren Einheiten "
+"geschrieben werden \n"
+"                              und es wird nach dem Offset der Datei neu "
+"geordnet. \n"
+"                              Wenn es sich um eine Hash-Überprüfung handelt "
+"und die Daten sind \n"
+"                              im Speicher zwischengespeichert, müssen wir "
+"sie nicht lesen \n"
+"                              von der Festplatte. \n"
+"                              SIZE kann K oder M enthalten (1K = 1024, 1M = "
+"1024K)."
+
+#: src/usage_text.h:1003
+msgid ""
+" --gid=GID                    Set GID manually. aria2 identifies each\n"
+"                              download by the ID called GID. The GID must "
+"be\n"
+"                              hex string of 16 characters, thus [0-9a-zA-Z]\n"
+"                              are allowed and leading zeros must not be\n"
+"                              stripped. The GID all 0 is reserved and must\n"
+"                              not be used. The GID must be unique, "
+"otherwise\n"
+"                              error is reported and the download is not "
+"added.\n"
+"                              This option is useful when restoring the\n"
+"                              sessions saved using --save-session option. "
+"If\n"
+"                              this option is not used, new GID is generated\n"
+"                              by aria2."
+msgstr ""
+" --gid=GID GID manuell setzen.  aria2 identifiziert jeden \n"
+"                              Download durch die ID namens GID.  Die GID "
+"muss sein \n"
+"                              Hex-String mit 16 Zeichen, also [0-9a-zA-Z] \n"
+"                              sind erlaubt und führende Nullen dürfen nicht "
+"sein \n"
+"                              abgezogen.  Die GID alle 0 ist reserviert und "
+"muss \n"
+"                              nicht verwendet werden.  Andernfalls muss die "
+"GID eindeutig sein \n"
+"                              Fehler wird gemeldet und der Download wird "
+"nicht hinzugefügt. \n"
+"                              Diese Option ist nützlich beim "
+"Wiederherstellen der \n"
+"                              Sitzungen, die mit der Option --save-session "
+"gespeichert wurden.  Wenn \n"
+"                              Wird diese Option nicht verwendet, wird eine "
+"neue GID generiert \n"
+"                              von Arie2."
+
+#: src/usage_text.h:1015
+msgid " --console-log-level=LEVEL    Set log level to output to console."
+msgstr ""
+" --console-log-level=EBENE Legt die Protokollebene für die Ausgabe an die "
+"Konsole fest."
+
+#: src/usage_text.h:1017
+msgid ""
+" --save-session-interval=SEC  Save error/unfinished downloads to a file\n"
+"                              specified by --save-session option every SEC\n"
+"                              seconds. If 0 is given, file will be saved "
+"only\n"
+"                              when aria2 exits."
+msgstr ""
+" --save-session-interval=SEC Fehler/nicht abgeschlossene Downloads in einer "
+"Datei speichern \n"
+"                              angegeben durch die Option --save-session alle "
+"SEC \n"
+"                              Sekunden.  Wenn 0 angegeben wird, wird die "
+"Datei nur gespeichert \n"
+"                              wenn aria2 beendet wird."
+
+#: src/usage_text.h:1022
+msgid " --enable-color[=true|false]  Enable color output for a terminal."
+msgstr ""
+" --enable-color[=true|false] Farbausgabe für ein Terminal aktivieren."
+
+#: src/usage_text.h:1024
+msgid " --rpc-secret=TOKEN           Set RPC secret authorization token."
+msgstr " --rpc-secret=TOKEN Legt das geheime RPC-Autorisierungstoken fest."
+
+#: src/usage_text.h:1026
+msgid ""
+" --dscp=DSCP                  Set DSCP value in outgoing IP packets of\n"
+"                              BitTorrent traffic for QoS. This parameter "
+"sets\n"
+"                              only DSCP bits in TOS field of IP packets,\n"
+"                              not the whole field. If you take values\n"
+"                              from /usr/include/netinet/ip.h divide them by "
+"4\n"
+"                              (otherwise values would be incorrect, e.g. "
+"your\n"
+"                              CS1 class would turn into CS4). If you take\n"
+"                              commonly used values from RFC, network "
+"vendors'\n"
+"                              documentation, Wikipedia or any other source,\n"
+"                              use them as they are."
+msgstr ""
+" --dscp=DSCP Setzt den DSCP-Wert in ausgehenden IP-Paketen auf \n"
+"                              BitTorrent-Verkehr für QoS.  Dieser Parameter "
+"wird festgelegt \n"
+"                              nur DSCP-Bits im TOS-Feld von IP-Paketen, \n"
+"                              nicht das ganze Feld.  Wenn Sie Werte nehmen \n"
+"                              aus /usr/include/netinet/ip.h teilen Sie sie "
+"durch 4 \n"
+"                              (Ansonsten wären Werte falsch, z. B. Ihre \n"
+"                              CS1-Klasse würde zu CS4 werden).  Wenn du "
+"nimmst \n"
+"                              häufig verwendete Werte von RFC, "
+"Netzwerkanbietern \n"
+"                              Dokumentation, Wikipedia oder jede andere "
+"Quelle, \n"
+"                              benutze sie so wie sie sind."
+
+#: src/usage_text.h:1037
+msgid ""
+" --rlimit-nofile=NUM          Set the soft limit of open file descriptors.\n"
+"                              This open will only have effect when:\n"
+"                                a) The system supports it (posix)\n"
+"                                b) The limit does not exceed the hard "
+"limit.\n"
+"                                c) The specified limit is larger than the\n"
+"                                   current soft limit.\n"
+"                              This is equivalent to setting nofile via "
+"ulimit,\n"
+"                              except that it will never decrease the limit."
+msgstr ""
+" --rlimit-nofile=NUM Legt das Soft-Limit für offene Dateideskriptoren fest. "
+"\n"
+"                              Diese Öffnung wird nur wirksam, wenn: \n"
+"                                a) Das System unterstützt es (posix) \n"
+"                                b) Das Limit überschreitet das harte Limit "
+"nicht. \n"
+"                                c) Die angegebene Grenze ist größer als die "
+"\n"
+"                                   aktuelle Soft-Limit. \n"
+"                              Dies entspricht dem Setzen von nofile über "
+"ulimit, \n"
+"                              außer dass es das Limit niemals verringern "
+"wird."
+
+#: src/usage_text.h:1046
+msgid ""
+" --pause-metadata[=true|false]\n"
+"                              Pause downloads created as a result of "
+"metadata\n"
+"                              download. There are 3 types of metadata\n"
+"                              downloads in aria2: (1) downloading .torrent\n"
+"                              file. (2) downloading torrent metadata using\n"
+"                              magnet link. (3) downloading metalink file.\n"
+"                              These metadata downloads will generate "
+"downloads\n"
+"                              using their metadata. This option pauses "
+"these\n"
+"                              subsequent downloads. This option is "
+"effective\n"
+"                              only when --enable-rpc=true is given."
+msgstr ""
+" --pause-metadata[=true|false] \n"
+"                              Anhalten von Downloads, die aufgrund von "
+"Metadaten erstellt wurden \n"
+"                              herunterladen.  Es gibt 3 Arten von Metadaten "
+"\n"
+"                              Downloads in Arie2: (1) Herunterladen von "
+".torrent \n"
+"                              Datei.  (2) Herunterladen von Torrent-"
+"Metadaten mit \n"
+"                              Magnetlink.  (3) Metalink-Datei herunterladen. "
+"\n"
+"                              Diese Metadaten-Downloads generieren Downloads "
+"\n"
+"                              unter Verwendung ihrer Metadaten.  Diese "
+"Option pausiert diese \n"
+"                              nachfolgende Downloads.  Diese Option ist "
+"wirksam \n"
+"                              nur wenn --enable-rpc=true angegeben ist."
+
+#: src/usage_text.h:1057
+msgid ""
+" --bt-detach-seed-only[=true|false]\n"
+"                              Exclude seed only downloads when counting\n"
+"                              concurrent active downloads (See -j option).\n"
+"                              This means that if -j3 is given and this "
+"option\n"
+"                              is turned on and 3 downloads are active and "
+"one\n"
+"                              of those enters seed mode, then it is "
+"excluded\n"
+"                              from active download count (thus it becomes "
+"2),\n"
+"                              and the next download waiting in queue gets\n"
+"                              started. But be aware that seeding item is "
+"still\n"
+"                              recognized as active download in RPC method."
+msgstr ""
+" --bt-detach-seed-only[=true|false] \n"
+"                              Nur Seed-Downloads bei der Zählung "
+"ausschließen \n"
+"                              gleichzeitig aktive Downloads (siehe Option -"
+"j). \n"
+"                              Das heißt, wenn -j3 angegeben ist und diese "
+"Option \n"
+"                              eingeschaltet ist und 3 Downloads aktiv sind "
+"und einer \n"
+"                              von denen tritt in den Seed-Modus ein, dann "
+"wird es ausgeschlossen \n"
+"                              von der Anzahl der aktiven Downloads (daher "
+"wird es 2), \n"
+"                              und den nächsten Download in Warteschleife "
+"bekommen \n"
+"                              gestartet.  Beachten Sie jedoch, dass das "
+"Seeding-Element noch vorhanden ist \n"
+"                              im RPC-Verfahren als aktiver Download erkannt."
+
+#: src/usage_text.h:1068
+msgid ""
+" --min-tls-version=VERSION    Specify minimum SSL/TLS version to enable."
+msgstr ""
+" --min-tls-version=VERSION Geben Sie die zu aktivierende SSL/TLS-"
+"Mindestversion an."
+
+#: src/usage_text.h:1070
+msgid ""
+" --bt-force-encryption[=true|false]\n"
+"                              Requires BitTorrent message payload "
+"encryption\n"
+"                              with arc4. This is a shorthand of\n"
+"                              --bt-require-crypto --bt-min-crypto-"
+"level=arc4.\n"
+"                              If true is given, deny legacy BitTorrent\n"
+"                              handshake and only use Obfuscation handshake "
+"and\n"
+"                              always encrypt message payload."
+msgstr ""
+" --bt-force-encryption[=true|false] \n"
+"                              Erfordert BitTorrent-"
+"Nachrichtennutzlastverschlüsselung \n"
+"                              mit arc4.  Dies ist eine Kurzform von \n"
+"                              --bt-require-crypto --bt-min-crypto-"
+"level=arc4. \n"
+"                              Wenn true angegeben ist, Legacy-BitTorrent "
+"ablehnen \n"
+"                              Handshake und verwenden Sie nur Verschleierung "
+"Handshake und \n"
+"                              Nachrichtennutzlast immer verschlüsseln."
+
+#: src/usage_text.h:1078
+msgid ""
+" --ssh-host-key-md=TYPE=DIGEST\n"
+"                              Set checksum for SSH host public key. TYPE is\n"
+"                              hash type. The supported hash type is sha-1 "
+"or\n"
+"                              md5. DIGEST is hex digest. For example:\n"
+"                              sha-"
+"1=b030503d4de4539dc7885e6f0f5e256704edf4c3\n"
+"                              This option can be used to validate server's\n"
+"                              public key when SFTP is used. If this option "
+"is\n"
+"                              not set, which is default, no validation "
+"takes\n"
+"                              place."
+msgstr ""
+" --ssh-host-key-md=TYPE=DIGEST \n"
+"                              Legen Sie die Prüfsumme für den öffentlichen "
+"Schlüssel des SSH-Hosts fest.  TYP ist \n"
+"                              Hash-Typ.  Der unterstützte Hash-Typ ist sha-1 "
+"oder \n"
+"                              md5.  DIGEST ist Hex-Digest.  Beispielsweise: "
+"\n"
+"                              sha-1=b030503d4de4539dc7885e6f0f5e256704edf4c3 "
+"\n"
+"                              Diese Option kann verwendet werden, um Server "
+"zu validieren \n"
+"                              öffentlicher Schlüssel, wenn SFTP verwendet "
+"wird.  Wenn diese Option ist \n"
+"                              nicht gesetzt, was der Standardwert ist, es "
+"findet keine Validierung statt \n"
+"                              Ort."
+
+#: src/usage_text.h:1088
+msgid ""
+" --socket-recv-buffer-size=SIZE\n"
+"                              Set the maximum socket receive buffer in "
+"bytes.\n"
+"                              Specifying 0 will disable this option. This "
+"value\n"
+"                              will be set to socket file descriptor using\n"
+"                              SO_RCVBUF socket option with setsockopt() call."
+msgstr ""
+" --socket-recv-buffer-size=GRÖSSE \n"
+"                              Legen Sie den maximalen Socket-Empfangspuffer "
+"in Bytes fest. \n"
+"                              Durch Angabe von 0 wird diese Option "
+"deaktiviert.  Dieser Wert \n"
+"                              wird auf den Socket-Dateideskriptor gesetzt \n"
+"                              Socket-Option SO_RCVBUF mit Aufruf von "
+"setsockopt()."
+
+#: src/usage_text.h:1094
+msgid ""
+" --bt-enable-hook-after-hash-check[=true|false] Allow hook command "
+"invocation\n"
+"                              after hash check (see -V option) in "
+"BitTorrent\n"
+"                              download. By default, when hash check "
+"succeeds,\n"
+"                              the command given by --on-bt-download-"
+"complete\n"
+"                              is executed. To disable this action, give "
+"false\n"
+"                              to this option."
+msgstr ""
+" --bt-enable-hook-after-hash-check[=true|false] Hook-Befehlsaufruf zulassen "
+"\n"
+"                              nach Hash-Prüfung (siehe Option -V) in "
+"BitTorrent \n"
+"                              herunterladen.  Wenn die Hash-Prüfung "
+"erfolgreich ist, \n"
+"                              der Befehl von --on-bt-download-complete \n"
+"                              wird ausgeführt.  Um diese Aktion zu "
+"deaktivieren, geben Sie false ein \n"
+"                              zu dieser Option."
+
+#: src/usage_text.h:1101
+msgid ""
+" --max-mmap-limit=SIZE        Set the maximum file size to enable mmap (see\n"
+"                              --enable-mmap option). The file size is\n"
+"                              determined by the sum of all files contained "
+"in\n"
+"                              one download. For example, if a download\n"
+"                              contains 5 files, then file size is the total\n"
+"                              size of those files. If file size is strictly\n"
+"                              greater than the size specified in this "
+"option,\n"
+"                              mmap will be disabled."
+msgstr ""
+" --max-mmap-limit=GRÖSSE Legt die maximale Dateigröße fest, um mmap zu "
+"aktivieren (siehe \n"
+"                              --enable-mmap-Option).  Die Dateigröße ist \n"
+"                              bestimmt durch die Summe aller darin "
+"enthaltenen Dateien \n"
+"                              ein Download.  Zum Beispiel, wenn ein Download "
+"\n"
+"                              enthält 5 Dateien, dann ist die Dateigröße die "
+"Summe \n"
+"                              Größe dieser Dateien.  Wenn die Dateigröße "
+"streng ist \n"
+"                              größer als die in dieser Option angegebene "
+"Größe, \n"
+"                              mmap wird deaktiviert."
+
+#: src/usage_text.h:1110
+msgid ""
+" --stderr[=true|false]        Redirect all console output that would be\n"
+"                              otherwise printed in stdout to stderr."
+msgstr ""
+" --stderr[=true|false] Leitet alle Konsolenausgaben um, die das wären \n"
+"                              ansonsten in stdout nach stderr gedruckt."
+
+#: src/usage_text.h:1113
+msgid ""
+" --keep-unfinished-download-result[=true|false]\n"
+"                              Keep unfinished download results even if "
+"doing\n"
+"                              so exceeds --max-download-result. This is "
+"useful\n"
+"                              if all unfinished downloads must be saved in\n"
+"                              session file (see --save-session option). "
+"Please\n"
+"                              keep in mind that there is no upper bound to "
+"the\n"
+"                              number of unfinished download result to keep. "
+"If\n"
+"                              that is undesirable, turn this option off."
+msgstr ""
+" --keep-unfinished-download-result[=true|false] \n"
+"                              Behalten Sie unfertige Download-Ergebnisse "
+"bei, auch wenn Sie dies tun \n"
+"                              überschreitet also --max-download-result.  Das "
+"ist nützlich \n"
+"                              wenn alle unvollendeten Downloads gespeichert "
+"werden müssen \n"
+"                              Sitzungsdatei (siehe Option --save-session).  "
+"Bitte \n"
+"                              Denken Sie daran, dass es keine Obergrenze für "
+"die gibt \n"
+"                              Anzahl der unvollendeten Download-Ergebnisse, "
+"die aufbewahrt werden sollen.  Wenn \n"
+"                              das unerwünscht ist, schalten Sie diese Option "
+"aus."
+
+#: src/usage_text.h:1123
+msgid ""
+" --bt-load-saved-metadata[=true|false]\n"
+"                              Before getting torrent metadata from DHT when\n"
+"                              downloading with magnet link, first try to "
+"read\n"
+"                              file saved by --bt-save-metadata option. If it "
+"is\n"
+"                              successful, then skip downloading metadata "
+"from\n"
+"                              DHT."
+msgstr ""
+" --bt-load-saved-metadata[=true|false] \n"
+"                              Bevor Sie Torrent-Metadaten von DHT erhalten, "
+"wann \n"
+"                              Herunterladen mit Magnetlink, zuerst versuchen "
+"zu lesen \n"
+"                              Datei, die mit der Option --bt-save-metadata "
+"gespeichert wurde.  Wenn ja \n"
+"                              erfolgreich, überspringen Sie dann das "
+"Herunterladen von Metadaten von \n"
+"                              DHT."
+
+#: src/version_usage.cc:56
+msgid " version "
+msgstr " Version "
+
+#: src/version_usage.cc:60
+msgid ""
+"This program is free software; you can redistribute it and/or modify\n"
+"it under the terms of the GNU General Public License as published by\n"
+"the Free Software Foundation; either version 2 of the License, or\n"
+"(at your option) any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful,\n"
+"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+"GNU General Public License for more details.\n"
+msgstr ""
+"Dieses Programm ist freie Software;  Sie können es weitergeben und/oder "
+"ändern \n"
+"es unter den Bedingungen der GNU General Public License wie veröffentlicht "
+"von die Free Software Foundation;  entweder Version 2 der Lizenz oder \n"
+"(nach Ihrer Wahl) jede spätere Version. \n"
+"\n"
+"Dieses Programm wird in der Hoffnung verteilt, dass es nützlich sein wird, "
+"aber OHNE JEGLICHE GEWÄHRLEISTUNG;  sogar ohne die stillschweigende Garantie "
+"von MARKTGÄNGIGKEIT oder EIGNUNG FÜR EINEN BESTIMMTEN ZWECK.  Siehe die \n"
+"GNU General Public License für weitere Details.\n"
+
+#: src/version_usage.cc:72
+msgid "** Configuration **"
+msgstr "** Konfiguration **"
+
+#: src/version_usage.cc:73
+msgid "Enabled Features"
+msgstr "Aktivierte Funktionen"
+
+#: src/version_usage.cc:74
+msgid "Hash Algorithms"
+msgstr "Hash-Algorithmen"
+
+#: src/version_usage.cc:76
+msgid "Libraries"
+msgstr "Bibliotheken"
+
+#: src/version_usage.cc:77
+msgid "Compiler"
+msgstr "Übersetzer"
+
+#: src/version_usage.cc:78
+msgid "System"
+msgstr "System"
+
+#: src/version_usage.cc:80
+#, c-format
+msgid "Report bugs to %s"
+msgstr "Fehler bitte an %s melden"
+
+#: src/version_usage.cc:81
+msgid "Visit"
+msgstr "Siehe:"
+
+#: src/version_usage.cc:87
+#, c-format
+msgid ""
+"Usage: aria2c [OPTIONS] [URI | MAGNET | TORRENT_FILE | METALINK_FILE]..."
+msgstr ""
+"Aufruf: aria2c [OPTIONEN] [ADRESSE | MAGNET | TORRENT_DATEI | "
+"METALINK_DATEI] …"
+
+#: src/version_usage.cc:92
+#, c-format
+msgid "See 'aria2c -h'."
+msgstr "Siehe »aria2c -h«."
+
+#: src/version_usage.cc:101
+#, c-format
+msgid "Printing all options."
+msgstr "Ausgabe aller Optionen."
+
+#: src/version_usage.cc:104
+#, c-format
+msgid "Printing options tagged with '%s'."
+msgstr "Optionen werden ausgeben, die mit »%s« verschlagwortet sind."
+
+#: src/version_usage.cc:106
+#, c-format
+msgid "See 'aria2c -h#help' to know all available tags."
+msgstr "Siehe »aria2c -h#help«, um alle verfügbaren Schlagworte anzusehen."
+
+#: src/version_usage.cc:109 src/version_usage.cc:125
+#, c-format
+msgid "Options:"
+msgstr "Optionen:"
+
+#: src/version_usage.cc:122
+#, c-format
+msgid "Printing options whose name includes '%s'."
+msgstr "Optionen werden ausgeben, deren Namen »%s« beinhalten."
+
+#: src/version_usage.cc:136
+#, c-format
+msgid "No option matching with '%s'."
+msgstr "Keine Option stimmt mit »%s« überein."
+
+#: src/version_usage.cc:144
+#, c-format
+msgid ""
+" You can specify multiple HTTP(S)/FTP URIs. Unless you specify -Z option, "
+"all\n"
+" URIs must point to the same file or downloading will fail."
+msgstr ""
+" Sie können mehrere HTTP(S)/FTP-URIs angeben.  Sofern Sie die Option -Z "
+"nicht angeben, alle \n"
+" URIs müssen auf dieselbe Datei verweisen, sonst schlägt das Herunterladen "
+"fehl."
+
+#: src/version_usage.cc:148
+#, c-format
+msgid ""
+" You can also specify arbitrary number of BitTorrent Magnet URIs, torrent/\n"
+" metalink files stored in a local drive. Please note that they are always\n"
+" treated as a separate download."
+msgstr ""
+" Sie können auch eine beliebige Anzahl von BitTorrent-Magnet-URIs, torrent/ "
+"\n"
+" Metalink-Dateien, die auf einem lokalen Laufwerk gespeichert sind.  Bitte "
+"beachten Sie, dass dies immer der Fall ist \n"
+" als separater Download behandelt."
+
+#: src/version_usage.cc:154
+#, c-format
+msgid ""
+" You can specify both torrent file with -T option and URIs. By doing this,\n"
+" download a file from both torrent swarm and HTTP/FTP server at the same "
+"time,\n"
+" while the data from HTTP/FTP are uploaded to the torrent swarm. For single "
+"file\n"
+" torrents, URI can be a complete URI pointing to the resource or if URI "
+"ends\n"
+" with '/', 'name' in torrent file is added. For multi-file torrents, 'name' "
+"and\n"
+" 'path' in torrent are added to form a URI for each file."
+msgstr ""
+" Sie können sowohl Torrent-Dateien mit der Option -T als auch URIs angeben.  "
+"Indem Sie dies tun, \n"
+" Laden Sie gleichzeitig eine Datei sowohl vom Torrent-Swarm als auch vom "
+"HTTP/FTP-Server herunter, \n"
+" während die Daten von HTTP/FTP in den Torrent-Schwarm hochgeladen werden.  "
+"Für einzelne Datei \n"
+" Torrents, URI kann ein vollständiger URI sein, der auf die Ressource zeigt, "
+"oder wenn der URI endet \n"
+" mit '/' wird 'name' in Torrent-Datei hinzugefügt.  Bei Torrents mit "
+"mehreren Dateien sind „Name“ und „ \n"
+" 'Pfad' in Torrent werden hinzugefügt, um einen URI für jede Datei zu bilden."
+
+#: src/version_usage.cc:166
+#, c-format
+msgid ""
+" Make sure that URI is quoted with single(') or double(\") quotation if it\n"
+" contains \"&\" or any characters that have special meaning in shell."
+msgstr ""
+" Stellen Sie sicher, dass der URI in einfachen (') oder doppelten (\") "
+"Anführungszeichen steht, falls dies der Fall ist \n"
+" enthält \"&\" oder andere Zeichen, die in der Shell eine besondere "
+"Bedeutung haben."
+
+#: src/version_usage.cc:172
+#, c-format
+msgid ""
+"About the number of connections\n"
+" Since 1.10.0 release, aria2 uses 1 connection per host by default and has "
+"20MiB\n"
+" segment size restriction. So whatever value you specify using -s option, "
+"it\n"
+" uses 1 connection per host. To make it behave like 1.9.x, use\n"
+" --max-connection-per-server=4 --min-split-size=1M.\n"
+"\n"
+msgstr ""
+"Über die Anzahl der Verbindungen \n"
+" Seit Version 1.10.0 verwendet aria2 standardmäßig 1 Verbindung pro Host und "
+"hat 20 MiB \n"
+" Beschränkung der Segmentgröße.  Welchen Wert Sie auch immer mit der Option -"
+"s angeben, it \n"
+" verwendet 1 Verbindung pro Host.  Damit es sich wie 1.9.x verhält, "
+"verwenden Sie \n"
+" --max-connection-per-server=4 --min-split-size=1M.\n"
+"\n"
+
+#: src/version_usage.cc:181
+#, c-format
+msgid "Refer to man page for more information."
+msgstr ""
+"Für weiter Informationen, bitte in der Bedienungsanleitung nachsehen."
+
+#: src/option_processing.cc:86
+#, c-format
+msgid "Caught Error while parsing environment variable '%s'"
+msgstr ""
+"Ein Fehler ist beim Analysieren der Umgebungsvariable »%s« aufgetreten"
+
+#: src/option_processing.cc:164
+#, c-format
+msgid "Did you mean:"
+msgstr "Meinen Sie:"
+
+#: src/option_processing.cc:239 src/option_processing.cc:249
+#, c-format
+msgid "Parse error in %s"
+msgstr "Analysefehler in %s"
+
+#: src/option_processing.cc:243 src/option_processing.cc:287
+#, c-format
+msgid "Usage:"
+msgstr "Benutzung:"
+
+#: src/option_processing.cc:255
+#, c-format
+msgid "Configuration file %s is not found."
+msgstr "Konfigurationsdatei %s wurde nicht gefunden."
+
+#: src/OptionHandlerException.cc:42
+#, c-format
+msgid "We encountered a problem while processing the option '--%s'."
+msgstr "Beim Verarbeiten der Option „--“ ist ein Problem aufgetreten. %s'."
+
+#: src/UnknownOptionException.cc:41
+#, c-format
+msgid "Unknown option '%s'"
+msgstr "Unbekannte Option »%s«"
+
+#: src/BtSetup.cc:212
+msgid "Errors occurred while binding port.\n"
+msgstr "Fehler beim Binden an Port aufgetreten.\n"
+
+#: src/AbstractCommand.cc:503
+#, c-format
+msgid "CUID#%<PRId64> - Failed to resume download. Download from scratch."
+msgstr ""
+"CUID#%<PRId64> - Fehler beim Wiederaufnehmen der Übertragung. Von Anfang an "
+"neu laden."
+
+#: src/AdaptiveURISelector.cc:232
+#, c-format
+msgid ""
+"Lowering lowest-speed-limit since known max speed is too near (new:%d was:%d "
+"max:%d)"
+msgstr ""
+"Niedrigste Geschwindigkeitsgrenze absenken, da bekannte "
+"Höchstgeschwindigkeit zu nahe ist (neu: %dwar: %d max: %d)"
+
+#: src/AdaptiveURISelector.cc:238
+#, c-format
+msgid ""
+"Lowering lowest-speed-limit since we have no clue about available speed "
+"(now:%d was:%d)"
+msgstr ""
+"Niedrigstes Geschwindigkeitslimit senken, da wir keine Ahnung von der "
+"verfügbaren Geschwindigkeit haben (jetzt: %dwar: %d)"
+
+#: src/BtStopDownloadCommand.cc:65
+#, c-format
+msgid "GID#%s Stop downloading torrent due to --bt-stop-timeout option."
+msgstr ""
+"GID#%s Übertragung des Torrent durch Option --bt-stop-timeout anhalten."
+
+#: src/DHTConnectionImpl.cc:82
+#, c-format
+msgid "IPv%d DHT: listening on UDP port %u"
+msgstr "IPv %dDHT: Überwachen des UDP-Ports %u"
+
+#: src/HttpListenCommand.cc:108
+#, c-format
+msgid "IPv%d RPC: listening on TCP port %u"
+msgstr "IPv %dRPC: Lauschen am TCP-Port %u"
+
+#: src/PeerListenCommand.cc:79
+#, c-format
+msgid "IPv%d BitTorrent: listening on TCP port %u"
+msgstr "IPv %dBitTorrent: Lauschen am TCP-Port %u"
+
+#: src/RequestGroup.cc:399
+msgid ""
+"For BitTorrent Magnet URI, enabling DHT is strongly recommended. See --"
+"enable-dht option."
+msgstr ""
+"Für BitTorrent Magnet URI wird dringend empfohlen, DHT zu aktivieren.  Siehe "
+"Option --enable-dht."
+
+#: src/RequestGroup.cc:694
+#, c-format
+msgid "Removed control file for %s because it is requested by user."
+msgstr ""
+"Die Steuerdatei für %s wurde entfernt, da sie vom Benutzer angefordert wurde."
+
+#: src/SingleFileAllocationIterator.cc:75
+msgid ""
+"Allocating disk space. Use --file-allocation=none to disable it. See --file-"
+"allocation option in man page for more details."
+msgstr ""
+"Speicherplatz zuweisen.  Verwenden Sie --file-allocation=none, um es zu "
+"deaktivieren.  Weitere Einzelheiten finden Sie in der Option --file-"
+"allocation in der Manpage."
+
+#: src/message.h:59
+#, c-format
+msgid "GID#%s - Download has already completed: %s"
+msgstr "GID#%s - Übertragung wurde bereits vervollständigt: %s"
+
+#: src/message.h:108
+#, c-format
+msgid "Unrecognized URI or unsupported protocol: %s"
+msgstr "Nicht anerkannte Adresse oder nicht unterstütztes Protokoll: %s"
+
+#: src/message.h:109
+#, c-format
+msgid "Tracker returned warning message: %s"
+msgstr "Tracker gab eine Warnmeldung zurück: %s"
+
+#: src/message.h:110
+#, c-format
+msgid "The segment file %s exists."
+msgstr "Die Segmentdatei %s ist bereits vorhanden."
+
+#: src/message.h:111
+#, c-format
+msgid "The segment file %s does not exist."
+msgstr "Die Segmentdatei %s ist nicht vorhanden."
+
+#: src/message.h:112
+#, c-format
+msgid "Saving the segment file %s"
+msgstr "Segmentdatei %s wird gespeichert"
+
+#: src/message.h:113
+msgid "The segment file was saved successfully."
+msgstr "Die Segmentdatei wurde fehlerfrei gespeichert."
+
+#: src/message.h:114
+#, c-format
+msgid "Loading the segment file %s."
+msgstr "Segmentdatei %s wird geladen."
+
+#: src/message.h:115
+msgid "The segment file was loaded successfully."
+msgstr "Die Segmentdatei wurde fehlerfrei geladen."
+
+#: src/message.h:116
+msgid "No URI to download. Download aborted."
+msgstr "Keine Adresse zum Herunterladen angegeben. Übertragung abgebrochen."
+
+#: src/message.h:117
+#, c-format
+msgid ""
+"File %s exists, but a control file(*.aria2) does not exist. Download was "
+"canceled in order to prevent your file from being truncated to 0. If you are "
+"sure to download the file all over again, then delete it or add --allow-"
+"overwrite=true option and restart aria2."
+msgstr ""
+"Die Datei %s ist vorhanden, nicht jedoch eine Steuerdatei (*.aria2). Die "
+"Übertragung wurde abgebrochen, um die Datei vor dem Überschreiben zu "
+"schützen. Wenn Sie die Datei vollständig neu herunterladen möchten, löschen "
+"Sie sie oder benutzen Sie die --allow-overwrite=true Option und starten Sie "
+"aria2 erneut."
+
+#: src/message.h:118
+#, c-format
+msgid "Allocating file %s, %s bytes"
+msgstr "Datei wird zugeteilt %s, %s Bytes"
+
+#: src/message.h:119
+msgid "File not found"
+msgstr "Datei nicht gefunden"
+
+#: src/message.h:120
+msgid "Not a directory"
+msgstr "Ist kein Verzeichnis"
+
+#: src/message.h:121
+#, c-format
+msgid "Insufficient checksums. checksumLength=%d, numChecksum=%d"
+msgstr "Ungültige Prüfsumme. checksumLength=%d, numChecksum=%d"
+
+#: src/message.h:122
+#, c-format
+msgid "Writing file %s"
+msgstr "Datei %s wird geschrieben"
+
+#: src/message.h:123
+msgid "No peer list received."
+msgstr "Keine Gegenstellenliste erhalten."
+
+#: src/message.h:124
+#, c-format
+msgid "Adding peer %s:%d"
+msgstr "Gegenstelle %s:%d wird hinzugefügt"
+
+#: src/message.h:125
+#, c-format
+msgid "Deleting used piece index=%d, fillRate(%%)=%d<=%d"
+msgstr "Verwendeter Teilindex wird gelöscht=%d, fillRate(%%)=%d<=%d"
+
+#: src/message.h:126
+msgid "Download of selected files was complete."
+msgstr "Herunterladen der ausgewählten Dateien ist vollständig."
+
+#: src/message.h:127
+msgid "The download was complete."
+msgstr "Die Übertragung ist vollständig."
+
+#: src/message.h:128
+#, c-format
+msgid "Removed %lu have entries."
+msgstr "Entfernte %lu haben Einträge."
+
+#: src/message.h:129
+#, c-format
+msgid "Validating file %s"
+msgstr "Datei %s wird überprüft"
+
+#: src/message.h:133
+#, c-format
+msgid "Metalink: Queueing %s for download."
+msgstr "Metalink: %s wird zur Übertragungswarteschlange hinzugefügt."
+
+#: src/message.h:134
+#, c-format
+msgid "Download complete: %s"
+msgstr "Übertragung vollständig: %s"
+
+#: src/message.h:135
+msgid "Seeding is over."
+msgstr "Verteilen beendet."
+
+#: src/message.h:136
+msgid "No chunk to verify."
+msgstr "Kein Teilstück zum Überprüfen."
+
+#: src/message.h:137
+#, c-format
+msgid "Good chunk checksum. hash=%s"
+msgstr "Teilstückprüfsumme ok. hash=%s"
+
+#: src/message.h:138
+#, c-format
+msgid "Failed to load cookies from %s"
+msgstr "Laden der Profildateien (Cookies) von %s ist fehlgeschlagen"
+
+#: src/message.h:139
+#, c-format
+msgid ""
+".netrc file %s does not have correct permissions. It should be 600. netrc "
+"support disabled."
+msgstr ""
+".netrc-Datei %s hat ungültige Zugriffsrechte. Sollte 600 sein. netrc-"
+"Unterstützung deaktiviert."
+
+#: src/message.h:140
+msgid "Logging started."
+msgstr "Protokollierung gestartet."
+
+#: src/message.h:141
+msgid "Specify at least one URL."
+msgstr "Bitte zumindest eine Adresse angeben."
+
+#: src/message.h:142
+msgid "daemon failed."
+msgstr "Dienst ist fehlgeschlagen."
+
+#: src/message.h:143
+#, c-format
+msgid "Verification finished successfully. file=%s"
+msgstr "Überprüfung erfolgreich abgeschlossen. Datei=%s"
+
+#: src/message.h:144
+#, c-format
+msgid "Checksum error detected. file=%s"
+msgstr "Prüfsummenfehler entdeckt. file=%s"
+
+#: src/message.h:145
+#, c-format
+msgid "Incomplete range specified. %s"
+msgstr "Unvollständiger Bereich angegeben. %s"
+
+#: src/message.h:146
+#, c-format
+msgid "Failed to convert string into value: %s"
+msgstr "Zeichenkette in Wert umzuwandeln ist fehlgeschlagen: %s"
+
+#: src/message.h:147
+msgid "Resource not found"
+msgstr "Quelle nicht gefunden"
+
+#: src/message.h:148
+#, c-format
+msgid "File already exists. Renamed to %s."
+msgstr "Datei ist bereits vorhanden. Umbenannt zu »%s«."
+
+#: src/message.h:149
+msgid "Cannot parse metalink XML file. XML may be malformed."
+msgstr ""
+"Metalink-XML-Datei konnte nicht verarbeitet werden. Syntax könnte falsch "
+"sein."
+
+#: src/message.h:150
+#, c-format
+msgid "Too small payload size for %s, size=%lu."
+msgstr "Zu kleine Nutzlastgröße für %s, Größe = %lu."
+
+#: src/message.h:151
+#, c-format
+msgid ""
+"Removed the defunct control file %s because the download file %s doesn't "
+"exist."
+msgstr ""
+"Die veraltete Steuerdatei %s wurde entfernt, da die Übertragungsdatei %s "
+"nicht vorhanden ist."
+
+#: src/message.h:152
+#, c-format
+msgid "Your share ratio was %.1f, uploaded/downloaded=%sB/%sB"
+msgstr "Das Verteilverhältnis betrug %.1f, hoch-/heruntergeladen=%sB/%sB"
+
+#: src/message.h:153
+#, c-format
+msgid "Missing %s in torrent metainfo."
+msgstr "»%s« ist in der Torrent-Metainfo nicht vorhanden."
+
+#: src/message.h:154
+#, c-format
+msgid "%s does not allow negative integer %<PRId64>"
+msgstr "%s erlaubt keine negative ganze Zahl %<PRId64>"
+
+#: src/message.h:155
+msgid "Tracker returned null data."
+msgstr "Der Tracker gab keine Daten zurück."
+
+#: src/message.h:156
+msgid "Windows socket library initialization failed"
+msgstr "Initialisierung der Windows-Socket-Bibliothek ist fehlgeschlagen"
+
+#: src/message.h:157
+#, c-format
+msgid "%ld second(s) has passed. Stopping application."
+msgstr "%ld Sekunde(n) ist(sind) abgelaufen. Anwendung wird angehalten."
+
+#: src/message.h:158
+#, c-format
+msgid ""
+"Saved signature as %s. Please note that aria2 doesn't verify signatures."
+msgstr ""
+"Signatur unter %s gespeichert. Bitte beachten, aria2 überprüft Signaturen "
+"nicht."
+
+#: src/message.h:160
+#, c-format
+msgid "Saving signature as %s failed. Maybe file already exists."
+msgstr ""
+"Speichern der Signatur unter %s fehlgeschlagen. Datei ist vielleicht bereits "
+"vorhanden."
+
+#: src/message.h:163
+#, c-format
+msgid "Failed to open ServerStat file %s for read."
+msgstr "Öffnen der ServerStat-Datei %s ist fehlgeschlagen."
+
+#: src/message.h:164
+#, c-format
+msgid "ServerStat file %s loaded successfully."
+msgstr "ServerStat-Datei %s erfolgreich geladen."
+
+#: src/message.h:165
+#, c-format
+msgid "Failed to read ServerStat from %s."
+msgstr "Lesen der ServerStat-Datei von %s ist fehlgeschlagen."
+
+#: src/message.h:168
+#, c-format
+msgid "Failed to open ServerStat file %s for write."
+msgstr "Öffnen der ServerStat-Datei %s zum Schreiben ist fehlgeschlagen."
+
+#: src/message.h:169
+#, c-format
+msgid "ServerStat file %s saved successfully."
+msgstr "ServerStat-Datei %s erfolgreich gespeichert."
+
+#: src/message.h:170
+#, c-format
+msgid "Failed to write ServerStat to %s."
+msgstr "Schreiben von ServerStat nach %s fehlgeschlagen."
+
+#: src/message.h:173
+#, c-format
+msgid "Failed to establish connection, cause: %s"
+msgstr "Verbindungsherstellung fehlgeschlagen, Grund: %s"
+
+#: src/message.h:174
+#, c-format
+msgid "Network problem has occurred. cause:%s"
+msgstr "Netzwerkproblem aufgetreten: Ursache: %s"
+
+#: src/message.h:176
+#, c-format
+msgid "Failed to load trusted CA certificates from system. Cause: %s"
+msgstr ""
+"Laden der vertrauenswürdigen CA-Zertifikate vom System ist fehlgeschlagen. "
+"Ursache: %s"
+
+#: src/message.h:178
+#, c-format
+msgid "Failed to load trusted CA certificates from %s. Cause: %s"
+msgstr ""
+"Laden der vertrauenswürdigen CA-Zertifikate von %s ist fehlgeschlagen. "
+"Ursache: %s"
+
+#: src/message.h:180
+#, c-format
+msgid ""
+"Certificate verification failed. Cause: %s See --ca-certificate and --check-"
+"certificate option."
+msgstr ""
+"Zertifikatsprüfung fehlgeschlagen. Ursache: %s Siehe Optionen --ca-"
+"certificate und --check-certificate."
+
+#: src/message.h:182
+msgid "No certificate found."
+msgstr "Kein Zertifikat gefunden."
+
+#: src/message.h:183
+msgid "Hostname not match."
+msgstr "Rechnername stimmt nicht überein."
+
+#: src/message.h:184
+msgid "No files to download."
+msgstr "Keine Dateien zum Herunterladen."
+
+#: src/message.h:186
+msgid ""
+"You may encounter the certificate verification error with HTTPS server. See -"
+"-ca-certificate and --check-certificate option."
+msgstr ""
+"Sie erhalten möglicherweise einen Zertifikatprüfungsfehler des HTTPS-"
+"Servers. Siehe --ca-certificate und --check-certificate."
+
+#: src/message.h:189
+#, c-format
+msgid ""
+"aria2c had to connect to the other side using an unknown TLS protocol. The "
+"integrity and confidentiality of the connection might be compromised.\n"
+"Peer: %s"
+msgstr ""
+"aria2c musste sich mit einem unbekannten TLS-Protokoll mit der anderen Seite "
+"verbinden.  Die Integrität und Vertraulichkeit der Verbindung könnte "
+"beeinträchtigt werden. \n"
+"Peer: %s"
+
+#: src/message.h:193
+#, c-format
+msgid ""
+"aria2c had to connect to the other side using an old and vulnerable TLS "
+"protocol. The integrity and confidentiality of the connection might be "
+"compromised.\n"
+"Protocol: %s, Peer: %s"
+msgstr ""
+"aria2c musste sich mit einem alten und anfälligen TLS-Protokoll mit der "
+"anderen Seite verbinden.  Die Integrität und Vertraulichkeit der Verbindung "
+"könnte beeinträchtigt werden. \n"
+"Protokoll: %s, Peer: %s"
+
+#: src/message.h:196
+#, c-format
+msgid "Printing the contents of file '%s'..."
+msgstr "Dateiinhalt von »%s« wird angezeigt …"
+
+#: src/message.h:197
+msgid "This file is neither Torrent nor Metalink file. Skipping."
+msgstr ""
+"Diese Datei ist weder eine Torrent- noch eine Metalink-Datei. Es wird "
+"übersprungen."
+
+#: src/message.h:202
+#, c-format
+msgid "Is '%s' a file?"
+msgstr "Ist »%s« eine Datei?"
+
+#: src/message.h:203
+#, c-format
+msgid "Failed to find given interface %s, cause: %s"
+msgstr ""
+"Finden der angegebenen Schnittstelle %s ist fehlgeschlagen, Ursache: %s"
+
+#: src/message.h:205
+#, c-format
+msgid "Saved metadata as %s."
+msgstr "Metadaten als %s gespeichert."
+
+#: src/message.h:206
+#, c-format
+msgid "Saving metadata as %s failed. Maybe file already exists."
+msgstr ""
+"Speichern der Metadaten als %s ist fehlgeschlagen. Möglicherweise ist die "
+"Datei bereits vorhanden."
+
+#: src/message.h:208
+#, c-format
+msgid "Detected directory traversal directive in %s"
+msgstr "Verzeichniswechselrichtlinie in %s erkannt"
+
+#: src/message.h:211
+#, c-format
+msgid "GID#%s - Removing unselected file."
+msgstr "GID#%s - Nicht gewählte Datei wird entfernt."
+
+#: src/message.h:212
+#, c-format
+msgid "File %s removed."
+msgstr "Datei %s entfernt."
+
+#: src/message.h:213
+#, c-format
+msgid "File %s could not be removed."
+msgstr "Datei %s kann nicht entfernt werden."
+
+#: src/message.h:215
+msgid "Timeout."
+msgstr "Zeitüberschreitung."
+
+#: src/message.h:216
+msgid "Invalid chunk size."
+msgstr "Ungültige Teilstückgröße."
+
+#: src/message.h:217
+#, c-format
+msgid "Too large chunk. size=%d"
+msgstr "Teilstück zu groß. Größe=%d"
+
+#: src/message.h:218
+msgid "Invalid header."
+msgstr "Ungültige Kopfzeile."
+
+#: src/message.h:219
+msgid "Invalid response."
+msgstr "Ungültige Antwort."
+
+#: src/message.h:220
+msgid "No header found."
+msgstr "Keine Kopfzeile gefunden."
+
+#: src/message.h:221
+msgid "No status header."
+msgstr "Keine Statuskopfzeile."
+
+#: src/message.h:222
+msgid "Proxy connection failed."
+msgstr "Proxy-Verbindung fehlgeschlagen."
+
+#: src/message.h:223
+msgid "Connection failed."
+msgstr "Verbindung fehlgeschlagen."
+
+#: src/message.h:224
+#, c-format
+msgid ""
+"The requested filename and the previously registered one are not same. "
+"Expected:%s Actual:%s"
+msgstr ""
+"Der angeforderte Dateiname und der vorher registrierte stimmen nicht "
+"überein. Erwartet:%s Tatsächlich:%s"
+
+#: src/message.h:225
+#, c-format
+msgid "The response status is not successful. status=%d"
+msgstr "Antwortstatus ist nicht Erfolgreich. Status=%d"
+
+#: src/message.h:227
+#, c-format
+msgid "Transfer encoding %s is not supported."
+msgstr "Übertragungsverschlüsselung %s wird nicht unterstützt."
+
+#: src/message.h:228
+#, c-format
+msgid "SSL initialization failed: %s"
+msgstr "SSL-Initialisierung fehlgeschlagen: %s"
+
+#: src/message.h:229
+msgid "SSL I/O error"
+msgstr "SSL-Ein-/Ausgabefehler"
+
+#: src/message.h:230
+msgid "SSL protocol error"
+msgstr "SSL-Protokollfehler"
+
+#: src/message.h:231
+#, c-format
+msgid "SSL unknown error %d"
+msgstr "Unbekannter SSL-Fehler %d"
+
+#: src/message.h:232
+#, c-format
+msgid "SSL initialization failed: OpenSSL connect error %d"
+msgstr "SSL-Initialisierung ist fehlgeschlagen: OpenSSL-Verbindungsfehler %d"
+
+#: src/message.h:234
+msgid "Authorization failed."
+msgstr "Legitimierung fehlgeschlagen."
+
+#: src/message.h:235
+msgid "Got EOF from the server."
+msgstr "EOF vom Server erhalten."
+
+#: src/message.h:236
+msgid "Got EOF from peer."
+msgstr "EOF von Gegenstelle erhalten."
+
+#: src/message.h:237
+msgid "Malformed meta info."
+msgstr "Fehlerhafte Metainformation."
+
+#: src/message.h:239
+#, c-format
+msgid "Failed to open the file %s, cause: %s"
+msgstr "Öffnen der Datei %s ist fehlgeschlagen, Ursache: %s"
+
+#: src/message.h:240
+#, c-format
+msgid "Failed to write into the file %s, cause: %s"
+msgstr "Schreiben in Datei %s ist fehlgeschlagen, Ursache: %s"
+
+#: src/message.h:241
+#, c-format
+msgid "Failed to read from the file %s, cause: %s"
+msgstr "Lesen der Datei %s ist fehlgeschlagen, Ursache: %s"
+
+#: src/message.h:242
+msgid "Failed to read data from disk."
+msgstr "Versuch Daten von der Festplatte zu lesen ist fehlgeschlagen."
+
+#: src/message.h:243
+#, c-format
+msgid ""
+"Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
+msgstr ""
+"Berechnen der SHA1-Übersicht der Datei %s ist fehlgeschlagen, Ursache: %s"
+
+#: src/message.h:244
+#, c-format
+msgid "Failed to seek the file %s, cause: %s"
+msgstr "Positionieren in Datei %s ist fehlgeschlagen, Ursache: %s"
+
+#: src/message.h:246
+#, c-format
+msgid "%s is not a directory."
+msgstr "%s ist kein Verzeichnis."
+
+#: src/message.h:247
+#, c-format
+msgid "Failed to make the directory %s, cause: %s"
+msgstr "Erstellen des Verzeichnis %s ist fehlgeschlagen, Ursache: %s"
+
+#: src/message.h:251
+#, c-format
+msgid "Failed to open a socket, cause: %s"
+msgstr "Öffnen eines Sockets ist fehlgeschlagen, Ursache: %s"
+
+#: src/message.h:252
+#, c-format
+msgid "Failed to set a socket option, cause: %s"
+msgstr "Einstellen einer Socket-Option ist fehlgeschlagen, Ursache: %s"
+
+#: src/message.h:253
+#, c-format
+msgid "Failed to set a socket as blocking, cause: %s"
+msgstr "Einstellen eines Sockets auf sperren ist fehlgeschlagen, Ursache: %s"
+
+#: src/message.h:254
+#, c-format
+msgid "Failed to set a socket as non-blocking, cause: %s"
+msgstr "Socket auf nicht sperren zu stellen ist fehlgeschlagen, Ursache: %s"
+
+#: src/message.h:255
+#, c-format
+msgid "Failed to bind a socket, cause: %s"
+msgstr "Binden eines Sockets ist fehlgeschlagen, Ursache: %s"
+
+#: src/message.h:256
+#, c-format
+msgid "Failed to listen to a socket, cause: %s"
+msgstr "Lauschen auf Socket ist fehlgeschlagen, Ursache: %s"
+
+#: src/message.h:257
+#, c-format
+msgid "Failed to accept a peer connection, cause: %s"
+msgstr ""
+"Akzeptiere der Gegenstellenverbindung ist fehlgeschlagen, Ursache: %s"
+
+#: src/message.h:258
+#, c-format
+msgid "Failed to get the name of socket, cause: %s"
+msgstr "Erhalt des Socketnamens ist fehlgeschlagen, Ursache: %s"
+
+#: src/message.h:259
+#, c-format
+msgid "Failed to get the name of connected peer, cause: %s"
+msgstr ""
+"Erhalt des Namens der verbundenen Gegenstelle ist fehlgeschlagen, Ursache: %s"
+
+#: src/message.h:260
+#, c-format
+msgid "Failed to resolve the hostname %s, cause: %s"
+msgstr "Auflösen des Rechnernamen %s fehlgeschlagen, Ursache: %s"
+
+#: src/message.h:261
+#, c-format
+msgid "Failed to connect to the host %s, cause: %s"
+msgstr "Verbindung zu Rechner %s fehlgeschlagen, Ursache: %s"
+
+#: src/message.h:262
+#, c-format
+msgid "Failed to check whether the socket is writable, cause: %s"
+msgstr "Prüfung, ob Socket beschreibbar ist, ist fehlgeschlagen, Ursache: %s"
+
+#: src/message.h:263
+#, c-format
+msgid "Failed to check whether the socket is readable, cause: %s"
+msgstr "Prüfung, ob Socket lesbar ist, ist fehlgeschlagen, Ursache: %s"
+
+#: src/message.h:264
+#, c-format
+msgid "Failed to send data, cause: %s"
+msgstr "Datensenden fehlgeschlagen, Ursache: %s"
+
+#: src/message.h:265
+#, c-format
+msgid "Failed to receive data, cause: %s"
+msgstr "Datenerhalten fehlgeschlagen, Ursache: %s"
+
+#: src/message.h:266
+#, c-format
+msgid "Failed to peek data, cause: %s"
+msgstr "Datenermittlung fehlgeschlagen, Ursache: %s"
+
+#: src/message.h:267
+#, c-format
+msgid "Unknown socket error %d (0x%x)"
+msgstr "Unbekannter Socket-Fehler %d (0x%x)"
+
+#: src/message.h:268
+#, c-format
+msgid "File %s exists, but %s does not exist."
+msgstr "Die Datei %s ist vorhanden, %s jedoch nicht."
+
+#: src/message.h:270
+#, c-format
+msgid "Invalid payload size for %s, size=%lu. It should be %lu."
+msgstr "Ungültige Nutzlastgröße für %s, Größe = %lu. Es sollte %lu sein."
+
+#: src/message.h:271
+#, c-format
+msgid "Invalid ID=%d for %s. It should be %d."
+msgstr "Ungültige Kennung=%d für %s. Es sollte %d sein."
+
+#: src/message.h:273
+msgid "Download aborted."
+msgstr "Herunterladen abgebrochen."
+
+#: src/message.h:274
+#, c-format
+msgid "File %s is being downloaded by other command."
+msgstr "Datei %s wird durch einem anderen Befehl heruntergeladen."
+
+#: src/message.h:275
+msgid "Insufficient checksums."
+msgstr "Ungenügende Prüfsummen."
+
+#: src/message.h:276
+#, c-format
+msgid "Tracker returned failure reason: %s"
+msgstr "Tracker gab folgenden Fehlschlaggrund an: %s"
+
+#: src/message.h:277
+msgid "Flooding detected."
+msgstr "Überschwemmung entdeckt."
+
+#: src/message.h:279
+#, c-format
+msgid ""
+"Drop connection because no request/piece messages were exchanged in a "
+"certain period(%ld seconds)."
+msgstr ""
+"Verbindung abbrechen, da in einem bestimmten Zeitraum keine Anfrage-"
+"/Stücknachrichten ausgetauscht wurden ( %ldSekunden)."
+
+#: src/message.h:281
+msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
+msgstr ""
+"Der infoHash in der Torrent-Datei stimmt nicht mit dem in der .aria2-Datei "
+"überein."
+
+#: src/message.h:282
+#, c-format
+msgid "No such file entry %s"
+msgstr "Kein passender Dateieintrag %s"
+
+#: src/message.h:283
+#, c-format
+msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
+msgstr "Zu langsame Herunterladegeschwindigkeit: %d <= %d(B/s), Rechner:%s"
+
+#: src/message.h:284
+msgid "No HttpRequestEntry found."
+msgstr "Es wurde kein HttpRequestEntry gefunden."
+
+#: src/message.h:285
+#, c-format
+msgid "Got %d status, but no location header provided."
+msgstr "Status %d erhalten, aber keine Standortkopfzeile angegeben."
+
+#: src/message.h:287
+msgid "No file matched with your preference."
+msgstr "Keine Datei passt zu Ihren Einstellungen."
+
+#: src/message.h:288
+msgid "Exception caught"
+msgstr "Ausnahme aufgetreten"
+
+#: src/message.h:289
+#, c-format
+msgid "Max payload length exceeded or invalid. length = %u"
+msgstr "Maximale Nutzlastlänge überschritten oder ungültig. Länge = %u"
+
+#: src/message.h:290
+#, c-format
+msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
+msgstr ""
+"Ungültige Dateigröße. Herunterladen kann nicht fortgesetzt werden %s: lokal "
+"%s, entfernt %s"
