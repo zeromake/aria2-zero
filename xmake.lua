@@ -293,6 +293,7 @@ target("aria2c")
         elseif is_plat("macosx", "iphoneos") then
             skip["src/AppleTLSContext.cc"] = true
             skip["src/AppleTLSSession.cc"] = true
+            add_frameworks("CoreFoundation")
         end
         skip["src/InternalARC4Encryptor.cc"] = true
         skip["src/InternalDHKeyExchange.cc"] = true

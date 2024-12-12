@@ -219,6 +219,9 @@ typedef int mode_t;
 #  define a2open(path, flags, mode) open(path, flags, mode)
 #  define a2fopen(path, mode) fopen(path, mode)
 #  define a2close(fd) close(fd)
+#  define a2dup(fd) dup(fd)
+#  define a2dup2(fd) dup2(fd)
+#  define a2fileno(fp) fileno(fp)
 // Android NDK R8e does not provide ftruncate64 prototype, so let's
 // define it here.
 #  ifdef __cplusplus
@@ -248,6 +251,9 @@ extern int ftruncate64(int fd, off64_t length);
 #  define a2fopen(path, mode) fopen(path, mode)
 #  define a2ftruncate(fd, length) ftruncate(fd, length)
 #  define a2close(fd) close(fd)
+#  define a2dup(fd) dup(fd)
+#  define a2dup2(fd) dup2(fd)
+#  define a2fileno(fp) fileno(fp)
 #  define a2_off_t off_t
 #endif
 

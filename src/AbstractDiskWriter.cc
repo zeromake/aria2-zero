@@ -162,7 +162,7 @@ void AbstractDiskWriter::closeFile()
 #ifdef _WIN32
     CloseHandle(fd_);
 #else  // !_WIN32
-    a2close(fd_);
+    ::a2close(fd_);
 #endif // !_WIN32
     fd_ = A2_BAD_FD;
   }

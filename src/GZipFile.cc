@@ -70,7 +70,7 @@ GZipFile::GZipFile(const char* filename, const char* mode)
 #endif
       }
       else {
-        a2close(fd);
+        ::a2close(fd);
       }
     }
     fclose(fp);
