@@ -323,7 +323,7 @@ std::unique_ptr<DHTPingMessage> DHTMessageFactoryImpl::createPingMessage(
     const std::shared_ptr<DHTNode>& remoteNode,
     const std::string& transactionID)
 {
-  auto m = make_unique<DHTPingMessage>(localNode_, remoteNode, transactionID);
+  auto m = aria2::make_unique<DHTPingMessage>(localNode_, remoteNode, transactionID);
   setCommonProperty(m.get());
   return m;
 }
@@ -333,7 +333,7 @@ DHTMessageFactoryImpl::createPingReplyMessage(
     const std::shared_ptr<DHTNode>& remoteNode, const unsigned char* id,
     const std::string& transactionID)
 {
-  auto m = make_unique<DHTPingReplyMessage>(localNode_, remoteNode, id,
+  auto m = aria2::make_unique<DHTPingReplyMessage>(localNode_, remoteNode, id,
                                             transactionID);
   setCommonProperty(m.get());
   return m;
@@ -344,7 +344,7 @@ DHTMessageFactoryImpl::createFindNodeMessage(
     const std::shared_ptr<DHTNode>& remoteNode,
     const unsigned char* targetNodeID, const std::string& transactionID)
 {
-  auto m = make_unique<DHTFindNodeMessage>(localNode_, remoteNode, targetNodeID,
+  auto m = aria2::make_unique<DHTFindNodeMessage>(localNode_, remoteNode, targetNodeID,
                                            transactionID);
   setCommonProperty(m.get());
   return m;
@@ -356,7 +356,7 @@ DHTMessageFactoryImpl::createFindNodeReplyMessage(
     std::vector<std::shared_ptr<DHTNode>> closestKNodes,
     const std::string& transactionID)
 {
-  auto m = make_unique<DHTFindNodeReplyMessage>(family_, localNode_, remoteNode,
+  auto m = aria2::make_unique<DHTFindNodeReplyMessage>(family_, localNode_, remoteNode,
                                                 transactionID);
   m->setClosestKNodes(std::move(closestKNodes));
   setCommonProperty(m.get());
@@ -406,7 +406,7 @@ DHTMessageFactoryImpl::createGetPeersMessage(
     const std::shared_ptr<DHTNode>& remoteNode, const unsigned char* infoHash,
     const std::string& transactionID)
 {
-  auto m = make_unique<DHTGetPeersMessage>(localNode_, remoteNode, infoHash,
+  auto m = aria2::make_unique<DHTGetPeersMessage>(localNode_, remoteNode, infoHash,
                                            transactionID);
   m->setPeerAnnounceStorage(peerAnnounceStorage_);
   m->setTokenTracker(tokenTracker_);
@@ -458,7 +458,7 @@ DHTMessageFactoryImpl::createGetPeersReplyMessage(
     std::vector<std::shared_ptr<Peer>> values, const std::string& token,
     const std::string& transactionID)
 {
-  auto m = make_unique<DHTGetPeersReplyMessage>(family_, localNode_, remoteNode,
+  auto m = aria2::make_unique<DHTGetPeersReplyMessage>(family_, localNode_, remoteNode,
                                                 token, transactionID);
   m->setClosestKNodes(std::move(closestKNodes));
   m->setValues(std::move(values));
@@ -472,7 +472,7 @@ DHTMessageFactoryImpl::createAnnouncePeerMessage(
     uint16_t tcpPort, const std::string& token,
     const std::string& transactionID)
 {
-  auto m = make_unique<DHTAnnouncePeerMessage>(localNode_, remoteNode, infoHash,
+  auto m = aria2::make_unique<DHTAnnouncePeerMessage>(localNode_, remoteNode, infoHash,
                                                tcpPort, token, transactionID);
   m->setPeerAnnounceStorage(peerAnnounceStorage_);
   m->setTokenTracker(tokenTracker_);
@@ -485,7 +485,7 @@ DHTMessageFactoryImpl::createAnnouncePeerReplyMessage(
     const std::shared_ptr<DHTNode>& remoteNode,
     const std::string& transactionID)
 {
-  auto m = make_unique<DHTAnnouncePeerReplyMessage>(localNode_, remoteNode,
+  auto m = aria2::make_unique<DHTAnnouncePeerReplyMessage>(localNode_, remoteNode,
                                                     transactionID);
   setCommonProperty(m.get());
   return m;
@@ -496,7 +496,7 @@ std::unique_ptr<DHTUnknownMessage> DHTMessageFactoryImpl::createUnknownMessage(
     uint16_t port)
 
 {
-  return make_unique<DHTUnknownMessage>(localNode_, data, length, ipaddr, port);
+  return aria2::make_unique<DHTUnknownMessage>(localNode_, data, length, ipaddr, port);
 }
 
 void DHTMessageFactoryImpl::setRoutingTable(DHTRoutingTable* routingTable)

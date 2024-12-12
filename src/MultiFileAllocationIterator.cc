@@ -102,16 +102,16 @@ void MultiFileAllocationIterator::allocateChunk()
       switch (diskAdaptor_->getFileAllocationMethod()) {
 #ifdef HAVE_SOME_FALLOCATE
       case (DiskAdaptor::FILE_ALLOC_FALLOC):
-        fileAllocationIterator_ = make_unique<FallocFileAllocationIterator>(
+        fileAllocationIterator_ = aria2::make_unique<FallocFileAllocationIterator>(
             diskWriter_.get(), (*entryItr_)->size(), fileEntry->getLength());
         break;
 #endif // HAVE_SOME_FALLOCATE
       case (DiskAdaptor::FILE_ALLOC_TRUNC):
-        fileAllocationIterator_ = make_unique<TruncFileAllocationIterator>(
+        fileAllocationIterator_ = aria2::make_unique<TruncFileAllocationIterator>(
             diskWriter_.get(), (*entryItr_)->size(), fileEntry->getLength());
         break;
       default:
-        fileAllocationIterator_ = make_unique<AdaptiveFileAllocationIterator>(
+        fileAllocationIterator_ = aria2::make_unique<AdaptiveFileAllocationIterator>(
             diskWriter_.get(), (*entryItr_)->size(), fileEntry->getLength());
         break;
       }

@@ -163,7 +163,7 @@ void UDPAnnRequest::stop(DownloadEngine* e)
 bool UDPAnnRequest::issue(DownloadEngine* e)
 {
   if (req_) {
-    e->addCommand(make_unique<NameResolveCommand>(e->newCUID(), e, req_));
+    e->addCommand(aria2::make_unique<NameResolveCommand>(e->newCUID(), e, req_));
     e->setNoWait(true);
     return true;
   }
@@ -283,7 +283,7 @@ void TrackerWatcherCommand::addConnection()
     if (!peer) {
       break;
     }
-    auto command = make_unique<PeerInitiateConnectionCommand>(
+    auto command = aria2::make_unique<PeerInitiateConnectionCommand>(
         ncuid, requestGroup_, peer, e_, btRuntime_);
     command->setPeerStorage(peerStorage_);
     command->setPieceStorage(pieceStorage_);
@@ -336,7 +336,7 @@ TrackerWatcherCommand::createUDPAnnRequest(const std::string& host,
   auto req = btAnnounce_->createUDPTrackerRequest(host, port, localPort);
   req->user_data = this;
 
-  return make_unique<UDPAnnRequest>(std::move(req));
+  return aria2::make_unique<UDPAnnRequest>(std::move(req));
 }
 
 namespace {
@@ -364,7 +364,7 @@ TrackerWatcherCommand::createHTTPAnnRequest(const std::string& uri)
   std::vector<std::string> uris;
   uris.push_back(uri);
   auto option = util::copy(getOption());
-  auto rg = make_unique<RequestGroup>(GroupId::create(), option);
+  auto rg = aria2::make_unique<RequestGroup>(GroupId::create(), option);
   if (backupTrackerIsAvailable(requestGroup_->getDownloadContext())) {
     A2_LOG_DEBUG("This is multi-tracker announce.");
   }
@@ -400,7 +400,7 @@ TrackerWatcherCommand::createHTTPAnnRequest(const std::string& uri)
   dctx->setAcceptMetalink(false);
   A2_LOG_INFO(fmt("Creating tracker request group GID#%s",
                   GroupId::toHex(rg->getGID()).c_str()));
-  return make_unique<HTTPAnnRequest>(std::move(rg));
+  return aria2::make_unique<HTTPAnnRequest>(std::move(rg));
 }
 
 void TrackerWatcherCommand::setBtRuntime(

@@ -36,8 +36,7 @@
 #define D_BINARY_STREAM_H
 
 #include "common.h"
-
-#include <unistd.h>
+#include "a2io.h"
 
 namespace aria2 {
 

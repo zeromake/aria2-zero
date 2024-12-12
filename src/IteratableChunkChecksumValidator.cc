@@ -59,7 +59,7 @@ IteratableChunkChecksumValidator::IteratableChunkChecksumValidator(
     const std::shared_ptr<PieceStorage>& pieceStorage)
     : dctx_(dctx),
       pieceStorage_(pieceStorage),
-      bitfield_(make_unique<BitfieldMan>(dctx_->getPieceLength(),
+      bitfield_(aria2::make_unique<BitfieldMan>(dctx_->getPieceLength(),
                                          dctx_->getTotalLength())),
       currentIndex_(0)
 {

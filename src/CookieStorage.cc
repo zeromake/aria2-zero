@@ -89,7 +89,7 @@ bool DomainNode::addCookie(std::unique_ptr<Cookie> cookie, time_t now)
       return false;
     }
     else {
-      cookies_ = make_unique<std::deque<std::unique_ptr<Cookie>>>();
+      cookies_ = aria2::make_unique<std::deque<std::unique_ptr<Cookie>>>();
       cookies_->push_back(std::move(cookie));
       return true;
     }
@@ -285,7 +285,7 @@ bool CookieStorage::store(std::unique_ptr<Cookie> cookie, time_t now)
       node = nextNode;
     }
     else {
-      node = node->addNext(*i, make_unique<DomainNode>(*i, node));
+      node = node->addNext(*i, aria2::make_unique<DomainNode>(*i, node));
     }
   }
   bool ok = node->addCookie(std::move(cookie), now);

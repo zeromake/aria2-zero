@@ -169,12 +169,12 @@ void Netrc::parse(const std::string& path)
       if (state == GET_TOKEN) {
         if (util::streq((*iter).first, (*iter).second, "machine")) {
           storeAuthenticator(std::move(authenticator));
-          authenticator = make_unique<Authenticator>();
+          authenticator = aria2::make_unique<Authenticator>();
           state = SET_MACHINE;
         }
         else if (util::streq((*iter).first, (*iter).second, "default")) {
           storeAuthenticator(std::move(authenticator));
-          authenticator = make_unique<DefaultAuthenticator>();
+          authenticator = aria2::make_unique<DefaultAuthenticator>();
         }
         else {
           if (!authenticator) {

@@ -54,7 +54,7 @@ FileAllocationDispatcherCommand::createCommand(FileAllocationEntry* entry)
 {
   cuid_t newCUID = getDownloadEngine()->newCUID();
   A2_LOG_INFO(fmt(MSG_FILE_ALLOCATION_DISPATCH, newCUID));
-  return make_unique<FileAllocationCommand>(newCUID, entry->getRequestGroup(),
+  return aria2::make_unique<FileAllocationCommand>(newCUID, entry->getRequestGroup(),
                                             getDownloadEngine(), entry);
 }
 

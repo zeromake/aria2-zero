@@ -89,7 +89,7 @@ size_t KqueueEventPoll::KSocketEntry::getEvents(struct kevent* eventlist)
 
 KqueueEventPoll::KqueueEventPoll()
     : kqEventsSize_(KQUEUE_EVENTS_MAX),
-      kqEvents_(make_unique<struct kevent[]>(kqEventsSize_))
+      kqEvents_(aria2::make_unique<struct kevent[]>(kqEventsSize_))
 {
   kqfd_ = kqueue();
 }
@@ -97,7 +97,7 @@ KqueueEventPoll::KqueueEventPoll()
 KqueueEventPoll::~KqueueEventPoll()
 {
   if (kqfd_ != -1) {
-    int r = close(kqfd_);
+    int r = a2close(kqfd_);
     int errNum = errno;
     if (r == -1) {
       A2_LOG_ERROR(fmt("Error occurred while closing kqueue file descriptor"
@@ -184,7 +184,7 @@ bool KqueueEventPoll::addEvents(sock_t socket,
     auto& socketEntry = (*i).second;
     if (socketEntries_.size() > kqEventsSize_) {
       kqEventsSize_ *= 2;
-      kqEvents_ = make_unique<struct kevent[]>(kqEventsSize_);
+      kqEvents_ = aria2::make_unique<struct kevent[]>(kqEventsSize_);
     }
     event.addSelf(&socketEntry);
     n = socketEntry.getEvents(changelist);

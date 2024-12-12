@@ -38,7 +38,7 @@
 #  include <iphlpapi.h>
 #endif // HAVE_IPHLPAPI_H
 
-#include <unistd.h>
+#include "a2io.h"
 #ifdef HAVE_IFADDRS_H
 #  include <ifaddrs.h>
 #endif // HAVE_IFADDRS_H
@@ -68,18 +68,18 @@
 
 namespace aria2 {
 
-#ifndef __MINGW32__
+#ifndef _WIN32
 #  define SOCKET_ERRNO (errno)
 #else
 #  define SOCKET_ERRNO (WSAGetLastError())
-#endif // __MINGW32__
+#endif // _WIN32
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 #  define A2_EINPROGRESS WSAEWOULDBLOCK
 #  define A2_EWOULDBLOCK WSAEWOULDBLOCK
 #  define A2_EINTR WSAEINTR
 #  define A2_WOULDBLOCK(e) (e == WSAEWOULDBLOCK)
-#else // !__MINGW32__
+#else // !_WIN32
 #  define A2_EINPROGRESS EINPROGRESS
 #  ifndef EWOULDBLOCK
 #    define EWOULDBLOCK EAGAIN
@@ -91,18 +91,18 @@ namespace aria2 {
 #  else // EWOULDBLOCK != EAGAIN
 #    define A2_WOULDBLOCK(e) (e == EWOULDBLOCK || e == EAGAIN)
 #  endif // EWOULDBLOCK != EAGAIN
-#endif   // !__MINGW32__
+#endif   // !_WIN32
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 #  define CLOSE(X) ::closesocket(X)
 #else
 #  define CLOSE(X) close(X)
-#endif // __MINGW32__
+#endif // _WIN32
 
 namespace {
 std::string errorMsg(int errNum)
 {
-#ifndef __MINGW32__
+#ifndef _WIN32
   return util::safeStrerror(errNum);
 #else
   auto msg = util::formatLastError(errNum);
@@ -112,7 +112,7 @@ std::string errorMsg(int errNum)
     return buf;
   }
   return msg;
-#endif // __MINGW32__
+#endif // _WIN32
 }
 } // namespace
 
@@ -595,7 +595,7 @@ void SocketCore::applyIpDscp()
 
 void SocketCore::setNonBlockingMode()
 {
-#ifdef __MINGW32__
+#ifdef _WIN32
   static u_long flag = 1;
   if (::ioctlsocket(sockfd_, FIONBIO, &flag) == -1) {
     int errNum = SOCKET_ERRNO;
@@ -608,13 +608,13 @@ void SocketCore::setNonBlockingMode()
   // TODO add error handling
   while (fcntl(sockfd_, F_SETFL, flags | O_NONBLOCK) == -1 && errno == EINTR)
     ;
-#endif // __MINGW32__
+#endif // _WIN32
   blocking_ = false;
 }
 
 void SocketCore::setBlockingMode()
 {
-#ifdef __MINGW32__
+#ifdef _WIN32
   static u_long flag = 0;
   if (::ioctlsocket(sockfd_, FIONBIO, &flag) == -1) {
     int errNum = SOCKET_ERRNO;
@@ -627,7 +627,7 @@ void SocketCore::setBlockingMode()
   // TODO add error handling
   while (fcntl(sockfd_, F_SETFL, flags & (~O_NONBLOCK)) == -1 && errno == EINTR)
     ;
-#endif // __MINGW32__
+#endif // _WIN32
   blocking_ = true;
 }
 
@@ -654,14 +654,14 @@ void SocketCore::closeConnection()
   }
 }
 
-#ifndef __MINGW32__
+#ifndef _WIN32
 #  define CHECK_FD(fd)                                                         \
     if (fd < 0 || FD_SETSIZE <= fd) {                                          \
-      logger_->warn("Detected file descriptor >= FD_SETSIZE or < 0. "          \
+      A2_LOG_WARN("Detected file descriptor >= FD_SETSIZE or < 0. "          \
                     "Download may slow down or fail.");                        \
       return false;                                                            \
     }
-#endif // !__MINGW32__
+#endif // !_WIN32
 
 bool SocketCore::isWritable(time_t timeout)
 {
@@ -681,9 +681,9 @@ bool SocketCore::isWritable(time_t timeout)
   }
   throw DL_RETRY_EX(fmt(EX_SOCKET_CHECK_WRITABLE, errorMsg(errNum).c_str()));
 #else // !HAVE_POLL
-#  ifndef __MINGW32__
+#  ifndef _WIN32
   CHECK_FD(sockfd_);
-#  endif // !__MINGW32__
+#  endif // !_WIN32
   fd_set fds;
   FD_ZERO(&fds);
   FD_SET(sockfd_, &fds);
@@ -726,9 +726,9 @@ bool SocketCore::isReadable(time_t timeout)
   }
   throw DL_RETRY_EX(fmt(EX_SOCKET_CHECK_READABLE, errorMsg(errNum).c_str()));
 #else // !HAVE_POLL
-#  ifndef __MINGW32__
+#  ifndef _WIN32
   CHECK_FD(sockfd_);
-#  endif // !__MINGW32__
+#  endif // !_WIN32
   fd_set fds;
   FD_ZERO(&fds);
   FD_SET(sockfd_, &fds);
@@ -759,7 +759,7 @@ ssize_t SocketCore::writeVector(a2iovec* iov, size_t iovcnt)
   wantRead_ = false;
   wantWrite_ = false;
   if (!secure_) {
-#ifdef __MINGW32__
+#ifdef _WIN32
     DWORD nsent;
     int rv = WSASend(sockfd_, iov, iovcnt, &nsent, 0, 0, 0);
     if (rv == 0) {
@@ -768,11 +768,11 @@ ssize_t SocketCore::writeVector(a2iovec* iov, size_t iovcnt)
     else {
       ret = -1;
     }
-#else  // !__MINGW32__
+#else  // !_WIN32
     while ((ret = writev(sockfd_, iov, iovcnt)) == -1 &&
            SOCKET_ERRNO == A2_EINTR)
       ;
-#endif // !__MINGW32__
+#endif // !_WIN32
     int errNum = SOCKET_ERRNO;
     if (ret == -1) {
       if (!A2_WOULDBLOCK(errNum)) {
@@ -1044,7 +1044,7 @@ bool SocketCore::sshHandshake(const std::string& hashType,
   wantWrite_ = false;
 
   if (!sshSession_) {
-    sshSession_ = make_unique<SSHSession>();
+    sshSession_ = aria2::make_unique<SSHSession>();
     if (sshSession_->init(sockfd_) == SSH_ERR_ERROR) {
       throw DL_ABORT_EX("Could not create SSH session");
     }
@@ -1573,12 +1573,12 @@ bool ipv4AddrConfigured = true;
 bool ipv6AddrConfigured = true;
 } // namespace
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 namespace {
 const uint32_t APIPA_IPV4_BEGIN = 2851995649u; // 169.254.0.1
 const uint32_t APIPA_IPV4_END = 2852061183u;   // 169.254.255.255
 } // namespace
-#endif // __MINGW32__
+#endif // _WIN32
 
 void checkAddrconfig()
 {

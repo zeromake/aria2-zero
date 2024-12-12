@@ -39,16 +39,16 @@
 #  include "config.h"
 #endif
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 #  ifdef malloc
 #    undef malloc
 #  endif
 #  ifdef realloc
 #    undef realloc
 #  endif
-#endif // __MINGW32__
+#endif // _WIN32
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 #  define WIN32_LEAN_AND_MEAN
 #  ifndef WINVER
 #    define WINVER 0x501
@@ -64,7 +64,7 @@
 #    undef ERROR
 #  endif // HAVE_WINSOCK2_H
 #  include <windows.h>
-#endif // __MINGW32__
+#endif // _WIN32
 
 #ifdef ENABLE_NLS
 // If we put #include <gettext.h> outside of #ifdef ENABLE_NLS and

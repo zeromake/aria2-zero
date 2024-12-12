@@ -87,8 +87,7 @@ static char* eai_errlist[] = {
 /*
  * gai_strerror().
  */
-const char* gai_strerror(ecode)
-int ecode;
+const char* gai_strerror(int ecode)
 {
   if (ecode < 0 || ecode > EAI_SYSTEM)
     return _("Unknown error");

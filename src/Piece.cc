@@ -54,7 +54,7 @@ namespace aria2 {
 Piece::Piece() : index_(0), length_(0), nextBegin_(0), usedBySegment_(false) {}
 
 Piece::Piece(size_t index, int64_t length, int32_t blockLength)
-    : bitfield_(make_unique<BitfieldMan>(blockLength, length)),
+    : bitfield_(aria2::make_unique<BitfieldMan>(blockLength, length)),
       index_(index),
       length_(length),
       nextBegin_(0),
@@ -179,7 +179,7 @@ void Piece::reconfigure(int64_t length)
   // maximum block length for now to reduce the overhead.  Ideally, we
   // check the code thoroughly and remove bitfield_ if we can.
   bitfield_ =
-      make_unique<BitfieldMan>(std::numeric_limits<int32_t>::max(), length_);
+      aria2::make_unique<BitfieldMan>(std::numeric_limits<int32_t>::max(), length_);
 }
 
 void Piece::setBitfield(const unsigned char* bitfield, size_t len)
@@ -304,7 +304,7 @@ void Piece::initWrCache(WrDiskCache* diskCache,
     return;
   }
   assert(!wrCache_);
-  wrCache_ = make_unique<WrDiskCacheEntry>(diskAdaptor);
+  wrCache_ = aria2::make_unique<WrDiskCacheEntry>(diskAdaptor);
   bool rv = diskCache->add(wrCache_.get());
   assert(rv);
 }

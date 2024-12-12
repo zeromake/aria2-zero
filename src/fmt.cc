@@ -47,17 +47,17 @@ std::string fmt(const char* fmtTemplate, ...)
   char buf[2048];
   int rv;
   rv = vsnprintf(buf, sizeof(buf), fmtTemplate, ap);
-#ifdef __MINGW32__
+#ifdef _WIN32
   // MINGW32 vsnprintf returns -1 if output is truncated.
   if (rv < 0 && rv != -1) {
     // Reachable?
     buf[0] = '\0';
   }
-#else  // !__MINGW32__
+#else  // !_WIN32
   if (rv < 0) {
     buf[0] = '\0';
   }
-#endif // !__MINGW32__
+#endif // !_WIN32
   va_end(ap);
   return buf;
 }

@@ -147,7 +147,7 @@ public:
     if (!supports(algorithm)) {
       return nullptr;
     }
-    return make_unique<HMAC>(algorithm, secret, length);
+    return aria2::make_unique<HMAC>(algorithm, secret, length);
   }
 
   /**

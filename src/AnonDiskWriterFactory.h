@@ -51,7 +51,7 @@ public:
   virtual std::unique_ptr<DiskWriter>
   newDiskWriter(const std::string& filename) CXX11_OVERRIDE
   {
-    return make_unique<DiskWriterType>();
+    return aria2::make_unique<DiskWriterType>();
   }
 };
 

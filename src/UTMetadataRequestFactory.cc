@@ -72,7 +72,7 @@ UTMetadataRequestFactory::create(size_t num, PieceStorage* pieceStorage)
     --num;
     A2_LOG_DEBUG(fmt("Creating ut_metadata request index=%lu",
                      static_cast<unsigned long>(p->getIndex())));
-    auto m = make_unique<UTMetadataRequestExtensionMessage>(
+    auto m = aria2::make_unique<UTMetadataRequestExtensionMessage>(
         peer_->getExtensionMessageID(ExtensionMessageRegistry::UT_METADATA));
     m->setIndex(p->getIndex());
     m->setDownloadContext(dctx_);

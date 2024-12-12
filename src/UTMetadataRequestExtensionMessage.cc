@@ -82,13 +82,13 @@ void UTMetadataRequestExtensionMessage::doReceivedAction()
   uint8_t id =
       peer_->getExtensionMessageID(ExtensionMessageRegistry::UT_METADATA);
   if (attrs->metadata.empty()) {
-    auto m = make_unique<UTMetadataRejectExtensionMessage>(id);
+    auto m = aria2::make_unique<UTMetadataRejectExtensionMessage>(id);
     m->setIndex(getIndex());
     dispatcher_->addMessageToQueue(
         messageFactory_->createBtExtendedMessage(std::move(m)));
   }
   else if (getIndex() * METADATA_PIECE_SIZE < attrs->metadataSize) {
-    auto m = make_unique<UTMetadataDataExtensionMessage>(id);
+    auto m = aria2::make_unique<UTMetadataDataExtensionMessage>(id);
     m->setIndex(getIndex());
     m->setTotalSize(attrs->metadataSize);
     auto begin = std::begin(attrs->metadata) + getIndex() * METADATA_PIECE_SIZE;

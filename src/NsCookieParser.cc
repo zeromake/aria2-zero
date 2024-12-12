@@ -84,7 +84,7 @@ std::unique_ptr<Cookie> parseNsCookie(const std::string& cookieStr,
   else if (std::numeric_limits<time_t>::min() > expiryTime) {
     expiryTime = std::numeric_limits<time_t>::min();
   }
-  auto cookie = make_unique<Cookie>();
+  auto cookie = aria2::make_unique<Cookie>();
   cookie->setName(vs[5].first, vs[5].second);
   if (vs.size() >= 7) {
     cookie->setValue(vs[6].first, vs[6].second);

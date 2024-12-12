@@ -47,7 +47,7 @@ struct SftpNegotiationConnectChain : public ControlChain<ConnectCommand*> {
   virtual ~SftpNegotiationConnectChain() {}
   virtual int run(ConnectCommand* t, DownloadEngine* e) CXX11_OVERRIDE
   {
-    auto c = make_unique<SftpNegotiationCommand>(
+    auto c = aria2::make_unique<SftpNegotiationCommand>(
         t->getCuid(), t->getRequest(), t->getFileEntry(), t->getRequestGroup(),
         t->getDownloadEngine(), t->getSocket());
     c->setStatus(Command::STATUS_ONESHOT_REALTIME);

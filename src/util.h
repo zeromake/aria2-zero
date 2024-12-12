@@ -37,7 +37,10 @@
 
 #include "common.h"
 
+#ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
+#endif // HAVE_SYS_TIME_H
+
 #include <limits.h>
 #include <stdint.h>
 
@@ -95,7 +98,7 @@ inline uint64_t ntoh64(uint64_t x) { return byteswap64(x); }
 inline uint64_t hton64(uint64_t x) { return byteswap64(x); }
 #endif // !WORDS_BIGENDIAN
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 std::wstring utf8ToWChar(const std::string& src);
 
 std::wstring utf8ToWChar(const char* str);
@@ -104,10 +107,10 @@ std::string wCharToUtf8(const std::wstring& wsrc);
 
 // replace any backslash '\' in |src| with '/' and returns it.
 std::string toForwardSlash(const std::string& src);
-#else // !__MINGW32__
+#else // !_WIN32
 #  define utf8ToWChar(src) src
 #  define utf8ToNative(src) src
-#endif // !__MINGW32__
+#endif // !_WIN32
 
 namespace util {
 
@@ -752,7 +755,7 @@ bool inPrivateAddress(const std::string& ipv4addr);
 bool detectDirTraversal(const std::string& s);
 
 // Replaces null(0x00) and control character(0x01-0x1f) with '_'. If
-// __MINGW32__ is defined, following characters are also replaced with
+// _WIN32 is defined, following characters are also replaced with
 // '_': '"', '*', ':', '<', '>', '?', '\', '|'.
 std::string escapePath(const std::string& s);
 
@@ -863,21 +866,21 @@ bool tlsHostnameMatch(const std::string& pattern, const std::string& hostname);
 TLSVersion toTLSVersion(const std::string& ver);
 #endif // ENABLE_SSL
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 // Formats error message for error code errNum, which is the return
 // value of GetLastError().  On error, this function returns empty
 // string.
 std::string formatLastError(int errNum);
-#endif // __MINGW32__
+#endif // _WIN32
 
 // Sets file descriptor file FD_CLOEXEC to |fd|.  This function is
 // noop for Mingw32 build, since we disable inheritance in
 // CreateProcess call.
 void make_fd_cloexec(int fd);
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 bool gainPrivilege(LPCTSTR privName);
-#endif // __MINGW32__
+#endif // _WIN32
 
 } // namespace util
 

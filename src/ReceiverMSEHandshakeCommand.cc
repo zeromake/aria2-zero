@@ -51,6 +51,8 @@
 #include "DownloadContext.h"
 #include "array_fun.h"
 
+#include <iterator>
+
 namespace aria2 {
 
 ReceiverMSEHandshakeCommand::ReceiverMSEHandshakeCommand(
@@ -60,7 +62,7 @@ ReceiverMSEHandshakeCommand::ReceiverMSEHandshakeCommand(
 
       PeerAbstractCommand(cuid, peer, e, s),
       sequence_(RECEIVER_IDENTIFY_HANDSHAKE),
-      mseHandshake_(make_unique<MSEHandshake>(cuid, s, e->getOption()))
+      mseHandshake_(aria2::make_unique<MSEHandshake>(cuid, s, e->getOption()))
 {
   setTimeout(std::chrono::seconds(
       e->getOption()->getAsInt(PREF_PEER_CONNECTION_TIMEOUT)));
@@ -103,11 +105,11 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
               " preference.");
         }
         auto peerConnection =
-            make_unique<PeerConnection>(getCuid(), getPeer(), getSocket());
+            aria2::make_unique<PeerConnection>(getCuid(), getPeer(), getSocket());
         peerConnection->presetBuffer(mseHandshake_->getBuffer(),
                                      mseHandshake_->getBufferLength());
         getDownloadEngine()->addCommand(
-            make_unique<PeerReceiveHandshakeCommand>(
+            aria2::make_unique<PeerReceiveHandshakeCommand>(
                 getCuid(), getPeer(), getDownloadEngine(), getSocket(),
                 std::move(peerConnection)));
         return true;
@@ -214,7 +216,7 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
 void ReceiverMSEHandshakeCommand::createCommand()
 {
   auto peerConnection =
-      make_unique<PeerConnection>(getCuid(), getPeer(), getSocket());
+      aria2::make_unique<PeerConnection>(getCuid(), getPeer(), getSocket());
   if (mseHandshake_->getNegotiatedCryptoType() == MSEHandshake::CRYPTO_ARC4) {
     peerConnection->enableEncryption(mseHandshake_->popEncryptor(),
                                      mseHandshake_->popDecryptor());
@@ -226,7 +228,7 @@ void ReceiverMSEHandshakeCommand::createCommand()
   // TODO add mseHandshake_->getInfoHash() to PeerReceiveHandshakeCommand
   // as a hint. If this info hash and one in BitTorrent Handshake does not
   // match, then drop connection.
-  getDownloadEngine()->addCommand(make_unique<PeerReceiveHandshakeCommand>(
+  getDownloadEngine()->addCommand(aria2::make_unique<PeerReceiveHandshakeCommand>(
       getCuid(), getPeer(), getDownloadEngine(), getSocket(),
       std::move(peerConnection)));
 }

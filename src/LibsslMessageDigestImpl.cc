@@ -101,7 +101,7 @@ typedef MessageDigestBase<EVP_sha1> MessageDigestSHA1;
 
 std::unique_ptr<MessageDigestImpl> MessageDigestImpl::sha1()
 {
-  return make_unique<MessageDigestSHA1>();
+  return aria2::make_unique<MessageDigestSHA1>();
 }
 
 MessageDigestImpl::hashes_t MessageDigestImpl::hashes = {

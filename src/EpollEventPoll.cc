@@ -83,7 +83,7 @@ struct epoll_event EpollEventPoll::KSocketEntry::getEvents()
 
 EpollEventPoll::EpollEventPoll()
     : epEventsSize_(EPOLL_EVENTS_MAX),
-      epEvents_(make_unique<struct epoll_event[]>(epEventsSize_))
+      epEvents_(aria2::make_unique<struct epoll_event[]>(epEventsSize_))
 {
   epfd_ = epoll_create(EPOLL_EVENTS_MAX);
 }
@@ -91,7 +91,7 @@ EpollEventPoll::EpollEventPoll()
 EpollEventPoll::~EpollEventPoll()
 {
   if (epfd_ != -1) {
-    int r = close(epfd_);
+    int r = a2close(epfd_);
     int errNum = errno;
     if (r == -1) {
       A2_LOG_ERROR(fmt("Error occurred while closing epoll file descriptor"
@@ -189,7 +189,7 @@ bool EpollEventPoll::addEvents(sock_t socket,
     auto& socketEntry = (*i).second;
     if (socketEntries_.size() > epEventsSize_) {
       epEventsSize_ *= 2;
-      epEvents_ = make_unique<struct epoll_event[]>(epEventsSize_);
+      epEvents_ = aria2::make_unique<struct epoll_event[]>(epEventsSize_);
     }
 
     event.addSelf(&socketEntry);

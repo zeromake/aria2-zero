@@ -149,7 +149,7 @@ InitiateConnectionCommand::createBackupIPv4ConnectCommand(
        i != eoi; ++i) {
     if (inetPton(AF_INET, (*i).c_str(), &buf) == 0) {
       info = std::make_shared<BackupConnectInfo>();
-      auto command = make_unique<BackupIPv4ConnectCommand>(
+      auto command = aria2::make_unique<BackupIPv4ConnectCommand>(
           getDownloadEngine()->newCUID(), *i, port, info, mainCommand,
           getRequestGroup(), getDownloadEngine());
       A2_LOG_INFO(fmt("Issue backup connection command CUID#%" PRId64

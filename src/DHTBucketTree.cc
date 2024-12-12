@@ -90,8 +90,8 @@ bool DHTBucketTreeNode::isInRange(const unsigned char* key) const
 
 void DHTBucketTreeNode::split()
 {
-  left_ = make_unique<DHTBucketTreeNode>(bucket_->split());
-  right_ = make_unique<DHTBucketTreeNode>(bucket_);
+  left_ = aria2::make_unique<DHTBucketTreeNode>(bucket_->split());
+  right_ = aria2::make_unique<DHTBucketTreeNode>(bucket_);
   bucket_.reset();
   resetRelation();
 }

@@ -51,7 +51,7 @@ namespace aria2 {
 
 DHTRoutingTable::DHTRoutingTable(const std::shared_ptr<DHTNode>& localNode)
     : localNode_(localNode),
-      root_(make_unique<DHTBucketTreeNode>(
+      root_(aria2::make_unique<DHTBucketTreeNode>(
           std::make_shared<DHTBucket>(localNode_))),
       numBucket_(1),
       taskQueue_{nullptr},

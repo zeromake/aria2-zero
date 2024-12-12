@@ -79,7 +79,7 @@ DefaultPieceStorage::DefaultPieceStorage(
     const std::shared_ptr<DownloadContext>& downloadContext,
     const Option* option)
     : downloadContext_(downloadContext),
-      bitfieldMan_(make_unique<BitfieldMan>(downloadContext->getPieceLength(),
+      bitfieldMan_(aria2::make_unique<BitfieldMan>(downloadContext->getPieceLength(),
                                             downloadContext->getTotalLength())),
       diskWriterFactory_(std::make_shared<DefaultDiskWriterFactory>()),
       endGame_(false),
@@ -91,26 +91,26 @@ DefaultPieceStorage::DefaultPieceStorage(
       nextHaveIndex_(1),
       pieceStatMan_(std::make_shared<PieceStatMan>(
           downloadContext->getNumPieces(), true)),
-      pieceSelector_(make_unique<RarestPieceSelector>(pieceStatMan_)),
+      pieceSelector_(aria2::make_unique<RarestPieceSelector>(pieceStatMan_)),
       wrDiskCache_(nullptr)
 {
   const std::string& pieceSelectorOpt =
       option_->get(PREF_STREAM_PIECE_SELECTOR);
   if (pieceSelectorOpt.empty() || pieceSelectorOpt == A2_V_DEFAULT) {
     streamPieceSelector_ =
-        make_unique<DefaultStreamPieceSelector>(bitfieldMan_.get());
+        aria2::make_unique<DefaultStreamPieceSelector>(bitfieldMan_.get());
   }
   else if (pieceSelectorOpt == V_INORDER) {
     streamPieceSelector_ =
-        make_unique<InorderStreamPieceSelector>(bitfieldMan_.get());
+        aria2::make_unique<InorderStreamPieceSelector>(bitfieldMan_.get());
   }
   else if (pieceSelectorOpt == A2_V_RANDOM) {
     streamPieceSelector_ =
-        make_unique<RandomStreamPieceSelector>(bitfieldMan_.get());
+        aria2::make_unique<RandomStreamPieceSelector>(bitfieldMan_.get());
   }
   else if (pieceSelectorOpt == A2_V_GEOM) {
     streamPieceSelector_ =
-        make_unique<GeomStreamPieceSelector>(bitfieldMan_.get(), 1.5);
+        aria2::make_unique<GeomStreamPieceSelector>(bitfieldMan_.get(), 1.5);
   }
 }
 
@@ -197,7 +197,7 @@ void DefaultPieceStorage::getMissingPiece(
     const unsigned char* bitfield, size_t length, cuid_t cuid)
 {
   const size_t mislen = bitfieldMan_->getBitfieldLength();
-  auto misbitfield = make_unique<unsigned char[]>(mislen);
+  auto misbitfield = aria2::make_unique<unsigned char[]>(mislen);
   size_t blocks = bitfieldMan_->countBlock();
   size_t misBlock = 0;
   if (isEndGame()) {
@@ -485,7 +485,7 @@ void DefaultPieceStorage::completePiece(const std::shared_ptr<Piece>& piece)
 #ifdef ENABLE_BITTORRENT
     if (downloadContext_->hasAttribute(CTX_ATTR_BT)) {
       if (!bittorrent::getTorrentAttrs(downloadContext_)->metadata.empty()) {
-#  ifdef __MINGW32__
+#  ifdef _WIN32
         // On Windows, if aria2 opens files with GENERIC_WRITE access
         // right, some programs cannot open them aria2 is seeding. To
         // avoid this situation, re-open the files with read-only
@@ -495,7 +495,7 @@ void DefaultPieceStorage::completePiece(const std::shared_ptr<Piece>& piece)
         diskAdaptor_->closeFile();
         diskAdaptor_->enableReadOnly();
         diskAdaptor_->openFile();
-#  endif // __MINGW32__
+#  endif // _WIN32
         auto group = downloadContext_->getOwnerRequestGroup();
 
         util::executeHookByOptName(group, option_,

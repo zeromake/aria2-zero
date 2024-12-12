@@ -81,7 +81,7 @@ void BtRequestMessage::doReceivedAction()
 void BtRequestMessage::onQueued()
 {
   getBtMessageDispatcher()->addOutstandingRequest(
-      make_unique<RequestSlot>(getIndex(), getBegin(), getLength(), blockIndex_,
+      aria2::make_unique<RequestSlot>(getIndex(), getBegin(), getLength(), blockIndex_,
                                getPieceStorage()->getPiece(getIndex())));
 }
 

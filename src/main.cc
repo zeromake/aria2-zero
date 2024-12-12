@@ -34,11 +34,11 @@
 /* copyright --> */
 #include "common.h"
 
-#include <unistd.h>
+#include "a2io.h"
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 #  include <shellapi.h>
-#endif // __MINGW32__
+#endif // _WIN32
 
 #include <aria2/aria2.h>
 #include "Context.h"
@@ -53,7 +53,7 @@ namespace aria2 {
 
 error_code::Value main(int argc, char** argv)
 {
-#ifdef __MINGW32__
+#ifdef _WIN32
   int winArgc;
   auto winArgv = CommandLineToArgvW(GetCommandLineW(), &winArgc);
   if (winArgv == nullptr) {
@@ -62,16 +62,16 @@ error_code::Value main(int argc, char** argv)
   }
   std::vector<std::unique_ptr<char>> winArgStrs;
   winArgStrs.reserve(winArgc);
-  auto pargv = make_unique<char*[]>(winArgc);
+  auto pargv = aria2::make_unique<char*[]>(winArgc);
   for (int i = 0; i < winArgc; ++i) {
     winArgStrs.emplace_back(strdup(wCharToUtf8(winArgv[i]).c_str()));
     pargv[i] = winArgStrs.back().get();
   }
 
   Context context(true, winArgc, pargv.get(), KeyVals());
-#else  // !__MINGW32__
+#else  // !_WIN32
   Context context(true, argc, argv, KeyVals());
-#endif // !__MINGW32__
+#endif // !_WIN32
 
   error_code::Value exitStatus = error_code::FINISHED;
   if (context.reqinfo) {

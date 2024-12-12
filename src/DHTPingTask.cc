@@ -60,7 +60,7 @@ void DHTPingTask::addMessage()
 {
   getMessageDispatcher()->addMessageToQueue(
       getMessageFactory()->createPingMessage(remoteNode_), timeout_,
-      make_unique<DHTPingReplyMessageCallback<DHTPingTask>>(this));
+      aria2::make_unique<DHTPingReplyMessageCallback<DHTPingTask>>(this));
 }
 
 void DHTPingTask::startup() { addMessage(); }

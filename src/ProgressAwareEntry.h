@@ -38,7 +38,7 @@
 #include "common.h"
 
 #include <stdint.h>
-#include <unistd.h>
+#include "a2io.h"
 
 namespace aria2 {
 

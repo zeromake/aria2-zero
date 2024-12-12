@@ -37,8 +37,16 @@
 #include "common.h"
 #include <sys/types.h>
 #include <sys/stat.h>
+
+
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif // HAVE_UNISTD_H
+
+#ifdef HAVE_FCNTL_H
 #include <fcntl.h>
+#endif // HAVE_FCNTL_H
+
 #include <cerrno>
 #ifdef HAVE_POLL_H
 #  include <poll.h>
@@ -120,7 +128,7 @@
 #  define DEV_STDOUT "/dev/stdout"
 #endif // HAVE_WINSOCK2_H
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 #  define a2lseek(fd, offset, origin) _lseeki64(fd, offset, origin)
 #  define a2fseek(fd, offset, origin) _fseeki64(fd, offset, origin)
 #  define a2fstat(fd, buf) _fstati64(fd, buf)
@@ -142,6 +150,59 @@
 #  define a2fopen(path, mode) _wfsopen(path, mode, _SH_DENYNO)
 // # define a2ftruncate(fd, length): We don't use ftruncate in Mingw build
 #  define a2_off_t off_t
+
+#  define a2close(fd) _close(fd)
+#  define a2dup(fd) _dup(fd)
+#  define a2dup2(fd) _dup2(fd)
+#  define a2fileno(fp) _fileno(fp)
+
+typedef int mode_t;
+
+#ifndef S_ISTYPE
+#define S_ISTYPE(mode, mask) (((mode) & S_IFMT) == (mask))
+#endif /* S_ISTYPE */
+
+#ifndef S_ISFIFO
+#define S_ISFIFO(mode) S_ISTYPE(mode, S_IFIFO)
+#endif /* S_ISFIFO */
+
+#ifndef S_ISCHR
+#define S_ISCHR(mode) S_ISTYPE(mode, S_IFCHR)
+#endif /* S_ISCHR */
+
+#ifndef S_ISDIR
+#define S_ISDIR(mode) S_ISTYPE(mode, S_IFDIR)
+#endif /* S_ISDIR */
+
+#ifndef S_ISBLK
+#define S_ISBLK(mode) S_ISTYPE(mode, S_IFBLK)
+#endif /* S_ISBLK */
+
+#ifndef S_ISREG
+#define S_ISREG(mode) S_ISTYPE(mode, S_IFREG)
+#endif /* S_ISREG */
+
+#ifndef S_ISLNK
+#define S_ISLNK(mode) S_ISTYPE(mode, S_IFLNK)
+#endif /* S_ISLNK */
+
+#ifndef S_ISSOCK
+#define S_ISSOCK(mode) S_ISTYPE(mode, S_IFSOCK)
+#endif /* S_ISSOCK */
+
+
+#ifndef STDIN_FILENO
+#define STDIN_FILENO 0
+#endif /* STDIN_FILENO */
+
+#ifndef STDOUT_FILENO
+#define STDOUT_FILENO 1
+#endif /* STDOUT_FILENO */
+
+#ifndef STDERR_FILENO
+#define STDERR_FILENO 2
+#endif /* STDERR_FILENO */
+
 #elif defined(__ANDROID__) || defined(ANDROID)
 #  define a2lseek(fd, offset, origin) lseek64(fd, offset, origin)
 // # define a2fseek(fp, offset, origin): No fseek64 and not used in aria2
@@ -156,6 +217,7 @@
 #  define a2rmdir(path) rmdir(path)
 #  define a2open(path, flags, mode) open(path, flags, mode)
 #  define a2fopen(path, mode) fopen(path, mode)
+#  define a2close(fd) close(fd)
 // Android NDK R8e does not provide ftruncate64 prototype, so let's
 // define it here.
 #  ifdef __cplusplus
@@ -169,7 +231,7 @@ extern int ftruncate64(int fd, off64_t length);
 // Use off64_t directly since android does not offer transparent
 // switching between off_t and off64_t.
 #  define a2_off_t off64_t
-#else // !__MINGW32__ && !(defined(__ANDROID__) || defined(ANDROID))
+#else // !_WIN32 && !(defined(__ANDROID__) || defined(ANDROID))
 #  define a2lseek(fd, offset, origin) lseek(fd, offset, origin)
 #  define a2fseek(fp, offset, origin) fseek(fp, offset, origin)
 #  define a2fstat(fp, buf) fstat(fp, buf)
@@ -184,16 +246,17 @@ extern int ftruncate64(int fd, off64_t length);
 #  define a2open(path, flags, mode) open(path, flags, mode)
 #  define a2fopen(path, mode) fopen(path, mode)
 #  define a2ftruncate(fd, length) ftruncate(fd, length)
+#  define a2close(fd) close(fd)
 #  define a2_off_t off_t
 #endif
 
 #define OPEN_MODE S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH
 #define DIR_OPEN_MODE S_IRWXU | S_IRWXG | S_IRWXO
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 #  define A2_BAD_FD INVALID_HANDLE_VALUE
-#else // !__MINGW32__
+#else // !_WIN32
 #  define A2_BAD_FD -1
-#endif // !__MINGW32__
+#endif // !_WIN32
 
 #endif // D_A2IO_H

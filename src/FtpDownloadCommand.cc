@@ -68,7 +68,7 @@ bool FtpDownloadCommand::prepareForNextSegment()
   if (getOption()->getAsBool(PREF_FTP_REUSE_CONNECTION) &&
       getFileEntry()->gtoloff(getSegments().front()->getPositionToWrite()) ==
           getFileEntry()->getLength()) {
-    getDownloadEngine()->addCommand(make_unique<FtpFinishDownloadCommand>(
+    getDownloadEngine()->addCommand(aria2::make_unique<FtpFinishDownloadCommand>(
         getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
         ftpConnection_, getDownloadEngine(), ctrlSocket_));
 

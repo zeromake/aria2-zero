@@ -50,7 +50,7 @@ protected:
   {
     bittorrent::assertPayloadLengthEqual(1, dataLength, T::NAME);
     bittorrent::assertID(T::ID, data, T::NAME);
-    return make_unique<T>();
+    return aria2::make_unique<T>();
   }
 
 public:

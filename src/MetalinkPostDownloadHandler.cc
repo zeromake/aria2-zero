@@ -57,7 +57,7 @@ namespace aria2 {
 
 MetalinkPostDownloadHandler::MetalinkPostDownloadHandler()
 {
-  setCriteria(make_unique<ContentTypeRequestGroupCriteria>(
+  setCriteria(aria2::make_unique<ContentTypeRequestGroupCriteria>(
       getMetalinkContentTypes(), getMetalinkExtensions()));
 }
 

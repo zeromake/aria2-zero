@@ -70,7 +70,7 @@ bool AbstractProxyRequestCommand::executeInternal()
 {
   // socket->setBlockingMode();
   if (httpConnection_->sendBufferIsEmpty()) {
-    auto httpRequest = make_unique<HttpRequest>();
+    auto httpRequest = aria2::make_unique<HttpRequest>();
     httpRequest->setUserAgent(getOption()->get(PREF_USER_AGENT));
     httpRequest->setRequest(getRequest());
     httpRequest->setProxyRequest(proxyRequest_);

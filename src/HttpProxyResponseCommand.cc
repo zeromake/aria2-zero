@@ -57,7 +57,7 @@ HttpProxyResponseCommand::~HttpProxyResponseCommand() = default;
 
 std::unique_ptr<Command> HttpProxyResponseCommand::getNextCommand()
 {
-  return make_unique<HttpRequestCommand>(
+  return aria2::make_unique<HttpRequestCommand>(
       getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
       getHttpConnection(), getDownloadEngine(), getSocket());
 }

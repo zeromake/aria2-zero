@@ -122,7 +122,7 @@ namespace {
 std::unique_ptr<DiskWriterEntry>
 createDiskWriterEntry(const std::shared_ptr<FileEntry>& fileEntry)
 {
-  auto entry = make_unique<DiskWriterEntry>(fileEntry);
+  auto entry = aria2::make_unique<DiskWriterEntry>(fileEntry);
   entry->needsFileAllocation(fileEntry->isRequested());
   return entry;
 }
@@ -449,7 +449,7 @@ int64_t MultiDiskAdaptor::size()
 std::unique_ptr<FileAllocationIterator>
 MultiDiskAdaptor::fileAllocationIterator()
 {
-  return make_unique<MultiFileAllocationIterator>(this);
+  return aria2::make_unique<MultiFileAllocationIterator>(this);
 }
 
 void MultiDiskAdaptor::enableReadOnly() { readOnly_ = true; }

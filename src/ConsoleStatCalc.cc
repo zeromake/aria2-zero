@@ -40,7 +40,7 @@
 #ifdef HAVE_SYS_IOCTL_H
 #  include <sys/ioctl.h>
 #endif // HAVE_SYS_IOCTL_H
-#include <unistd.h>
+#include "a2io.h"
 
 #include <cstdio>
 #include <iomanip>
@@ -272,18 +272,18 @@ ConsoleStatCalc::ConsoleStatCalc(std::chrono::seconds summaryInterval,
     : summaryInterval_(std::move(summaryInterval)),
       readoutVisibility_(true),
       truncate_(true),
-#ifdef __MINGW32__
+#ifdef _WIN32
       isTTY_(true),
-#else  // !__MINGW32__
+#else  // !_WIN32
       isTTY_(isatty(STDOUT_FILENO) == 1),
-#endif // !__MINGW32__
+#endif // !_WIN32
       colorOutput_(colorOutput)
 {
   if (humanReadable) {
-    sizeFormatter_ = make_unique<AbbrevSizeFormatter>();
+    sizeFormatter_ = aria2::make_unique<AbbrevSizeFormatter>();
   }
   else {
-    sizeFormatter_ = make_unique<PlainSizeFormatter>();
+    sizeFormatter_ = aria2::make_unique<PlainSizeFormatter>();
   }
 }
 
@@ -301,20 +301,20 @@ void ConsoleStatCalc::calculateStat(const DownloadEngine* e)
   unsigned short int cols = 79;
 
   if (isTTY_) {
-#ifndef __MINGW32__
+#ifndef _WIN32
 #  ifdef HAVE_TERMIOS_H
     struct winsize size;
     if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &size) == 0) {
       cols = std::max(0, (int)size.ws_col - 1);
     }
 #  endif // HAVE_TERMIOS_H
-#else    // __MINGW32__
+#else    // _WIN32
     CONSOLE_SCREEN_BUFFER_INFO info;
     if (::GetConsoleScreenBufferInfo(::GetStdHandle(STD_OUTPUT_HANDLE),
                                      &info)) {
       cols = std::max(0, info.dwSize.X - 2);
     }
-#endif   // !__MINGW32__
+#endif   // !_WIN32
     std::string line(cols, ' ');
     global::cout()->printf("\r%s\r", line.c_str());
   }

@@ -57,7 +57,17 @@
 #  include <malloc.h>
 #endif // HAVE_MALLOC_H
 
+#ifndef HAVE_STRNCASECMP
+#  include "strncasecmp.h"
+#endif // HAVE_STRNCASECMP
+
 #include "strptime.h"
+
+#ifdef _WIN32
+#define my_tzname _tzname
+#else
+#define my_tzname tzname
+#endif
 
 static const char* abb_weekdays[] = {"Sun", "Mon", "Tue", "Wed",
                                      "Thu", "Fri", "Sat", NULL};
@@ -409,10 +419,10 @@ static char* _strptime(const char* buf, const char* format, struct tm* timeptr,
             if (0 == strcmp(zonestr, "GMT")) {
               *gmt = 1;
             }
-            else if (0 == strcmp(zonestr, tzname[0])) {
+            else if (0 == strcmp(zonestr, my_tzname[0])) {
               timeptr->tm_isdst = 0;
             }
-            else if (0 == strcmp(zonestr, tzname[1])) {
+            else if (0 == strcmp(zonestr, my_tzname[1])) {
               timeptr->tm_isdst = 1;
             }
             else {

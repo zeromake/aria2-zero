@@ -40,7 +40,7 @@
 #include <memory>
 #include <random>
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 #  include <wincrypt.h>
 #endif
 
@@ -52,11 +52,11 @@ private:
   SimpleRandomizer();
 
 private:
-#ifdef __MINGW32__
+#ifdef _WIN32
   HCRYPTPROV provider_;
 #else
   std::mt19937 gen_;
-#endif // ! __MINGW32__
+#endif // ! _WIN32
 
 public:
   typedef std::mt19937::result_type result_type;

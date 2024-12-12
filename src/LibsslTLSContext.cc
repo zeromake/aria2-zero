@@ -97,9 +97,17 @@ TLSContext* TLSContext::make(TLSSessionSide side, TLSVersion minVer)
   return new OpenSSLTLSContext(side, minVer);
 }
 
+
 OpenSSLTLSContext::OpenSSLTLSContext(TLSSessionSide side, TLSVersion minVer)
     : sslCtx_(nullptr), side_(side), verifyPeer_(true)
 {
+  int ssl_global_op = 0;
+#ifdef SSL_OP_SINGLE_ECDH_USE
+  ssl_global_op |= SSL_OP_SINGLE_ECDH_USE;
+#endif // SSL_OP_SINGLE_ECDH_USE
+#ifdef SSL_OP_NO_COMPRESSION
+  ssl_global_op |= SSL_OP_NO_COMPRESSION;
+#endif // SSL_OP_NO_COMPRESSION
   sslCtx_ = SSL_CTX_new(SSLv23_method());
   if (sslCtx_) {
     good_ = true;
@@ -131,14 +139,7 @@ OpenSSLTLSContext::OpenSSLTLSContext(TLSSessionSide side, TLSVersion minVer)
   };
 
   // Disable SSLv2 and enable all workarounds for buggy servers
-  SSL_CTX_set_options(sslCtx_, SSL_OP_ALL | SSL_OP_NO_SSLv2 | ver_opts
-#ifdef SSL_OP_SINGLE_ECDH_USE
-                                   | SSL_OP_SINGLE_ECDH_USE
-#endif // SSL_OP_SINGLE_ECDH_USE
-#ifdef SSL_OP_NO_COMPRESSION
-                                   | SSL_OP_NO_COMPRESSION
-#endif // SSL_OP_NO_COMPRESSION
-  );
+  SSL_CTX_set_options(sslCtx_, SSL_OP_ALL | SSL_OP_NO_SSLv2 | ver_opts | ssl_global_op);
   SSL_CTX_set_mode(sslCtx_, SSL_MODE_AUTO_RETRY);
   SSL_CTX_set_mode(sslCtx_, SSL_MODE_ENABLE_PARTIAL_WRITE);
 #ifdef SSL_MODE_RELEASE_BUFFERS

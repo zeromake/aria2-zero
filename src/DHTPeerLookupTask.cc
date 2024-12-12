@@ -90,7 +90,7 @@ DHTPeerLookupTask::createMessage(const std::shared_ptr<DHTNode>& remoteNode)
 
 std::unique_ptr<DHTMessageCallback> DHTPeerLookupTask::createCallback()
 {
-  return make_unique<DHTPeerLookupTaskCallback>(this);
+  return aria2::make_unique<DHTPeerLookupTaskCallback>(this);
 }
 
 void DHTPeerLookupTask::onFinish()

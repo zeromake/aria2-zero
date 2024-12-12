@@ -57,7 +57,7 @@ void WebSocketResponseCommand::afterSend(
 {
   auto wsSession = std::make_shared<WebSocketSession>(httpServer->getSocket(),
                                                       getDownloadEngine());
-  auto command = make_unique<WebSocketInteractionCommand>(
+  auto command = aria2::make_unique<WebSocketInteractionCommand>(
       getCuid(), wsSession, e, wsSession->getSocket());
   wsSession->setCommand(command.get());
   e->addCommand(std::move(command));

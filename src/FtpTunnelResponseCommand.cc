@@ -62,13 +62,13 @@ std::unique_ptr<Command> FtpTunnelResponseCommand::getNextCommand()
 {
 #ifdef HAVE_LIBSSH2
   if (getRequest()->getProtocol() == "sftp") {
-    return make_unique<SftpNegotiationCommand>(
+    return aria2::make_unique<SftpNegotiationCommand>(
         getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
         getDownloadEngine(), getSocket());
   }
 #endif // HAVE_LIBSSH2
 
-  return make_unique<FtpNegotiationCommand>(getCuid(), getRequest(),
+  return aria2::make_unique<FtpNegotiationCommand>(getCuid(), getRequest(),
                                             getFileEntry(), getRequestGroup(),
                                             getDownloadEngine(), getSocket());
 }

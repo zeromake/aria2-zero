@@ -33,22 +33,22 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 #  undef SIZE_MAX
-#endif // __MINGW32__
+#endif // _WIN32
 
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif // HAVE_CONFIG_H
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 #  ifndef _WIN32_WINNT
 #    define _WIN32_WINNT 0x501
 #  endif // _WIN32_WINNT
 #  include <winsock2.h>
 #  undef ERROR
 #  include <ws2tcpip.h>
-#endif // __MINGW32__
+#endif // _WIN32
 
 #ifdef HAVE_SYS_SOCKET_H
 #  include <sys/socket.h>
@@ -240,7 +240,7 @@ extern "C" {
 #endif
 
 /* Nexenta OS(GNU/Solaris OS) defines `struct addrinfo' in netdb.h */
-#if !defined(__MINGW32__) && !defined(__sun)
+#if !defined(_WIN32) && !defined(__sun)
 
 /*
  * struct addrinfo.
@@ -256,24 +256,17 @@ struct addrinfo {
   struct addrinfo* ai_next;
 };
 
-#endif // !__MINGW32__ && !__sun
+#endif // !_WIN32 && !__sun
 
 /*
  * Functions.
  */
-#ifdef __STDC__
 const char* gai_strerror(int);
 void freeaddrinfo(struct addrinfo*);
 int getaddrinfo(const char*, const char*, const struct addrinfo*,
                 struct addrinfo**);
 int getnameinfo(const struct sockaddr*, socklen_t, char*, socklen_t, char*,
                 socklen_t, int);
-#else
-const char* gai_strerror();
-void freeaddrinfo();
-int getaddrinfo();
-int getnameinfo();
-#endif
 
 #ifdef __cplusplus
 };

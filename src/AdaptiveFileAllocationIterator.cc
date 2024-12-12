@@ -66,18 +66,18 @@ void AdaptiveFileAllocationIterator::allocateChunk()
         offset_ += len;
       }
       A2_LOG_DEBUG("File system supports fallocate.");
-      allocator_ = make_unique<FallocFileAllocationIterator>(stream_, offset_,
+      allocator_ = aria2::make_unique<FallocFileAllocationIterator>(stream_, offset_,
                                                              totalLength_);
     }
     catch (RecoverableException& e) {
       A2_LOG_DEBUG("File system does not support fallocate.");
-      auto salloc = make_unique<SingleFileAllocationIterator>(stream_, offset_,
+      auto salloc = aria2::make_unique<SingleFileAllocationIterator>(stream_, offset_,
                                                               totalLength_);
       salloc->init();
       allocator_ = std::move(salloc);
     }
 #else  // !HAVE_FALLOCATE
-    auto salloc = make_unique<SingleFileAllocationIterator>(stream_, offset_,
+    auto salloc = aria2::make_unique<SingleFileAllocationIterator>(stream_, offset_,
                                                             totalLength_);
     salloc->init();
     allocator_ = std::move(salloc);

@@ -202,7 +202,7 @@ DefaultBtRequestFactory::createRequestMessagesOnEndGame(size_t max)
        itr != eoi && requests.size() < max; ++itr) {
     auto& piece = *itr;
     const size_t mislen = piece->getBitfieldLength();
-    auto misbitfield = make_unique<unsigned char[]>(mislen);
+    auto misbitfield = aria2::make_unique<unsigned char[]>(mislen);
 
     piece->getAllMissingBlockIndexes(misbitfield.get(), mislen);
 

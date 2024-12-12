@@ -434,7 +434,7 @@ bool HttpResponseCommand::handleOtherEncoding(
     // See also FtpNegotiationCommand::onFileSizeDetermined()
     if (getDownloadContext()->isChecksumVerificationNeeded()) {
       A2_LOG_DEBUG("Zero length file exists. Verify checksum.");
-      auto entry = make_unique<ChecksumCheckIntegrityEntry>(getRequestGroup());
+      auto entry = aria2::make_unique<ChecksumCheckIntegrityEntry>(getRequestGroup());
       entry->initValidator();
       getPieceStorage()->getDiskAdaptor()->openExistingFile();
       getDownloadEngine()->getCheckIntegrityMan()->pushEntry(std::move(entry));
@@ -464,7 +464,7 @@ bool HttpResponseCommand::handleOtherEncoding(
     // See also FtpNegotiationCommand::onFileSizeDetermined()
     if (getDownloadContext()->isChecksumVerificationNeeded()) {
       A2_LOG_DEBUG("Verify checksum for zero-length file");
-      auto entry = make_unique<ChecksumCheckIntegrityEntry>(getRequestGroup());
+      auto entry = aria2::make_unique<ChecksumCheckIntegrityEntry>(getRequestGroup());
       entry->initValidator();
       getDownloadEngine()->getCheckIntegrityMan()->pushEntry(std::move(entry));
     }
@@ -492,7 +492,7 @@ bool HttpResponseCommand::skipResponseBody(
   // We don't use Content-Encoding here because this response body is just
   // thrown away.
   auto httpResponsePtr = httpResponse.get();
-  auto command = make_unique<HttpSkipResponseCommand>(
+  auto command = aria2::make_unique<HttpSkipResponseCommand>(
       getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
       httpConnection_, std::move(httpResponse), getDownloadEngine(),
       getSocket());
@@ -539,7 +539,7 @@ HttpResponseCommand::createHttpDownloadCommand(
     std::unique_ptr<StreamFilter> filter)
 {
 
-  auto command = make_unique<HttpDownloadCommand>(
+  auto command = aria2::make_unique<HttpDownloadCommand>(
       getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
       std::move(httpResponse), httpConnection_, getDownloadEngine(),
       getSocket());

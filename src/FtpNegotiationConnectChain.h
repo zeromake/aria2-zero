@@ -47,7 +47,7 @@ struct FtpNegotiationConnectChain : public ControlChain<ConnectCommand*> {
   virtual ~FtpNegotiationConnectChain() {}
   virtual int run(ConnectCommand* t, DownloadEngine* e) CXX11_OVERRIDE
   {
-    auto c = make_unique<FtpNegotiationCommand>(
+    auto c = aria2::make_unique<FtpNegotiationCommand>(
         t->getCuid(), t->getRequest(), t->getFileEntry(), t->getRequestGroup(),
         t->getDownloadEngine(), t->getSocket());
     c->setStatus(Command::STATUS_ONESHOT_REALTIME);

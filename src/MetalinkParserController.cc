@@ -64,7 +64,7 @@ MetalinkParserController::~MetalinkParserController() = default;
 
 void MetalinkParserController::reset()
 {
-  metalinker_ = make_unique<Metalinker>();
+  metalinker_ = aria2::make_unique<Metalinker>();
 }
 
 std::unique_ptr<Metalinker> MetalinkParserController::getResult()
@@ -74,7 +74,7 @@ std::unique_ptr<Metalinker> MetalinkParserController::getResult()
 
 void MetalinkParserController::newEntryTransaction()
 {
-  tEntry_ = make_unique<MetalinkEntry>();
+  tEntry_ = aria2::make_unique<MetalinkEntry>();
   tResource_.reset();
   tMetaurl_.reset();
   tChecksum_.reset();
@@ -88,7 +88,7 @@ void MetalinkParserController::setFileNameOfEntry(std::string filename)
     return;
   }
   if (!tEntry_->file) {
-    tEntry_->file = make_unique<FileEntry>(util::escapePath(filename), 0, 0);
+    tEntry_->file = aria2::make_unique<FileEntry>(util::escapePath(filename), 0, 0);
   }
   else {
     tEntry_->file->setPath(util::escapePath(filename));
@@ -169,7 +169,7 @@ void MetalinkParserController::newResourceTransaction()
   if (!tEntry_) {
     return;
   }
-  tResource_ = make_unique<MetalinkResource>();
+  tResource_ = aria2::make_unique<MetalinkResource>();
 }
 
 void MetalinkParserController::setURLOfResource(std::string url)
@@ -245,7 +245,7 @@ void MetalinkParserController::commitResourceTransaction()
   }
 #ifdef ENABLE_BITTORRENT
   if (tResource_->type == MetalinkResource::TYPE_BITTORRENT) {
-    auto metaurl = make_unique<MetalinkMetaurl>();
+    auto metaurl = aria2::make_unique<MetalinkMetaurl>();
     metaurl->url = std::move(tResource_->url);
     metaurl->priority = tResource_->priority;
     metaurl->mediatype = MetalinkMetaurl::MEDIATYPE_TORRENT;
@@ -270,7 +270,7 @@ void MetalinkParserController::newChecksumTransaction()
   if (!tEntry_) {
     return;
   }
-  tChecksum_ = make_unique<Checksum>();
+  tChecksum_ = aria2::make_unique<Checksum>();
 }
 
 void MetalinkParserController::setTypeOfChecksum(std::string type)
@@ -323,7 +323,7 @@ void MetalinkParserController::newChunkChecksumTransactionV4()
   if (!tEntry_) {
     return;
   }
-  tChunkChecksumV4_ = make_unique<ChunkChecksum>();
+  tChunkChecksumV4_ = aria2::make_unique<ChunkChecksum>();
   tempChunkChecksumsV4_.clear();
 }
 
@@ -391,7 +391,7 @@ void MetalinkParserController::newChunkChecksumTransaction()
   if (!tEntry_) {
     return;
   }
-  tChunkChecksum_ = make_unique<ChunkChecksum>();
+  tChunkChecksum_ = aria2::make_unique<ChunkChecksum>();
   tempChunkChecksums_.clear();
 }
 
@@ -495,7 +495,7 @@ void MetalinkParserController::newSignatureTransaction()
   if (!tEntry_) {
     return;
   }
-  tSignature_ = make_unique<Signature>();
+  tSignature_ = aria2::make_unique<Signature>();
 }
 
 void MetalinkParserController::setTypeOfSignature(std::string type)
@@ -540,7 +540,7 @@ void MetalinkParserController::newMetaurlTransaction()
   if (!tEntry_) {
     return;
   }
-  tMetaurl_ = make_unique<MetalinkMetaurl>();
+  tMetaurl_ = aria2::make_unique<MetalinkMetaurl>();
 }
 
 void MetalinkParserController::setURLOfMetaurl(std::string url)

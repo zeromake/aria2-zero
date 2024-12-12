@@ -143,7 +143,7 @@ int WinConsoleFile::vprintf(const char* format, va_list va)
   if (r <= 0) {
     return 0;
   }
-  auto buf = make_unique<char[]>(++r);
+  auto buf = aria2::make_unique<char[]>(++r);
   r = vsnprintf(buf.get(), r, format, va);
   if (r < 0) {
     return 0;

@@ -44,13 +44,13 @@ class AbstractDiskWriter : public DiskWriter {
 private:
   std::string filename_;
 
-#ifdef __MINGW32__
+#ifdef _WIN32
   HANDLE fd_;
   // The handle for memory mapped file. mmap equivalent in Windows.
   HANDLE mapView_;
-#else  // !__MINGW32__
+#else  // !_WIN32
   int fd_;
-#endif // !__MINGW32__
+#endif // !_WIN32
 
   bool readOnly_;
 

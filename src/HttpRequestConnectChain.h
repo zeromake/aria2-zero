@@ -51,7 +51,7 @@ struct HttpRequestConnectChain : public ControlChain<ConnectCommand*> {
   {
     auto b = std::make_shared<SocketRecvBuffer>(t->getSocket());
     auto k = std::make_shared<HttpConnection>(t->getCuid(), t->getSocket(), b);
-    auto c = make_unique<HttpRequestCommand>(
+    auto c = aria2::make_unique<HttpRequestCommand>(
         t->getCuid(), t->getRequest(), t->getFileEntry(), t->getRequestGroup(),
         k, e, t->getSocket());
     c->setProxyRequest(t->getProxyRequest());

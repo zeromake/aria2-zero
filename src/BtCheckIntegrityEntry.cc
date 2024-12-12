@@ -69,7 +69,7 @@ void BtCheckIntegrityEntry::onDownloadIncomplete(
     diskAdaptor->openFile();
   }
   proceedFileAllocation(
-      commands, make_unique<BtFileAllocationEntry>(getRequestGroup()), e);
+      commands, aria2::make_unique<BtFileAllocationEntry>(getRequestGroup()), e);
 }
 
 void BtCheckIntegrityEntry::onDownloadFinished(
@@ -90,7 +90,7 @@ void BtCheckIntegrityEntry::onDownloadFinished(
   if (!option->getAsBool(PREF_HASH_CHECK_ONLY) &&
       option->getAsBool(PREF_BT_HASH_CHECK_SEED)) {
     proceedFileAllocation(
-        commands, make_unique<BtFileAllocationEntry>(getRequestGroup()), e);
+        commands, aria2::make_unique<BtFileAllocationEntry>(getRequestGroup()), e);
   }
 }
 

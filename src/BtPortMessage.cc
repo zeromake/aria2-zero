@@ -68,7 +68,7 @@ std::unique_ptr<BtPortMessage> BtPortMessage::create(const unsigned char* data,
   bittorrent::assertPayloadLengthEqual(3, dataLength, NAME);
   bittorrent::assertID(ID, data, NAME);
   uint16_t port = bittorrent::getShortIntParam(data, 1);
-  return make_unique<BtPortMessage>(port);
+  return aria2::make_unique<BtPortMessage>(port);
 }
 
 void BtPortMessage::doReceivedAction()

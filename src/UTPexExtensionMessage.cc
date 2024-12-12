@@ -199,7 +199,7 @@ UTPexExtensionMessage::create(const unsigned char* data, size_t len)
     throw DL_ABORT_EX(fmt(MSG_TOO_SMALL_PAYLOAD_SIZE, EXTENSION_NAME,
                           static_cast<unsigned long>(len)));
   }
-  auto msg = make_unique<UTPexExtensionMessage>(*data);
+  auto msg = aria2::make_unique<UTPexExtensionMessage>(*data);
 
   auto decoded = bencode2::decode(data + 1, len - 1);
   const Dict* dict = downcast<Dict>(decoded);

@@ -23,21 +23,18 @@
  *  Danny Smith <dannysmith@users.sourceforge.net>
  */
 
-#include <sys/time.h>
-
-#ifdef __MINGW32__
-
-#  define WIN32_LEAN_AND_MEAN
-#  include <windows.h>
+#include "gettimeofday.h"
+#include <WinSock2.h>
+#include <windows.h>
 
 /* Offset between 1/1/1601 and 1/1/1970 in 100 nanosec units */
-#  define _W32_FT_OFFSET (116444736000000000ULL)
+#define _W32_FT_OFFSET (116444736000000000ULL)
 
-int __cdecl gettimeofday(struct timeval* __restrict__ tp,
-                         void* __restrict__ tzp __attribute__((unused)))
+int gettimeofday(struct timeval* tp,
+                         void* tzp)
 {
   union {
-    unsigned long long ns100; /*time since 1 Jan 1601 in 100ns units */
+    unsigned long long ns100;
     FILETIME ft;
   } _now;
 
@@ -46,9 +43,5 @@ int __cdecl gettimeofday(struct timeval* __restrict__ tp,
     tp->tv_usec = (long)((_now.ns100 / 10ULL) % 1000000ULL);
     tp->tv_sec = (long)((_now.ns100 - _W32_FT_OFFSET) / 10000000ULL);
   }
-  /* Always return 0 as per Open Group Base Specifications Issue 6.
-     Do not set errno on error.  */
   return 0;
 }
-
-#endif // __MINGW32__

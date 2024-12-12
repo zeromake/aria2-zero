@@ -34,8 +34,8 @@
 /* copyright --> */
 #include "Context.h"
 
-#include <unistd.h>
-#include <getopt.h>
+#include "a2io.h"
+#include "a2getopt.h"
 
 #ifdef HAVE_SYS_RESOURCE_H
 #  include <sys/resource.h>

@@ -69,9 +69,9 @@ void DHKeyExchange::init(const unsigned char* prime, size_t primeBits,
       n(reinterpret_cast<const unsigned char*>(gen.c_str()), gen.length());
 
   size_t pbytes = (privateKeyBits + 7) / 8;
-  unsigned char buf[pbytes];
-  util::generateRandomData(buf, pbytes);
-  privateKey_ = n(buf, pbytes);
+  auto buf = aria2::make_unique<unsigned char>(pbytes);
+  util::generateRandomData(buf.get(), pbytes);
+  privateKey_ = n(buf.get(), pbytes);
 
   keyLength_ = (primeBits + 7) / 8;
 }

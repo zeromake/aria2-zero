@@ -99,7 +99,7 @@ BtExtendedMessage::create(ExtensionMessageFactory* factory,
   bittorrent::assertPayloadLengthGreater(1, dataLength, NAME);
   bittorrent::assertID(ID, data, NAME);
   assert(factory);
-  return make_unique<BtExtendedMessage>(
+  return aria2::make_unique<BtExtendedMessage>(
       factory->createMessage(data + 1, dataLength - 1));
 }
 

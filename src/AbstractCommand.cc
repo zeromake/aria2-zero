@@ -86,7 +86,7 @@ AbstractCommand::AbstractCommand(
       socket_(s),
       socketRecvBuffer_(socketRecvBuffer),
 #ifdef ENABLE_ASYNC_DNS
-      asyncNameResolverMan_(make_unique<AsyncNameResolverMan>()),
+      asyncNameResolverMan_(aria2::make_unique<AsyncNameResolverMan>()),
 #endif // ENABLE_ASYNC_DNS
       requestGroup_(requestGroup),
       e_(e),
@@ -456,7 +456,7 @@ bool AbstractCommand::prepareForRetry(time_t wait)
   }
 
   auto command =
-      make_unique<CreateRequestCommand>(getCuid(), requestGroup_, e_);
+      aria2::make_unique<CreateRequestCommand>(getCuid(), requestGroup_, e_);
   if (wait == 0) {
     e_->setNoWait(true);
   }

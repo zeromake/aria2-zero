@@ -96,7 +96,7 @@
 
 namespace aria2 {
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 namespace {
 int utf8ToWChar(wchar_t* out, size_t outLength, const char* src)
 {
@@ -118,7 +118,7 @@ std::wstring utf8ToWChar(const char* src)
   if (len <= 0) {
     abort();
   }
-  auto buf = make_unique<wchar_t[]>((size_t)len);
+  auto buf = aria2::make_unique<wchar_t[]>((size_t)len);
   len = utf8ToWChar(buf.get(), len, src);
   if (len <= 0) {
     abort();
@@ -139,7 +139,7 @@ std::string wCharToUtf8(const std::wstring& wsrc)
   if (len <= 0) {
     abort();
   }
-  auto buf = make_unique<char[]>((size_t)len);
+  auto buf = aria2::make_unique<char[]>((size_t)len);
   len = wCharToUtf8(buf.get(), len, wsrc.c_str());
   if (len <= 0) {
     abort();
@@ -157,7 +157,7 @@ std::string toForwardSlash(const std::string& src)
   return dst;
 }
 
-#endif // __MINGW32__
+#endif // _WIN32
 
 namespace util {
 
@@ -1742,7 +1742,7 @@ void setGlobalSignalHandler(int sig, sigset_t* mask, signal_handler_t handler,
 #endif // HAVE_SIGACTION
 }
 
-#ifndef __MINGW32__
+#ifndef _WIN32
 std::string getHomeDir()
 {
   const char* p = getenv("HOME");
@@ -1758,7 +1758,7 @@ std::string getHomeDir()
   return A2STR::NIL;
 }
 
-#else  // __MINGW32__
+#else  // _WIN32
 
 std::string getHomeDir()
 {
@@ -1781,7 +1781,7 @@ std::string getHomeDir()
   }
   return A2STR::NIL;
 }
-#endif // __MINGW32__
+#endif // _WIN32
 
 std::string getXDGDir(const std::string& environmentVariable,
                       const std::string& fallbackDirectory)
@@ -1789,11 +1789,11 @@ std::string getXDGDir(const std::string& environmentVariable,
   std::string filename;
   const char* p = getenv(environmentVariable.c_str());
   if (p &&
-#ifndef __MINGW32__
+#ifndef _WIN32
       p[0] == '/'
-#else  // __MINGW32__
+#else  // _WIN32
       p[0] && p[1] == ':'
-#endif // __MINGW32__
+#endif // _WIN32
   ) {
     filename = p;
   }
@@ -1805,9 +1805,12 @@ std::string getXDGDir(const std::string& environmentVariable,
 
 std::string getConfigFile()
 {
-  std::string filename = getHomeDir() + "/.aria2/aria2.conf";
+  std::string filename = File::getCurrentDir() + "/.aria2/aria2.conf";
   if (!File(filename).exists()) {
-    filename = getXDGDir("XDG_CONFIG_HOME", getHomeDir() + "/.config") +
+    filename = File::getCurrentDir() + "/aria2.conf";
+  }
+  if (!File(filename).exists()) {
+    filename = getXDGDir("XDG_CONFIG_HOME", File::getCurrentDir() + "/.config") +
                "/aria2/aria2.conf";
   }
   return filename;
@@ -1816,9 +1819,12 @@ std::string getConfigFile()
 std::string getDHTFile(bool ipv6)
 {
   std::string filename =
-      getHomeDir() + (ipv6 ? "/.aria2/dht6.dat" : "/.aria2/dht.dat");
+      File::getCurrentDir() + (ipv6 ? "/.aria2/dht6.dat" : "/.aria2/dht.dat");
   if (!File(filename).exists()) {
-    filename = getXDGDir("XDG_CACHE_HOME", getHomeDir() + "/.cache") +
+    filename = File::getCurrentDir() + (ipv6 ? "/dht6.dat" : "/dht.dat");
+  }
+  if (!File(filename).exists()) {
+    filename = getXDGDir("XDG_CACHE_HOME", File::getCurrentDir() + "/.cache") +
                (ipv6 ? "/aria2/dht6.dat" : "/aria2/dht.dat");
   }
   return filename;
@@ -2108,17 +2114,20 @@ std::string applyDir(const std::string& dir, const std::string& relPath)
       s += relPath;
     }
     else {
+      while (s.back() == '/' || s.back() == '\\') {
+        s.pop_back();
+      }
       s += "/";
       s += relPath;
     }
   }
-#ifdef __MINGW32__
+#ifdef _WIN32
   for (std::string::iterator i = s.begin(), eoi = s.end(); i != eoi; ++i) {
     if (*i == '\\') {
       *i = '/';
     }
   }
-#endif // __MINGW32__
+#endif // _WIN32
   return s;
 }
 
@@ -2179,19 +2188,19 @@ bool detectDirTraversal(const std::string& s)
 std::string escapePath(const std::string& s)
 {
 // We don't escape '/' because we use it as a path separator.
-#ifdef __MINGW32__
+#ifdef _WIN32
   static const char WIN_INVALID_PATH_CHARS[] = {'"', '*', ':',  '<',
                                                 '>', '?', '\\', '|'};
-#endif // __MINGW32__
+#endif // _WIN32
   std::string d;
   for (auto cc : s) {
     unsigned char c = cc;
     if (in(c, 0x00u, 0x1fu) || c == 0x7fu
-#ifdef __MINGW32__
+#ifdef _WIN32
         || std::find(std::begin(WIN_INVALID_PATH_CHARS),
                      std::end(WIN_INVALID_PATH_CHARS),
                      c) != std::end(WIN_INVALID_PATH_CHARS)
-#endif // __MINGW32__
+#endif // _WIN32
     ) {
       d += fmt("%%%02X", c);
     }
@@ -2234,7 +2243,7 @@ void executeHook(const std::string& command, a2_gid_t gid, size_t numFiles,
 {
   const std::string gidStr = GroupId::toHex(gid);
   const std::string numFilesStr = util::uitos(numFiles);
-#ifndef __MINGW32__
+#ifndef _WIN32
   A2_LOG_INFO(fmt("Executing user command: %s %s %s %s", command.c_str(),
                   gidStr.c_str(), numFilesStr.c_str(), firstFilename.c_str()));
   pid_t cpid = fork();
@@ -2253,7 +2262,7 @@ void executeHook(const std::string& command, a2_gid_t gid, size_t numFiles,
   }
   return;
 
-#else // __MINGW32__
+#else // _WIN32
   PROCESS_INFORMATION pi;
   STARTUPINFOW si;
 
@@ -2294,7 +2303,7 @@ void executeHook(const std::string& command, a2_gid_t gid, size_t numFiles,
   }
   int cmdlineLen = utf8ToWChar(nullptr, 0, cmdline.c_str());
   assert(cmdlineLen > 0);
-  auto wcharCmdline = make_unique<wchar_t[]>(cmdlineLen);
+  auto wcharCmdline = aria2::make_unique<wchar_t[]>(cmdlineLen);
   cmdlineLen = utf8ToWChar(wcharCmdline.get(), cmdlineLen, cmdline.c_str());
   assert(cmdlineLen > 0);
   A2_LOG_INFO(fmt("Executing user command: %s", cmdline.c_str()));
@@ -2483,7 +2492,7 @@ TLSVersion toTLSVersion(const std::string& ver)
 }
 #endif // ENABLE_SSL
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 std::string formatLastError(int errNum)
 {
   std::array<char, 4_k> buf;
@@ -2498,11 +2507,11 @@ std::string formatLastError(int errNum)
 
   return buf.data();
 }
-#endif // __MINGW32__
+#endif // _WIN32
 
 void make_fd_cloexec(int fd)
 {
-#ifndef __MINGW32__
+#ifndef _WIN32
   int flags;
 
   // TODO from linux man page, fcntl() with F_GETFD or F_SETFD does
@@ -2516,10 +2525,10 @@ void make_fd_cloexec(int fd)
 
   while (fcntl(fd, F_SETFD, flags | FD_CLOEXEC) == -1 && errno == EINTR)
     ;
-#endif // !__MINGW32__
+#endif // !_WIN32
 }
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 bool gainPrivilege(LPCTSTR privName)
 {
   LUID luid;
@@ -2562,7 +2571,7 @@ bool gainPrivilege(LPCTSTR privName)
     return false;
   }
 
-  auto buf = make_unique<char[]>(bufsize);
+  auto buf = aria2::make_unique<char[]>(bufsize);
   if (!GetTokenInformation(token, TokenPrivileges, buf.get(), bufsize,
                            &bufsize)) {
     auto errNum = GetLastError();
@@ -2588,7 +2597,7 @@ bool gainPrivilege(LPCTSTR privName)
 
   return false;
 }
-#endif // __MINGW32__
+#endif // _WIN32
 
 } // namespace util
 

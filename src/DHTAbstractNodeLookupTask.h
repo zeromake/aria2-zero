@@ -76,7 +76,7 @@ private:
                  const std::vector<std::shared_ptr<DHTNode>>& nodes) const
   {
     for (auto& node : nodes) {
-      entries.push_back(make_unique<DHTNodeLookupEntry>(node));
+      entries.push_back(aria2::make_unique<DHTNodeLookupEntry>(node));
     }
   }
 

@@ -64,13 +64,13 @@ namespace aria2 {
 HttpRequestEntry::HttpRequestEntry(std::unique_ptr<HttpRequest> httpRequest)
     : httpRequest_{std::move(httpRequest)},
       proc_{
-          make_unique<HttpHeaderProcessor>(HttpHeaderProcessor::CLIENT_PARSER)}
+          aria2::make_unique<HttpHeaderProcessor>(HttpHeaderProcessor::CLIENT_PARSER)}
 {
 }
 
 void HttpRequestEntry::resetHttpHeaderProcessor()
 {
-  proc_ = make_unique<HttpHeaderProcessor>(HttpHeaderProcessor::CLIENT_PARSER);
+  proc_ = aria2::make_unique<HttpHeaderProcessor>(HttpHeaderProcessor::CLIENT_PARSER);
 }
 
 std::unique_ptr<HttpRequest> HttpRequestEntry::popHttpRequest()
@@ -130,7 +130,7 @@ void HttpConnection::sendRequest(std::unique_ptr<HttpRequest> httpRequest,
   socketBuffer_.pushStr(std::move(request));
   socketBuffer_.send();
   outstandingHttpRequests_.push_back(
-      make_unique<HttpRequestEntry>(std::move(httpRequest)));
+      aria2::make_unique<HttpRequestEntry>(std::move(httpRequest)));
 }
 
 void HttpConnection::sendRequest(std::unique_ptr<HttpRequest> httpRequest)
@@ -169,7 +169,7 @@ std::unique_ptr<HttpResponse> HttpConnection::receiveResponse()
       return nullptr;
     }
 
-    auto httpResponse = make_unique<HttpResponse>();
+    auto httpResponse = aria2::make_unique<HttpResponse>();
     httpResponse->setCuid(cuid_);
     httpResponse->setHttpHeader(std::move(result));
     httpResponse->setHttpRequest(

@@ -89,7 +89,7 @@ std::unique_ptr<EventPoll> createEventPoll(Option* op)
   const std::string& pollMethod = op->get(PREF_EVENT_POLL);
 #ifdef HAVE_LIBUV
   if (pollMethod == V_LIBUV) {
-    auto ep = make_unique<LibuvEventPoll>();
+    auto ep = aria2::make_unique<LibuvEventPoll>();
     if (!ep->good()) {
       throw DL_ABORT_EX("Initializing LibuvEventPoll failed."
                         " Try --event-poll=select");
@@ -100,7 +100,7 @@ std::unique_ptr<EventPoll> createEventPoll(Option* op)
 #endif // HAVE_LIBUV
 #ifdef HAVE_EPOLL
       if (pollMethod == V_EPOLL) {
-    auto ep = make_unique<EpollEventPoll>();
+    auto ep = aria2::make_unique<EpollEventPoll>();
     if (!ep->good()) {
       throw DL_ABORT_EX("Initializing EpollEventPoll failed."
                         " Try --event-poll=select");
@@ -111,7 +111,7 @@ std::unique_ptr<EventPoll> createEventPoll(Option* op)
 #endif // HAVE_EPLL
 #ifdef HAVE_KQUEUE
       if (pollMethod == V_KQUEUE) {
-    auto kp = make_unique<KqueueEventPoll>();
+    auto kp = aria2::make_unique<KqueueEventPoll>();
     if (!kp->good()) {
       throw DL_ABORT_EX("Initializing KqueueEventPoll failed."
                         " Try --event-poll=select");
@@ -122,7 +122,7 @@ std::unique_ptr<EventPoll> createEventPoll(Option* op)
 #endif // HAVE_KQUEUE
 #ifdef HAVE_PORT_ASSOCIATE
       if (pollMethod == V_PORT) {
-    auto pp = make_unique<PortEventPoll>();
+    auto pp = aria2::make_unique<PortEventPoll>();
     if (!pp->good()) {
       throw DL_ABORT_EX("Initializing PortEventPoll failed."
                         " Try --event-poll=select");
@@ -133,12 +133,12 @@ std::unique_ptr<EventPoll> createEventPoll(Option* op)
 #endif // HAVE_PORT_ASSOCIATE
 #ifdef HAVE_POLL
       if (pollMethod == V_POLL) {
-    return make_unique<PollEventPoll>();
+    return aria2::make_unique<PollEventPoll>();
   }
   else
 #endif // HAVE_POLL
     if (pollMethod == V_SELECT) {
-      return make_unique<SelectEventPoll>();
+      return aria2::make_unique<SelectEventPoll>();
     }
   assert(0);
   return nullptr;
@@ -150,48 +150,48 @@ std::unique_ptr<DownloadEngine> DownloadEngineFactory::newDownloadEngine(
 {
   const size_t MAX_CONCURRENT_DOWNLOADS =
       op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS);
-  auto e = make_unique<DownloadEngine>(createEventPoll(op));
+  auto e = aria2::make_unique<DownloadEngine>(createEventPoll(op));
   e->setOption(op);
   {
-    auto requestGroupMan = make_unique<RequestGroupMan>(
+    auto requestGroupMan = aria2::make_unique<RequestGroupMan>(
         std::move(requestGroups), MAX_CONCURRENT_DOWNLOADS, op);
     requestGroupMan->initWrDiskCache();
     e->setRequestGroupMan(std::move(requestGroupMan));
   }
-  e->setFileAllocationMan(make_unique<FileAllocationMan>());
-  e->setCheckIntegrityMan(make_unique<CheckIntegrityMan>());
+  e->setFileAllocationMan(aria2::make_unique<FileAllocationMan>());
+  e->setCheckIntegrityMan(aria2::make_unique<CheckIntegrityMan>());
   e->addRoutineCommand(
-      make_unique<FillRequestGroupCommand>(e->newCUID(), e.get()));
-  e->addRoutineCommand(make_unique<FileAllocationDispatcherCommand>(
+      aria2::make_unique<FillRequestGroupCommand>(e->newCUID(), e.get()));
+  e->addRoutineCommand(aria2::make_unique<FileAllocationDispatcherCommand>(
       e->newCUID(), e->getFileAllocationMan().get(), e.get()));
-  e->addRoutineCommand(make_unique<CheckIntegrityDispatcherCommand>(
+  e->addRoutineCommand(aria2::make_unique<CheckIntegrityDispatcherCommand>(
       e->newCUID(), e->getCheckIntegrityMan().get(), e.get()));
   e->addRoutineCommand(
-      make_unique<EvictSocketPoolCommand>(e->newCUID(), e.get(), 30_s));
+      aria2::make_unique<EvictSocketPoolCommand>(e->newCUID(), e.get(), 30_s));
 
   if (op->getAsInt(PREF_AUTO_SAVE_INTERVAL) > 0) {
-    e->addRoutineCommand(make_unique<AutoSaveCommand>(
+    e->addRoutineCommand(aria2::make_unique<AutoSaveCommand>(
         e->newCUID(), e.get(),
         std::chrono::seconds(op->getAsInt(PREF_AUTO_SAVE_INTERVAL))));
   }
   if (op->getAsInt(PREF_SAVE_SESSION_INTERVAL) > 0) {
-    e->addRoutineCommand(make_unique<SaveSessionCommand>(
+    e->addRoutineCommand(aria2::make_unique<SaveSessionCommand>(
         e->newCUID(), e.get(),
         std::chrono::seconds(op->getAsInt(PREF_SAVE_SESSION_INTERVAL))));
   }
   e->addRoutineCommand(
-      make_unique<HaveEraseCommand>(e->newCUID(), e.get(), 10_s));
+      aria2::make_unique<HaveEraseCommand>(e->newCUID(), e.get(), 10_s));
   {
     auto stopSec = op->getAsInt(PREF_STOP);
     if (stopSec > 0) {
-      e->addRoutineCommand(make_unique<TimedHaltCommand>(
+      e->addRoutineCommand(aria2::make_unique<TimedHaltCommand>(
           e->newCUID(), e.get(), std::chrono::seconds(stopSec)));
     }
   }
   if (op->defined(PREF_STOP_WITH_PROCESS)) {
     unsigned int pid = op->getAsInt(PREF_STOP_WITH_PROCESS);
     e->addRoutineCommand(
-        make_unique<WatchProcessCommand>(e->newCUID(), e.get(), pid));
+        aria2::make_unique<WatchProcessCommand>(e->newCUID(), e.get(), pid));
   }
   if (op->getAsBool(PREF_ENABLE_RPC)) {
     if (op->get(PREF_RPC_SECRET).empty() && op->get(PREF_RPC_USER).empty()) {
@@ -208,7 +208,7 @@ std::unique_ptr<DownloadEngine> DownloadEngineFactory::newDownloadEngine(
     static int families[] = {AF_INET, AF_INET6};
     size_t familiesLength = op->getAsBool(PREF_DISABLE_IPV6) ? 1 : 2;
     for (size_t i = 0; i < familiesLength; ++i) {
-      auto httpListenCommand = make_unique<HttpListenCommand>(
+      auto httpListenCommand = aria2::make_unique<HttpListenCommand>(
           e->newCUID(), e.get(), families[i], secure);
       if (httpListenCommand->bindPort(op->getAsInt(PREF_RPC_LISTEN_PORT))) {
         e->addCommand(std::move(httpListenCommand));

@@ -113,7 +113,7 @@ DHTSetup::setup(DownloadEngine* e, int family)
     }
 
     uint16_t port;
-    auto connection = make_unique<DHTConnectionImpl>(family);
+    auto connection = aria2::make_unique<DHTConnectionImpl>(family);
     {
       port = e->getBtRegistry()->getUdpPort();
       const std::string& addr = e->getOption()->get(
@@ -140,14 +140,14 @@ DHTSetup::setup(DownloadEngine* e, int family)
     A2_LOG_DEBUG(fmt("Initialized local node ID=%s",
                      util::toHex(localNode->getID(), DHT_ID_LENGTH).c_str()));
     auto tracker = std::make_shared<DHTMessageTracker>();
-    auto routingTable = make_unique<DHTRoutingTable>(localNode);
-    auto factory = make_unique<DHTMessageFactoryImpl>(family);
-    auto dispatcher = make_unique<DHTMessageDispatcherImpl>(tracker);
-    auto receiver = make_unique<DHTMessageReceiver>(tracker);
-    auto taskQueue = make_unique<DHTTaskQueueImpl>();
-    auto taskFactory = make_unique<DHTTaskFactoryImpl>();
-    auto peerAnnounceStorage = make_unique<DHTPeerAnnounceStorage>();
-    auto tokenTracker = make_unique<DHTTokenTracker>();
+    auto routingTable = aria2::make_unique<DHTRoutingTable>(localNode);
+    auto factory = aria2::make_unique<DHTMessageFactoryImpl>(family);
+    auto dispatcher = aria2::make_unique<DHTMessageDispatcherImpl>(tracker);
+    auto receiver = aria2::make_unique<DHTMessageReceiver>(tracker);
+    auto taskQueue = aria2::make_unique<DHTTaskQueueImpl>();
+    auto taskFactory = aria2::make_unique<DHTTaskFactoryImpl>();
+    auto peerAnnounceStorage = aria2::make_unique<DHTPeerAnnounceStorage>();
+    auto tokenTracker = aria2::make_unique<DHTTokenTracker>();
     // For now, UDPTrackerClient was enabled along with DHT
     auto udpTrackerClient = std::make_shared<UDPTrackerClient>();
     const auto messageTimeout =
@@ -194,7 +194,7 @@ DHTSetup::setup(DownloadEngine* e, int family)
             e->getOption()->getAsInt(prefEntryPointPort));
         std::vector<std::pair<std::string, uint16_t>> entryPoints;
         entryPoints.push_back(addr);
-        auto command = make_unique<DHTEntryPointNameResolveCommand>(
+        auto command = aria2::make_unique<DHTEntryPointNameResolveCommand>(
             e->newCUID(), e, family, entryPoints);
         command->setBootstrapEnabled(true);
         command->setTaskQueue(taskQueue.get());
@@ -208,7 +208,7 @@ DHTSetup::setup(DownloadEngine* e, int family)
       A2_LOG_INFO("No DHT entry point specified.");
     }
     {
-      auto command = make_unique<DHTInteractionCommand>(e->newCUID(), e);
+      auto command = aria2::make_unique<DHTInteractionCommand>(e->newCUID(), e);
       command->setMessageDispatcher(dispatcher.get());
       command->setMessageReceiver(receiver.get());
       command->setTaskQueue(taskQueue.get());
@@ -218,13 +218,13 @@ DHTSetup::setup(DownloadEngine* e, int family)
       tempRoutineCommands.push_back(std::move(command));
     }
     {
-      auto command = make_unique<DHTTokenUpdateCommand>(
+      auto command = aria2::make_unique<DHTTokenUpdateCommand>(
           e->newCUID(), e, DHT_TOKEN_UPDATE_INTERVAL);
       command->setTokenTracker(tokenTracker.get());
       tempCommands.push_back(std::move(command));
     }
     {
-      auto command = make_unique<DHTBucketRefreshCommand>(
+      auto command = aria2::make_unique<DHTBucketRefreshCommand>(
           e->newCUID(), e, DHT_BUCKET_REFRESH_CHECK_INTERVAL);
       command->setTaskQueue(taskQueue.get());
       command->setRoutingTable(routingTable.get());
@@ -232,14 +232,14 @@ DHTSetup::setup(DownloadEngine* e, int family)
       tempCommands.push_back(std::move(command));
     }
     {
-      auto command = make_unique<DHTPeerAnnounceCommand>(
+      auto command = aria2::make_unique<DHTPeerAnnounceCommand>(
           e->newCUID(), e, DHT_PEER_ANNOUNCE_CHECK_INTERVAL);
       command->setPeerAnnounceStorage(peerAnnounceStorage.get());
       tempCommands.push_back(std::move(command));
     }
     {
       auto command =
-          make_unique<DHTAutoSaveCommand>(e->newCUID(), e, family, 30_min);
+          aria2::make_unique<DHTAutoSaveCommand>(e->newCUID(), e, family, 30_min);
       command->setLocalNode(localNode);
       command->setRoutingTable(routingTable.get());
       tempCommands.push_back(std::move(command));

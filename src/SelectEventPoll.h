@@ -151,11 +151,11 @@ private:
   fd_set rfdset_;
   fd_set wfdset_;
   sock_t fdmax_;
-#ifdef __MINGW32__
+#ifdef _WIN32
   // Winsock select() doesn't work if no socket is in FD_SET. We add
   // this dummy socket to work around this problem
   sock_t dummySocket_;
-#endif // __MINGW32__
+#endif // _WIN32
 
   typedef std::map<sock_t, SocketEntry> SocketEntrySet;
   SocketEntrySet socketEntries_;

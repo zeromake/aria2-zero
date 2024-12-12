@@ -34,7 +34,7 @@
 /* copyright --> */
 #include "daemon.h"
 
-#include <unistd.h>
+#include "a2io.h"
 #include <cstdio>
 #include <cstdlib>
 

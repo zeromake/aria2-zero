@@ -212,7 +212,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
   {
     OptionHandler* op(new BooleanOptionHandler(PREF_DISABLE_IPV6,
                                                TEXT_DISABLE_IPV6,
-#if defined(__MINGW32__) && !defined(__MINGW64__)
+#if defined(_WIN32) && !defined(_WIN64)
                                                // Disable IPv6 by default for
                                                // MinGW build.  This is because
                                                // numerous IPv6 routines are
@@ -220,9 +220,9 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
                                                // getaddrinfo failed in
                                                // configure.
                                                A2_V_TRUE,
-#else  // !defined(__MINGW32__) || defined(__MINGW64__)
+#else  // !defined(_WIN32) || defined(_WIN64)
                                                A2_V_FALSE,
-#endif // !defined(__MINGW32__) || defined(__MINGW64__)
+#endif // !defined(_WIN32) || defined(_WIN64)
                                                OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
@@ -261,7 +261,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
-#if defined(HAVE_MMAP) || defined(__MINGW32__)
+#if defined(HAVE_MMAP) || defined(_WIN32)
   {
     OptionHandler* op(new BooleanOptionHandler(PREF_ENABLE_MMAP,
                                                TEXT_ENABLE_MMAP, A2_V_FALSE,
@@ -273,7 +273,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
-#endif // HAVE_MMAP || __MINGW32__
+#endif // HAVE_MMAP || _WIN32
   {
     OptionHandler* op(new BooleanOptionHandler(
         PREF_ENABLE_RPC, TEXT_ENABLE_RPC, A2_V_FALSE, OptionHandler::OPT_ARG));

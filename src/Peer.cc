@@ -66,7 +66,7 @@ void Peer::usedBy(cuid_t cuid) { cuid_ = cuid; }
 
 void Peer::allocateSessionResource(int32_t pieceLength, int64_t totalLength)
 {
-  res_ = make_unique<PeerSessionResource>(pieceLength, totalLength);
+  res_ = aria2::make_unique<PeerSessionResource>(pieceLength, totalLength);
   res_->getNetStat().downloadStart();
   updateSeeder();
 }

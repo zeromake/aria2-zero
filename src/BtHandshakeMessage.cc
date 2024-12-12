@@ -71,7 +71,7 @@ void BtHandshakeMessage::init()
 std::unique_ptr<BtHandshakeMessage>
 BtHandshakeMessage::create(const unsigned char* data, size_t dataLength)
 {
-  auto msg = make_unique<BtHandshakeMessage>();
+  auto msg = aria2::make_unique<BtHandshakeMessage>();
   msg->pstrlen_ = data[0];
   std::copy_n(&data[1], msg->pstr_.size(), std::begin(msg->pstr_));
   std::copy_n(&data[20], msg->reserved_.size(), std::begin(msg->reserved_));

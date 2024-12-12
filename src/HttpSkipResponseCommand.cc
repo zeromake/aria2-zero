@@ -76,7 +76,7 @@ HttpSkipResponseCommand::HttpSkipResponseCommand(
       receivedBytes_(0),
       httpConnection_(httpConnection),
       httpResponse_(std::move(httpResponse)),
-      streamFilter_(make_unique<NullSinkStreamFilter>())
+      streamFilter_(aria2::make_unique<NullSinkStreamFilter>())
 {
   checkSocketRecvBuffer();
 }

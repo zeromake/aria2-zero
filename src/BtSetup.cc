@@ -108,7 +108,7 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
   auto& btAnnounce = btObject->btAnnounce;
   // commands
   {
-    auto c = make_unique<TrackerWatcherCommand>(e->newCUID(), requestGroup, e);
+    auto c = aria2::make_unique<TrackerWatcherCommand>(e->newCUID(), requestGroup, e);
     c->setPeerStorage(peerStorage);
     c->setPieceStorage(pieceStorage);
     c->setBtRuntime(btRuntime);
@@ -117,14 +117,14 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
     commands.push_back(std::move(c));
   }
   if (!metadataGetMode) {
-    auto c = make_unique<PeerChokeCommand>(e->newCUID(), e);
+    auto c = aria2::make_unique<PeerChokeCommand>(e->newCUID(), e);
     c->setPeerStorage(peerStorage);
     c->setBtRuntime(btRuntime);
 
     commands.push_back(std::move(c));
   }
   {
-    auto c = make_unique<ActivePeerConnectionCommand>(
+    auto c = aria2::make_unique<ActivePeerConnectionCommand>(
         e->newCUID(), requestGroup, e, metadataGetMode ? 2_s : 10_s);
     c->setBtRuntime(btRuntime);
     c->setPieceStorage(pieceStorage);
@@ -137,7 +137,7 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
   if (metadataGetMode || !torrentAttrs->privateTorrent) {
     if (DHTRegistry::isInitialized()) {
       auto command =
-          make_unique<DHTGetPeersCommand>(e->newCUID(), requestGroup, e);
+          aria2::make_unique<DHTGetPeersCommand>(e->newCUID(), requestGroup, e);
       command->setTaskQueue(DHTRegistry::getData().taskQueue.get());
       command->setTaskFactory(DHTRegistry::getData().taskFactory.get());
       command->setBtRuntime(btRuntime);
@@ -146,7 +146,7 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
     }
     if (DHTRegistry::isInitialized6()) {
       auto command =
-          make_unique<DHTGetPeersCommand>(e->newCUID(), requestGroup, e);
+          aria2::make_unique<DHTGetPeersCommand>(e->newCUID(), requestGroup, e);
       command->setTaskQueue(DHTRegistry::getData6().taskQueue.get());
       command->setTaskFactory(DHTRegistry::getData6().taskFactory.get());
       command->setBtRuntime(btRuntime);
@@ -155,16 +155,16 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
     }
   }
   if (!metadataGetMode) {
-    auto unionCri = make_unique<UnionSeedCriteria>();
+    auto unionCri = aria2::make_unique<UnionSeedCriteria>();
     if (option->defined(PREF_SEED_TIME)) {
       unionCri->addSeedCriteria(
-          make_unique<TimeSeedCriteria>(std::chrono::seconds(
+          aria2::make_unique<TimeSeedCriteria>(std::chrono::seconds(
               static_cast<int>(option->getAsDouble(PREF_SEED_TIME) * 60))));
     }
     {
       double ratio = option->getAsDouble(PREF_SEED_RATIO);
       if (ratio > 0.0) {
-        auto cri = make_unique<ShareRatioSeedCriteria>(
+        auto cri = aria2::make_unique<ShareRatioSeedCriteria>(
             option->getAsDouble(PREF_SEED_RATIO),
             requestGroup->getDownloadContext());
         cri->setPieceStorage(pieceStorage);
@@ -174,7 +174,7 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
       }
     }
     if (!unionCri->getSeedCriterion().empty()) {
-      auto c = make_unique<SeedCheckCommand>(e->newCUID(), requestGroup, e,
+      auto c = aria2::make_unique<SeedCheckCommand>(e->newCUID(), requestGroup, e,
                                              std::move(unionCri));
       c->setPieceStorage(pieceStorage);
       c->setBtRuntime(btRuntime);
@@ -187,7 +187,7 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
         e->getOption()->getAsBool(PREF_DISABLE_IPV6) ? 1 : 2;
     for (size_t i = 0; i < familiesLength; ++i) {
       auto command =
-          make_unique<PeerListenCommand>(e->newCUID(), e, families[i]);
+          aria2::make_unique<PeerListenCommand>(e->newCUID(), e, families[i]);
       bool ret;
       uint16_t port;
       if (btReg->getTcpPort()) {
@@ -248,7 +248,7 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
                         LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT,
                         receiver->getLocalAddress().c_str()));
         e->addCommand(
-            make_unique<LpdReceiveMessageCommand>(e->newCUID(), receiver, e));
+            aria2::make_unique<LpdReceiveMessageCommand>(e->newCUID(), receiver, e));
       }
       else {
         A2_LOG_INFO("LpdMessageReceiver not initialized.");
@@ -265,7 +265,7 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
                            /*ttl*/ 1, /*loop*/ 1)) {
         A2_LOG_INFO("LpdMessageDispatcher initialized.");
         auto cmd =
-            make_unique<LpdDispatchMessageCommand>(e->newCUID(), dispatcher, e);
+            aria2::make_unique<LpdDispatchMessageCommand>(e->newCUID(), dispatcher, e);
         cmd->setBtRuntime(btRuntime);
         e->addCommand(std::move(cmd));
       }
@@ -276,7 +276,7 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
   }
   auto btStopTimeout = option->getAsInt(PREF_BT_STOP_TIMEOUT);
   if (btStopTimeout > 0) {
-    auto stopDownloadCommand = make_unique<BtStopDownloadCommand>(
+    auto stopDownloadCommand = aria2::make_unique<BtStopDownloadCommand>(
         e->newCUID(), requestGroup, e, std::chrono::seconds(btStopTimeout));
     stopDownloadCommand->setBtRuntime(btRuntime);
     stopDownloadCommand->setPieceStorage(pieceStorage);

@@ -84,7 +84,7 @@ struct ThisProgressUpdate : public ProgressUpdate {
 
 std::unique_ptr<ProgressUpdate> BtAllowedFastMessage::getProgressUpdate()
 {
-  return make_unique<ThisProgressUpdate>(getPeer(), getIndex());
+  return aria2::make_unique<ThisProgressUpdate>(getPeer(), getIndex());
 }
 
 } // namespace aria2

@@ -161,7 +161,7 @@ bool SftpNegotiationCommand::executeInternal()
       disableWriteCheckSocket();
       return false;
     case SEQ_NEGOTIATION_COMPLETED: {
-      auto command = make_unique<SftpDownloadCommand>(
+      auto command = aria2::make_unique<SftpDownloadCommand>(
           getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
           getDownloadEngine(), getSocket(), std::move(authConfig_));
       command->setStartupIdleTime(
@@ -227,7 +227,7 @@ void SftpNegotiationCommand::onFileSizeDetermined(int64_t totalLength)
       if (getDownloadContext()->isChecksumVerificationNeeded()) {
         A2_LOG_DEBUG("Zero length file exists. Verify checksum.");
         auto entry =
-            make_unique<ChecksumCheckIntegrityEntry>(getRequestGroup());
+            aria2::make_unique<ChecksumCheckIntegrityEntry>(getRequestGroup());
         entry->initValidator();
         getPieceStorage()->getDiskAdaptor()->openExistingFile();
         getDownloadEngine()->getCheckIntegrityMan()->pushEntry(
@@ -259,7 +259,7 @@ void SftpNegotiationCommand::onFileSizeDetermined(int64_t totalLength)
       if (getDownloadContext()->isChecksumVerificationNeeded()) {
         A2_LOG_DEBUG("Verify checksum for zero-length file");
         auto entry =
-            make_unique<ChecksumCheckIntegrityEntry>(getRequestGroup());
+            aria2::make_unique<ChecksumCheckIntegrityEntry>(getRequestGroup());
         entry->initValidator();
         getDownloadEngine()->getCheckIntegrityMan()->pushEntry(
             std::move(entry));

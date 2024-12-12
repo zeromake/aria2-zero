@@ -33,9 +33,9 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 #  undef SIZE_MAX
-#endif // __MINGW32__
+#endif // _WIN32
 
 #ifndef EAI_SYSTEM
 #  define EAI_SYSTEM -11 /* System error returned in `errno'.  */
@@ -56,11 +56,7 @@ extern "C" {
 /*
  * Functions.
  */
-#ifdef __STDC__
 const char* gai_strerror(int);
-#else
-const char* gai_strerror();
-#endif
 
 #ifdef __cplusplus
 };

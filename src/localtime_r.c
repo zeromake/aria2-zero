@@ -36,18 +36,18 @@
 #include <time.h>
 #include <stdlib.h>
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 #  define WIN32_LEAN_AND_MEAN
 #  include <windows.h>
-#endif // __MINGW32__
+#endif // _WIN32
 
 #include "localtime_r.h"
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 
 static CRITICAL_SECTION localtime_r_cs;
 
-static void localtime_r_atexit() { DeleteCriticalSection(&localtime_r_cs); }
+static void localtime_r_atexit(void) { DeleteCriticalSection(&localtime_r_cs); }
 
 struct tm* localtime_r(const time_t* clock, struct tm* result)
 {
@@ -67,4 +67,4 @@ struct tm* localtime_r(const time_t* clock, struct tm* result)
   return result;
 };
 
-#endif // __MINGW32__
+#endif // _WIN32

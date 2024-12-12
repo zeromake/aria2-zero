@@ -66,7 +66,7 @@ DHTNodeLookupTask::createMessage(const std::shared_ptr<DHTNode>& remoteNode)
 
 std::unique_ptr<DHTMessageCallback> DHTNodeLookupTask::createCallback()
 {
-  return make_unique<DHTNodeLookupTaskCallback>(this);
+  return aria2::make_unique<DHTNodeLookupTaskCallback>(this);
 }
 
 } // namespace aria2

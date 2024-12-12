@@ -70,7 +70,7 @@ PeerConnection::PeerConnection(cuid_t cuid, const std::shared_ptr<Peer>& peer,
       socket_(socket),
       msgState_(BT_MSG_PREV_READ_LENGTH),
       bufferCapacity_(MAX_BUFFER_CAPACITY),
-      resbuf_(make_unique<unsigned char[]>(bufferCapacity_)),
+      resbuf_(aria2::make_unique<unsigned char[]>(bufferCapacity_)),
       resbufLength_(0),
       currentPayloadLength_(0),
       resbufOffset_(0),
@@ -280,7 +280,7 @@ void PeerConnection::reserveBuffer(size_t minSize)
 {
   if (bufferCapacity_ < minSize) {
     bufferCapacity_ = minSize;
-    auto buf = make_unique<unsigned char[]>(bufferCapacity_);
+    auto buf = aria2::make_unique<unsigned char[]>(bufferCapacity_);
     std::copy_n(resbuf_.get(), resbufLength_, buf.get());
     resbuf_ = std::move(buf);
   }

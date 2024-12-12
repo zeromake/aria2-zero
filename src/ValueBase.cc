@@ -63,17 +63,17 @@ const unsigned char* String::uc() const
 
 std::unique_ptr<String> String::g(const ValueType& string)
 {
-  return make_unique<String>(string);
+  return aria2::make_unique<String>(string);
 }
 
 std::unique_ptr<String> String::g(ValueType&& string)
 {
-  return make_unique<String>(std::move(string));
+  return aria2::make_unique<String>(std::move(string));
 }
 
 std::unique_ptr<String> String::g(const unsigned char* data, size_t length)
 {
-  return make_unique<String>(data, length);
+  return aria2::make_unique<String>(data, length);
 }
 
 void String::accept(ValueBaseVisitor& v) const { v.visit(*this); }
@@ -86,16 +86,16 @@ Integer::ValueType Integer::i() const { return integer_; }
 
 std::unique_ptr<Integer> Integer::g(ValueType integer)
 {
-  return make_unique<Integer>(integer);
+  return aria2::make_unique<Integer>(integer);
 }
 
 void Integer::accept(ValueBaseVisitor& v) const { v.visit(*this); }
 
 Bool::Bool(bool val) : val_{val} {}
 
-std::unique_ptr<Bool> Bool::gTrue() { return make_unique<Bool>(true); }
+std::unique_ptr<Bool> Bool::gTrue() { return aria2::make_unique<Bool>(true); }
 
-std::unique_ptr<Bool> Bool::gFalse() { return make_unique<Bool>(false); }
+std::unique_ptr<Bool> Bool::gFalse() { return aria2::make_unique<Bool>(false); }
 
 bool Bool::val() const { return val_; }
 
@@ -103,7 +103,7 @@ void Bool::accept(ValueBaseVisitor& v) const { v.visit(*this); }
 
 Null::Null() {}
 
-std::unique_ptr<Null> Null::g() { return make_unique<Null>(); }
+std::unique_ptr<Null> Null::g() { return aria2::make_unique<Null>(); }
 
 void Null::accept(ValueBaseVisitor& v) const { v.visit(*this); }
 
@@ -154,7 +154,7 @@ size_t List::size() const { return list_.size(); }
 
 bool List::empty() const { return list_.empty(); }
 
-std::unique_ptr<List> List::g() { return make_unique<List>(); }
+std::unique_ptr<List> List::g() { return aria2::make_unique<List>(); }
 
 void List::accept(ValueBaseVisitor& v) const { v.visit(*this); }
 
@@ -223,7 +223,7 @@ size_t Dict::size() const { return dict_.size(); }
 
 bool Dict::empty() const { return dict_.empty(); }
 
-std::unique_ptr<Dict> Dict::g() { return make_unique<Dict>(); }
+std::unique_ptr<Dict> Dict::g() { return aria2::make_unique<Dict>(); }
 
 void Dict::accept(ValueBaseVisitor& v) const { v.visit(*this); }
 

@@ -145,6 +145,7 @@ ssize_t SSHSession::writeData(const void* data, size_t len)
 {
   // not implemented yet
   assert(0);
+  return 0;
 }
 
 ssize_t SSHSession::readData(void* data, size_t len)

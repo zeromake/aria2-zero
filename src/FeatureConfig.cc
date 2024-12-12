@@ -262,6 +262,9 @@ std::string usedCompilerAndPlatform()
 #elif defined(__INTEL_COMPILER)
 
   rv << "Intel ICC " << __VERSION__;
+#elif defined(_MSC_VER)
+
+  rv << "MSVC " << _MSC_VER;
 
 #elif defined(__MINGW64_VERSION_STR)
 

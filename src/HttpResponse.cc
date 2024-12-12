@@ -192,7 +192,7 @@ HttpResponse::getTransferEncodingStreamFilter() const
   // parse the field and retrieve each token.
   if (isTransferEncodingSpecified()) {
     if (util::strieq(getTransferEncoding(), "chunked")) {
-      return make_unique<ChunkedDecodingStreamFilter>();
+      return aria2::make_unique<ChunkedDecodingStreamFilter>();
     }
   }
   return nullptr;
@@ -214,7 +214,7 @@ HttpResponse::getContentEncodingStreamFilter() const
 #ifdef HAVE_ZLIB
   if (util::strieq(getContentEncoding(), "gzip") ||
       util::strieq(getContentEncoding(), "deflate")) {
-    return make_unique<GZipDecodingStreamFilter>();
+    return aria2::make_unique<GZipDecodingStreamFilter>();
   }
 #endif // HAVE_ZLIB
 

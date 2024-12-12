@@ -34,7 +34,7 @@
 /* copyright --> */
 #include "Logger.h"
 
-#include <unistd.h>
+#include "a2io.h"
 #include <cstring>
 #include <cstdio>
 #include <cassert>

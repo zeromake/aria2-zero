@@ -88,7 +88,7 @@ createHttpRequest(const std::shared_ptr<Request>& req,
                   const std::shared_ptr<Request>& proxyRequest,
                   int64_t endOffset = 0)
 {
-  auto httpRequest = make_unique<HttpRequest>();
+  auto httpRequest = aria2::make_unique<HttpRequest>();
   httpRequest->setUserAgent(option->get(PREF_USER_AGENT));
   httpRequest->setRequest(req);
   httpRequest->setFileEntry(fileEntry);
@@ -198,7 +198,7 @@ bool HttpRequestCommand::executeInternal()
     httpConnection_->sendPendingData();
   }
   if (httpConnection_->sendBufferIsEmpty()) {
-    getDownloadEngine()->addCommand(make_unique<HttpResponseCommand>(
+    getDownloadEngine()->addCommand(aria2::make_unique<HttpResponseCommand>(
         getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
         httpConnection_, getDownloadEngine(), getSocket()));
     return true;

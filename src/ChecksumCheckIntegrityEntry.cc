@@ -62,7 +62,7 @@ bool ChecksumCheckIntegrityEntry::isValidationReady()
 
 void ChecksumCheckIntegrityEntry::initValidator()
 {
-  auto validator = make_unique<IteratableChecksumValidator>(
+  auto validator = aria2::make_unique<IteratableChecksumValidator>(
       getRequestGroup()->getDownloadContext(),
       getRequestGroup()->getPieceStorage());
   validator->init();
@@ -79,7 +79,7 @@ void ChecksumCheckIntegrityEntry::onDownloadIncomplete(
 {
   if (redownload_) {
     proceedFileAllocation(commands,
-                          make_unique<StreamFileAllocationEntry>(
+                          aria2::make_unique<StreamFileAllocationEntry>(
                               getRequestGroup(), popNextCommand()),
                           e);
     return;

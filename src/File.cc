@@ -39,7 +39,7 @@
 #ifdef HAVE_UTIME_H
 #  include <utime.h>
 #endif // HAVE_UTIME_H
-#include <unistd.h>
+#include "a2io.h"
 
 #include <vector>
 #include <cstring>
@@ -120,7 +120,7 @@ bool File::remove()
   }
 }
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 namespace {
 HANDLE openFile(const std::string& filename, bool readOnly = true)
 {
@@ -132,11 +132,11 @@ HANDLE openFile(const std::string& filename, bool readOnly = true)
                      FILE_ATTRIBUTE_NORMAL, /* hTemplateFile */ nullptr);
 }
 } // namespace
-#endif // __MINGW32__
+#endif // _WIN32
 
 int64_t File::size()
 {
-#ifdef __MINGW32__
+#ifdef _WIN32
   // _wstat cannot be used for symlink.  It always returns 0.  Quoted
   // from https://msdn.microsoft.com/en-us/library/14h5k7ff.aspx:
   //
@@ -151,13 +151,13 @@ int64_t File::size()
   const auto rv = GetFileSizeEx(hn, &fileSize);
   CloseHandle(hn);
   return rv ? fileSize.QuadPart : 0;
-#else  // !__MINGW32__
+#else  // !_WIN32
   a2_struct_stat fstat;
   if (fillStat(fstat) < 0) {
     return 0;
   }
   return fstat.st_size;
-#endif // !__MINGW32__
+#endif // !_WIN32
 }
 
 bool File::mkdirs()
@@ -165,7 +165,7 @@ bool File::mkdirs()
   if (isDir()) {
     return false;
   }
-#ifdef __MINGW32__
+#ifdef _WIN32
   std::string path = name_;
   for (std::string::iterator i = path.begin(), eoi = path.end(); i != eoi;
        ++i) {
@@ -210,11 +210,11 @@ bool File::mkdirs()
   std::string::iterator begin = path.begin();
   std::string::iterator end = path.end();
   for (std::string::iterator i = dbegin; i != end;) {
-#else  // !__MINGW32__
+#else  // !_WIN32
   std::string::iterator begin = name_.begin();
   std::string::iterator end = name_.end();
   for (std::string::iterator i = begin; i != end;) {
-#endif // !__MINGW32__
+#endif // !_WIN32
     std::string::iterator j = std::find(i, end, '/');
     if (std::distance(i, j) == 0) {
       ++i;
@@ -224,12 +224,12 @@ bool File::mkdirs()
     if (i != end) {
       ++i;
     }
-#ifdef __MINGW32__
+#ifdef _WIN32
     if (*(j - 1) == ':') {
       // This is a drive letter, e.g. C:, so skip it.
       continue;
     }
-#endif // __MINGW32__
+#endif // _WIN32
     std::string dir(begin, j);
     A2_LOG_DEBUG(fmt("Making directory %s", dir.c_str()));
     if (File(dir).isDir()) {
@@ -289,7 +289,7 @@ bool File::isDir(const std::string& filename) { return File(filename).isDir(); }
 
 bool File::renameTo(const std::string& dest)
 {
-#ifdef __MINGW32__
+#ifdef _WIN32
   // MinGW's rename() doesn't delete an existing destination.  Better
   // to use MoveFileEx, which usually provides atomic move in aria2
   // usecase.
@@ -300,7 +300,7 @@ bool File::renameTo(const std::string& dest)
   }
 
   return false;
-#else  // !__MINGW32__
+#else  // !_WIN32
   if (rename(name_.c_str(), dest.c_str()) == 0) {
     name_ = dest;
     return true;
@@ -308,16 +308,16 @@ bool File::renameTo(const std::string& dest)
   else {
     return false;
   }
-#endif // !__MINGW32__
+#endif // !_WIN32
 }
 
 bool File::utime(const Time& actime, const Time& modtime) const
 {
-#if defined(HAVE_UTIMES) && !defined(__MINGW32__)
+#if defined(HAVE_UTIMES) && !defined(_WIN32)
   struct timeval times[2] = {{actime.getTimeFromEpoch(), 0},
                              {modtime.getTimeFromEpoch(), 0}};
   return utimes(name_.c_str(), times) == 0;
-#elif defined(__MINGW32__)
+#elif defined(_WIN32)
   auto hn = openFile(name_, false);
   if (hn == INVALID_HANDLE_VALUE) {
     auto errNum = GetLastError();
@@ -355,12 +355,12 @@ bool File::utime(const Time& actime, const Time& modtime) const
   }
   CloseHandle(hn);
   return rv;
-#else  // !defined(HAVE_UTIMES) && !defined(__MINGW32__)
+#else  // !defined(HAVE_UTIMES) && !defined(_WIN32)
   a2utimbuf ub;
   ub.actime = actime.getTimeFromEpoch();
   ub.modtime = modtime.getTimeFromEpoch();
   return a2utime(utf8ToWChar(name_).c_str(), &ub) == 0;
-#endif // !defined(HAVE_UTIMES) && !defined(__MINGW32__)
+#endif // !defined(HAVE_UTIMES) && !defined(_WIN32)
 }
 
 Time File::getModifiedTime()
@@ -374,7 +374,7 @@ Time File::getModifiedTime()
 
 std::string File::getCurrentDir()
 {
-#ifdef __MINGW32__
+#ifdef _WIN32
   const size_t buflen = 2048;
   wchar_t buf[buflen];
   if (_wgetcwd(buf, buflen)) {
@@ -383,7 +383,7 @@ std::string File::getCurrentDir()
   else {
     return ".";
   }
-#else  // !__MINGW32__
+#else  // !_WIN32
   const size_t buflen = 2048;
   char buf[buflen];
   if (getcwd(buf, buflen)) {
@@ -392,16 +392,16 @@ std::string File::getCurrentDir()
   else {
     return ".";
   }
-#endif // !__MINGW32__
+#endif // !_WIN32
 }
 
 const char* File::getPathSeparators()
 {
-#ifdef __MINGW32__
+#ifdef _WIN32
   return "/\\";
-#else  // !__MINGW32__
+#else  // !_WIN32
   return "/";
-#endif // !__MINGW32__
+#endif // !_WIN32
 }
 
 } // namespace aria2

@@ -35,7 +35,7 @@
 #include "SimpleRandomizer.h"
 
 #include <sys/types.h>
-#include <unistd.h>
+#include "a2io.h"
 #include <cstdlib>
 #include <cassert>
 #include <cstring>
@@ -74,20 +74,20 @@ namespace {
 std::random_device rd;
 } // namespace
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 SimpleRandomizer::SimpleRandomizer()
 {
   BOOL r = ::CryptAcquireContext(&provider_, 0, 0, PROV_RSA_FULL,
                                  CRYPT_VERIFYCONTEXT | CRYPT_SILENT);
   assert(r);
 }
-#else  // !__MINGW32__
+#else  // !_WIN32
 SimpleRandomizer::SimpleRandomizer() : gen_(rd()) {}
-#endif // !__MINGW32__
+#endif // !_WIN32
 
 SimpleRandomizer::~SimpleRandomizer()
 {
-#ifdef __MINGW32__
+#ifdef _WIN32
   CryptReleaseContext(provider_, 0);
 #endif
 }
@@ -100,7 +100,7 @@ long int SimpleRandomizer::getRandomNumber(long int to)
 
 void SimpleRandomizer::getRandomBytes(unsigned char* buf, size_t len)
 {
-#ifdef __MINGW32__
+#ifdef _WIN32
   BOOL r = CryptGenRandom(provider_, len, reinterpret_cast<BYTE*>(buf));
   if (!r) {
     assert(r);
@@ -148,7 +148,7 @@ void SimpleRandomizer::getRandomBytes(unsigned char* buf, size_t len)
     assert(0);
     abort();
   }
-#endif // !__MINGW32__ && !__APPLE__ && !HAVE_OPENSSL && !HAVE_LIBGNUTLS
+#endif // !_WIN32 && !__APPLE__ && !HAVE_OPENSSL && !HAVE_LIBGNUTLS
 }
 
 } // namespace aria2

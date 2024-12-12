@@ -47,7 +47,7 @@ namespace aria2 {
 
 PeerSessionResource::PeerSessionResource(int32_t pieceLength,
                                          int64_t totalLength)
-    : bitfieldMan_(make_unique<BitfieldMan>(pieceLength, totalLength)),
+    : bitfieldMan_(aria2::make_unique<BitfieldMan>(pieceLength, totalLength)),
       lastDownloadUpdate_(Timer::zero()),
       lastAmUnchoking_(Timer::zero()),
       dispatcher_(nullptr),
@@ -235,7 +235,7 @@ size_t PeerSessionResource::countOutstandingUpload() const
 
 void PeerSessionResource::reconfigure(int32_t pieceLength, int64_t totalLenth)
 {
-  bitfieldMan_ = make_unique<BitfieldMan>(pieceLength, totalLenth);
+  bitfieldMan_ = aria2::make_unique<BitfieldMan>(pieceLength, totalLenth);
 }
 
 } // namespace aria2

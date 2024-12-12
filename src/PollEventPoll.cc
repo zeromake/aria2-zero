@@ -78,7 +78,7 @@ struct pollfd PollEventPoll::KSocketEntry::getEvents()
 PollEventPoll::PollEventPoll()
     : pollfdCapacity_(1024),
       pollfdNum_(0),
-      pollfds_(make_unique<struct pollfd[]>(pollfdCapacity_))
+      pollfds_(aria2::make_unique<struct pollfd[]>(pollfdCapacity_))
 {
 }
 
@@ -166,7 +166,7 @@ bool PollEventPoll::addEvents(sock_t socket, const PollEventPoll::KEvent& event)
     event.addSelf(&socketEntry);
     if (pollfdCapacity_ == pollfdNum_) {
       pollfdCapacity_ *= 2;
-      auto newPollfds = make_unique<struct pollfd[]>(pollfdCapacity_);
+      auto newPollfds = aria2::make_unique<struct pollfd[]>(pollfdCapacity_);
       memcpy(newPollfds.get(), pollfds_.get(),
              pollfdNum_ * sizeof(struct pollfd));
       pollfds_ = std::move(newPollfds);

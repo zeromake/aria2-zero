@@ -64,7 +64,7 @@ std::unique_ptr<AuthConfig> AuthConfig::create(std::string user,
     return nullptr;
   }
   else {
-    return make_unique<AuthConfig>(std::move(user), std::move(password));
+    return aria2::make_unique<AuthConfig>(std::move(user), std::move(password));
   }
 }
 

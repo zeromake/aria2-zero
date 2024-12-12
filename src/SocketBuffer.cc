@@ -113,7 +113,7 @@ void SocketBuffer::pushBytes(std::vector<unsigned char> bytes,
                              std::unique_ptr<ProgressUpdate> progressUpdate)
 {
   if (!bytes.empty()) {
-    bufq_.push_back(make_unique<ByteArrayBufEntry>(std::move(bytes),
+    bufq_.push_back(aria2::make_unique<ByteArrayBufEntry>(std::move(bytes),
                                                    std::move(progressUpdate)));
   }
 }
@@ -122,7 +122,7 @@ void SocketBuffer::pushStr(std::string data,
                            std::unique_ptr<ProgressUpdate> progressUpdate)
 {
   if (!data.empty()) {
-    bufq_.push_back(make_unique<StringBufEntry>(std::move(data),
+    bufq_.push_back(aria2::make_unique<StringBufEntry>(std::move(data),
                                                 std::move(progressUpdate)));
   }
 }

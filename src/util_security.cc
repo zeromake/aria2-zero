@@ -128,7 +128,7 @@ std::unique_ptr<HMAC> HMAC::createRandom(const std::string& algorithm)
   if (len == 0) {
     return nullptr;
   }
-  auto buf = make_unique<char[]>(len);
+  auto buf = aria2::make_unique<char[]>(len);
   generateRandomData((unsigned char*)buf.get(), len);
   return create(algorithm, buf.get(), len);
 }
@@ -154,7 +154,7 @@ HMACResult PBKDF2(HMAC* hmac, const char* salt, size_t salt_length,
     key_length = hmac_length;
   }
 
-  auto work = make_unique<char[]>(hmac_length);
+  auto work = aria2::make_unique<char[]>(hmac_length);
   char* p = work.get();
   std::string rv;
 

@@ -59,12 +59,12 @@ bool LpdMessageReceiver::init(const std::string& localAddr)
 {
   try {
     socket_ = std::make_shared<SocketCore>(SOCK_DGRAM);
-#ifdef __MINGW32__
+#ifdef _WIN32
     // Binding multicast address fails under Windows.
     socket_->bindWithFamily(multicastPort_, AF_INET);
-#else  // !__MINGW32__
+#else  // !_WIN32
     socket_->bind(multicastAddress_.c_str(), multicastPort_, AF_INET);
-#endif // !__MINGW32__
+#endif // !_WIN32
     A2_LOG_DEBUG(fmt("Joining multicast group. %s:%u, localAddr=%s",
                      multicastAddress_.c_str(), multicastPort_,
                      localAddr.c_str()));
@@ -129,7 +129,7 @@ std::unique_ptr<LpdMessage> LpdMessageReceiver::receiveMessage()
     if (util::inPrivateAddress(remoteEndpoint.addr)) {
       peer->setLocalPeer(true);
     }
-    return make_unique<LpdMessage>(peer, infoHash);
+    return aria2::make_unique<LpdMessage>(peer, infoHash);
   }
 }
 

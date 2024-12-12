@@ -368,7 +368,7 @@ int FtpConnection::receiveResponse()
   }
 }
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 #  define LONGLONG_PRINTF "%I64d"
 #  define ULONGLONG_PRINTF "%I64u"
 #  define LONGLONG_SCANF "%I64d"
@@ -379,7 +379,7 @@ int FtpConnection::receiveResponse()
 #  define LONGLONG_SCANF "%Ld"
 // Mac OSX uses "%llu" for 64bits integer.
 #  define ULONGLONG_SCANF "%Lu"
-#endif // __MINGW32__
+#endif // _WIN32
 
 int FtpConnection::receiveSizeResponse(int64_t& size)
 {

@@ -109,7 +109,7 @@ std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommandProxied(
 
     getRequest()->setConnectedAddrInfo(hostname, addr, port);
 
-    auto c = make_unique<ConnectCommand>(getCuid(), getRequest(), proxyRequest,
+    auto c = aria2::make_unique<ConnectCommand>(getCuid(), getRequest(), proxyRequest,
                                          getFileEntry(), getRequestGroup(),
                                          getDownloadEngine(), getSocket());
     if (proxyMethod == V_GET) {
@@ -133,7 +133,7 @@ std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommandProxied(
   if (proxyMethod == V_TUNNEL) {
 #ifdef HAVE_LIBSSH2
     if (getRequest()->getProtocol() == "sftp") {
-      return make_unique<SftpNegotiationCommand>(
+      return aria2::make_unique<SftpNegotiationCommand>(
           getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
           getDownloadEngine(), pooledSocket,
           SftpNegotiationCommand::SEQ_SFTP_OPEN);
@@ -141,7 +141,7 @@ std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommandProxied(
 #endif // HAVE_LIBSSH2
 
     // options contains "baseWorkingDir"
-    return make_unique<FtpNegotiationCommand>(
+    return aria2::make_unique<FtpNegotiationCommand>(
         getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
         getDownloadEngine(), pooledSocket,
         FtpNegotiationCommand::SEQ_SEND_CWD_PREP, options);
@@ -160,7 +160,7 @@ std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommandProxied(
   auto hc = std::make_shared<HttpConnection>(getCuid(), pooledSocket,
                                              socketRecvBuffer);
 
-  auto c = make_unique<HttpRequestCommand>(
+  auto c = aria2::make_unique<HttpRequestCommand>(
       getCuid(), getRequest(), getFileEntry(), getRequestGroup(), hc,
       getDownloadEngine(), pooledSocket);
   c->setProxyRequest(proxyRequest);
@@ -185,7 +185,7 @@ std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommandPlain(
     createSocket();
     getSocket()->establishConnection(addr, port);
     getRequest()->setConnectedAddrInfo(hostname, addr, port);
-    auto c = make_unique<ConnectCommand>(getCuid(), getRequest(), nullptr,
+    auto c = aria2::make_unique<ConnectCommand>(getCuid(), getRequest(), nullptr,
                                          getFileEntry(), getRequestGroup(),
                                          getDownloadEngine(), getSocket());
 
@@ -207,7 +207,7 @@ std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommandPlain(
 
 #ifdef HAVE_LIBSSH2
   if (getRequest()->getProtocol() == "sftp") {
-    return make_unique<SftpNegotiationCommand>(
+    return aria2::make_unique<SftpNegotiationCommand>(
         getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
         getDownloadEngine(), pooledSocket,
         SftpNegotiationCommand::SEQ_SFTP_OPEN);
@@ -215,7 +215,7 @@ std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommandPlain(
 #endif // HAVE_LIBSSH2
 
   // options contains "baseWorkingDir"
-  return make_unique<FtpNegotiationCommand>(
+  return aria2::make_unique<FtpNegotiationCommand>(
       getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
       getDownloadEngine(), pooledSocket,
       FtpNegotiationCommand::SEQ_SEND_CWD_PREP, options);

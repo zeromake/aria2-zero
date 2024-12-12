@@ -37,7 +37,7 @@
 
 #include "common.h"
 
-#include <unistd.h>
+#include "a2io.h"
 #include <memory>
 
 #include "SocketBuffer.h"

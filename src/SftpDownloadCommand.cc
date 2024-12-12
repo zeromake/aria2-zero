@@ -66,7 +66,7 @@ bool SftpDownloadCommand::prepareForNextSegment()
       getFileEntry()->gtoloff(getSegments().front()->getPositionToWrite()) ==
           getFileEntry()->getLength()) {
 
-    auto c = make_unique<SftpFinishDownloadCommand>(
+    auto c = aria2::make_unique<SftpFinishDownloadCommand>(
         getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
         getDownloadEngine(), getSocket());
 

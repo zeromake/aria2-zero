@@ -36,14 +36,14 @@
 #include <time.h>
 #include <stdlib.h>
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 #  define WIN32_LEAN_AND_MEAN
 #  include <windows.h>
-#endif // __MINGW32__
+#endif // _WIN32
 
 #include "asctime_r.h"
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 
 static CRITICAL_SECTION asctime_r_cs;
 
@@ -67,4 +67,4 @@ char* asctime_r(const struct tm* tyme, char* buf)
   return buf;
 };
 
-#endif // __MINGW32__
+#endif // _WIN32

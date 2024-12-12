@@ -57,7 +57,7 @@ std::unique_ptr<PreDownloadHandler> memoryPreDownloadHandler;
 const PreDownloadHandler* getMemoryPreDownloadHandler()
 {
   if (!memoryPreDownloadHandler) {
-    memoryPreDownloadHandler = make_unique<MemoryBufferPreDownloadHandler>();
+    memoryPreDownloadHandler = aria2::make_unique<MemoryBufferPreDownloadHandler>();
   }
   return memoryPreDownloadHandler.get();
 }
@@ -72,9 +72,9 @@ std::unique_ptr<PostDownloadHandler> metalinkPostDownloadHandler;
 const PreDownloadHandler* getMetalinkPreDownloadHandler()
 {
   if (!metalinkPreDownloadHandler) {
-    metalinkPreDownloadHandler = make_unique<MemoryBufferPreDownloadHandler>();
+    metalinkPreDownloadHandler = aria2::make_unique<MemoryBufferPreDownloadHandler>();
     metalinkPreDownloadHandler->setCriteria(
-        make_unique<ContentTypeRequestGroupCriteria>(getMetalinkContentTypes(),
+        aria2::make_unique<ContentTypeRequestGroupCriteria>(getMetalinkContentTypes(),
                                                      getMetalinkExtensions()));
   }
   return metalinkPreDownloadHandler.get();
@@ -83,7 +83,7 @@ const PreDownloadHandler* getMetalinkPreDownloadHandler()
 const PostDownloadHandler* getMetalinkPostDownloadHandler()
 {
   if (!metalinkPostDownloadHandler) {
-    metalinkPostDownloadHandler = make_unique<MetalinkPostDownloadHandler>();
+    metalinkPostDownloadHandler = aria2::make_unique<MetalinkPostDownloadHandler>();
   }
   return metalinkPostDownloadHandler.get();
 }
@@ -102,9 +102,9 @@ const PreDownloadHandler* getBtPreDownloadHandler()
 {
   if (!btPreDownloadHandler) {
     btPreDownloadHandler =
-        make_unique<bittorrent::MemoryBencodePreDownloadHandler>();
+        aria2::make_unique<bittorrent::MemoryBencodePreDownloadHandler>();
     btPreDownloadHandler->setCriteria(
-        make_unique<ContentTypeRequestGroupCriteria>(getBtContentTypes(),
+        aria2::make_unique<ContentTypeRequestGroupCriteria>(getBtContentTypes(),
                                                      getBtExtensions()));
   }
   return btPreDownloadHandler.get();
@@ -113,7 +113,7 @@ const PreDownloadHandler* getBtPreDownloadHandler()
 const PostDownloadHandler* getBtPostDownloadHandler()
 {
   if (!btPostDownloadHandler) {
-    btPostDownloadHandler = make_unique<BtPostDownloadHandler>();
+    btPostDownloadHandler = aria2::make_unique<BtPostDownloadHandler>();
   }
   return btPostDownloadHandler.get();
 }
@@ -122,7 +122,7 @@ const PostDownloadHandler* getUTMetadataPostDownloadHandler()
 {
   if (!btMetadataPostDownloadHandler) {
     btMetadataPostDownloadHandler =
-        make_unique<UTMetadataPostDownloadHandler>();
+        aria2::make_unique<UTMetadataPostDownloadHandler>();
   }
   return btMetadataPostDownloadHandler.get();
 }

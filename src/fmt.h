@@ -43,7 +43,8 @@
 namespace aria2 {
 
 std::string fmt(const char* fmt, ...)
-#ifdef __MINGW32__
+#ifdef _MSC_VER
+#elif defined(__MINGW32__)
     __attribute__((format(__MINGW_PRINTF_FORMAT, 1, 2)))
 #else  // !__MINGW32__
     __attribute__((format(printf, 1, 2)))

@@ -697,7 +697,7 @@ restart:
 
     // Need to copy the data, as Schannel is free to mess with it. But we
     // might later need unmodified data from the original read buffer.
-    auto bufcopy = make_unique<char[]>(readBuf_.size());
+    auto bufcopy = aria2::make_unique<char[]>(readBuf_.size());
     memcpy(bufcopy.get(), readBuf_.data(), readBuf_.size());
 
     // Set up buffers. inbufs will be the raw bytes the library has to decode.

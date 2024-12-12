@@ -59,7 +59,7 @@ void StreamCheckIntegrityEntry::onDownloadIncomplete(
     return;
   }
   proceedFileAllocation(commands,
-                        make_unique<StreamFileAllocationEntry>(
+                        aria2::make_unique<StreamFileAllocationEntry>(
                             getRequestGroup(), popNextCommand()),
                         e);
 }

@@ -67,7 +67,7 @@ InitiatorMSEHandshakeCommand::InitiatorMSEHandshakeCommand(
       requestGroup_(requestGroup),
       btRuntime_(btRuntime),
       sequence_(INITIATOR_SEND_KEY),
-      mseHandshake_(make_unique<MSEHandshake>(cuid, s, getOption().get()))
+      mseHandshake_(aria2::make_unique<MSEHandshake>(cuid, s, getOption().get()))
 {
   disableReadCheckSocket();
   setWriteCheckSocket(getSocket());
@@ -153,7 +153,7 @@ bool InitiatorMSEHandshakeCommand::executeInternal()
     case INITIATOR_RECEIVE_PAD_D: {
       if (mseHandshake_->receivePad()) {
         auto peerConnection =
-            make_unique<PeerConnection>(getCuid(), getPeer(), getSocket());
+            aria2::make_unique<PeerConnection>(getCuid(), getPeer(), getSocket());
         if (mseHandshake_->getNegotiatedCryptoType() ==
             MSEHandshake::CRYPTO_ARC4) {
           size_t buflen = mseHandshake_->getBufferLength();
@@ -167,7 +167,7 @@ bool InitiatorMSEHandshakeCommand::executeInternal()
           peerConnection->presetBuffer(mseHandshake_->getBuffer(),
                                        mseHandshake_->getBufferLength());
         }
-        getDownloadEngine()->addCommand(make_unique<PeerInteractionCommand>(
+        getDownloadEngine()->addCommand(aria2::make_unique<PeerInteractionCommand>(
             getCuid(), requestGroup_, getPeer(), getDownloadEngine(),
             btRuntime_, pieceStorage_, peerStorage_, getSocket(),
             PeerInteractionCommand::INITIATOR_SEND_HANDSHAKE,
@@ -204,7 +204,7 @@ void InitiatorMSEHandshakeCommand::tryNewPeer()
     std::shared_ptr<Peer> peer = peerStorage_->checkoutPeer(ncuid);
     // sanity check
     if (peer) {
-      auto command = make_unique<PeerInitiateConnectionCommand>(
+      auto command = aria2::make_unique<PeerInitiateConnectionCommand>(
           ncuid, requestGroup_, peer, getDownloadEngine(), btRuntime_);
       command->setPeerStorage(peerStorage_);
       command->setPieceStorage(pieceStorage_);
@@ -234,7 +234,7 @@ bool InitiatorMSEHandshakeCommand::prepareForNextPeer(time_t wait)
     A2_LOG_INFO(fmt("CUID#%" PRId64
                     " - Retry using legacy BitTorrent handshake.",
                     getCuid()));
-    auto command = make_unique<PeerInitiateConnectionCommand>(
+    auto command = aria2::make_unique<PeerInitiateConnectionCommand>(
         getCuid(), requestGroup_, getPeer(), getDownloadEngine(), btRuntime_,
         false);
     command->setPeerStorage(peerStorage_);

@@ -57,7 +57,7 @@ void DHTMessageDispatcherImpl::addMessageToQueue(
     std::unique_ptr<DHTMessage> message, std::chrono::seconds timeout,
     std::unique_ptr<DHTMessageCallback> callback)
 {
-  messageQueue_.push_back(make_unique<DHTMessageEntry>(
+  messageQueue_.push_back(aria2::make_unique<DHTMessageEntry>(
       std::move(message), std::move(timeout), std::move(callback)));
 }
 

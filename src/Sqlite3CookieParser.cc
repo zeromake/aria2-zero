@@ -123,7 +123,7 @@ int cookieRowMapper(void* data, int columns, char** values, char** names)
     return 0;
   }
   bool numericHost = util::isNumericHost(cookieDomain);
-  cookies.push_back(make_unique<Cookie>(
+  cookies.push_back(aria2::make_unique<Cookie>(
       std::move(cookieName),
       toString(values[5]), // value
       expiryTime,

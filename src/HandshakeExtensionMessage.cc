@@ -175,7 +175,7 @@ HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
     throw DL_ABORT_EX(
         "Unexpected payload format for extended message handshake");
   }
-  auto msg = make_unique<HandshakeExtensionMessage>();
+  auto msg = aria2::make_unique<HandshakeExtensionMessage>();
   const Integer* port = downcast<Integer>(dict->get("p"));
   if (port && 0 < port->i() && port->i() < 65536) {
     msg->tcpPort_ = port->i();

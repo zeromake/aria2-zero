@@ -56,7 +56,7 @@ FtpTunnelRequestCommand::~FtpTunnelRequestCommand() = default;
 
 std::unique_ptr<Command> FtpTunnelRequestCommand::getNextCommand()
 {
-  return make_unique<FtpTunnelResponseCommand>(
+  return aria2::make_unique<FtpTunnelResponseCommand>(
       getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
       getHttpConnection(), getDownloadEngine(), getSocket());
 }

@@ -133,9 +133,9 @@ namespace {
 std::unique_ptr<StatCalc> getStatCalc(const std::shared_ptr<Option>& op)
 {
   if (op->getAsBool(PREF_QUIET)) {
-    return make_unique<NullStatCalc>();
+    return aria2::make_unique<NullStatCalc>();
   }
-  auto impl = make_unique<ConsoleStatCalc>(
+  auto impl = aria2::make_unique<ConsoleStatCalc>(
       std::chrono::seconds(op->getAsInt(PREF_SUMMARY_INTERVAL)),
       op->getAsBool(PREF_ENABLE_COLOR), op->getAsBool(PREF_HUMAN_READABLE));
   impl->setReadoutVisibility(op->getAsBool(PREF_SHOW_CONSOLE_READOUT));
@@ -178,7 +178,7 @@ int MultiUrlRequestInfo::prepare()
 {
   global::globalHaltRequested = 0;
   try {
-    SingletonHolder<Notifier>::instance(make_unique<Notifier>());
+    SingletonHolder<Notifier>::instance(aria2::make_unique<Notifier>());
 
 #ifdef ENABLE_SSL
     if (option_->getAsBool(PREF_ENABLE_RPC) &&
@@ -208,7 +208,7 @@ int MultiUrlRequestInfo::prepare()
 
 #ifdef ENABLE_WEBSOCKET
     if (option_->getAsBool(PREF_ENABLE_RPC)) {
-      e_->setWebSocketSessionMan(make_unique<rpc::WebSocketSessionMan>());
+      e_->setWebSocketSessionMan(aria2::make_unique<rpc::WebSocketSessionMan>());
       SingletonHolder<Notifier>::instance()->addDownloadEventListener(
           e_->getWebSocketSessionMan().get());
     }
@@ -228,21 +228,21 @@ int MultiUrlRequestInfo::prepare()
       }
     }
 
-    auto authConfigFactory = make_unique<AuthConfigFactory>();
+    auto authConfigFactory = aria2::make_unique<AuthConfigFactory>();
     File netrccf(option_->get(PREF_NETRC_PATH));
     if (!option_->getAsBool(PREF_NO_NETRC) && netrccf.isFile()) {
-#ifdef __MINGW32__
+#ifdef _WIN32
       // Windows OS does not have permission, so set it to 0.
       mode_t mode = 0;
-#else  // !__MINGW32__
+#else  // !_WIN32
       mode_t mode = netrccf.mode();
-#endif // !__MINGW32__
+#endif // !_WIN32
       if (mode & (S_IRWXG | S_IRWXO)) {
         A2_LOG_NOTICE(fmt(MSG_INCORRECT_NETRC_PERMISSION,
                           option_->get(PREF_NETRC_PATH).c_str()));
       }
       else {
-        auto netrc = make_unique<Netrc>();
+        auto netrc = aria2::make_unique<Netrc>();
         netrc->parse(option_->get(PREF_NETRC_PATH));
         authConfigFactory->setNetrc(std::move(netrc));
       }

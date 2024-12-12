@@ -52,7 +52,7 @@ protected:
   {
     bittorrent::assertPayloadLengthEqual(5, dataLength, T::NAME);
     bittorrent::assertID(T::ID, data, T::NAME);
-    return make_unique<T>(bittorrent::getIntParam(data, 1));
+    return aria2::make_unique<T>(bittorrent::getIntParam(data, 1));
   }
 
 public:

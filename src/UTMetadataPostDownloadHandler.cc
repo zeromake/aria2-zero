@@ -72,7 +72,7 @@ public:
 
 UTMetadataPostDownloadHandler::UTMetadataPostDownloadHandler()
 {
-  setCriteria(make_unique<Criteria>());
+  setCriteria(aria2::make_unique<Criteria>());
 }
 
 void UTMetadataPostDownloadHandler::getNextRequestGroups(

@@ -34,9 +34,9 @@
 /* copyright --> */
 #include "SelectEventPoll.h"
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 #  include <cassert>
-#endif // __MINGW32__
+#endif // _WIN32
 #include <cstring>
 #include <algorithm>
 #include <numeric>
@@ -153,18 +153,18 @@ void SelectEventPoll::AsyncNameResolverEntry::process(fd_set* rfdsPtr,
 
 SelectEventPoll::SelectEventPoll()
 {
-#ifdef __MINGW32__
+#ifdef _WIN32
   dummySocket_ = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
   assert(dummySocket_ != (sock_t)-1);
-#endif // __MINGW32__
+#endif // _WIN32
   updateFdSet();
 }
 
 SelectEventPoll::~SelectEventPoll()
 {
-#ifdef __MINGW32__
+#ifdef _WIN32
   ::closesocket(dummySocket_);
-#endif // __MINGW32__
+#endif // _WIN32
 }
 
 void SelectEventPoll::poll(const struct timeval& tv)
@@ -175,10 +175,10 @@ void SelectEventPoll::poll(const struct timeval& tv)
   memcpy(&rfds, &rfdset_, sizeof(fd_set));
   memcpy(&wfds, &wfdset_, sizeof(fd_set));
 
-#ifdef __MINGW32__
+#ifdef _WIN32
   fd_set efds;
   memcpy(&efds, &wfdset_, sizeof(fd_set));
-#endif // __MINGW32__
+#endif // _WIN32
 
 #ifdef ENABLE_ASYNC_DNS
 
@@ -195,13 +195,13 @@ void SelectEventPoll::poll(const struct timeval& tv)
   int retval;
   do {
     struct timeval ttv = tv;
-#ifdef __MINGW32__
+#ifdef _WIN32
     // winsock will report non-blocking connect() errors in efds,
     // unlike posix, which will mark such sockets as writable.
     retval = select(fdmax_ + 1, &rfds, &wfds, &efds, &ttv);
-#else  // !__MINGW32__
+#else  // !_WIN32
     retval = select(fdmax_ + 1, &rfds, &wfds, nullptr, &ttv);
-#endif // !__MINGW32__
+#endif // !_WIN32
   } while (retval == -1 && errno == EINTR);
   if (retval > 0) {
     for (auto& i : socketEntries_) {
@@ -213,11 +213,11 @@ void SelectEventPoll::poll(const struct timeval& tv)
       if (FD_ISSET(e.getSocket(), &wfds)) {
         events |= EventPoll::EVENT_WRITE;
       }
-#ifdef __MINGW32__
+#ifdef _WIN32
       if (FD_ISSET(e.getSocket(), &efds)) {
         events |= EventPoll::EVENT_ERROR;
       }
-#endif // __MINGW32__
+#endif // _WIN32
       e.processEvents(events);
     }
   }
@@ -235,7 +235,7 @@ void SelectEventPoll::poll(const struct timeval& tv)
 #endif // ENABLE_ASYNC_DNS
 }
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 namespace {
 void checkFdCountMingw(const fd_set& fdset)
 {
@@ -245,41 +245,41 @@ void checkFdCountMingw(const fd_set& fdset)
   }
 }
 } // namespace
-#endif // __MINGW32__
+#endif // _WIN32
 
 void SelectEventPoll::updateFdSet()
 {
   FD_ZERO(&rfdset_);
   FD_ZERO(&wfdset_);
-#ifdef __MINGW32__
+#ifdef _WIN32
   FD_SET(dummySocket_, &rfdset_);
   FD_SET(dummySocket_, &wfdset_);
   fdmax_ = dummySocket_;
-#else  // !__MINGW32__
+#else  // !_WIN32
   fdmax_ = 0;
-#endif // !__MINGW32__
+#endif // !_WIN32
 
   for (auto& i : socketEntries_) {
     auto& e = i.second;
     sock_t fd = e.getSocket();
-#ifndef __MINGW32__
+#ifndef _WIN32
     if (fd < 0 || FD_SETSIZE <= fd) {
       A2_LOG_WARN("Detected file descriptor >= FD_SETSIZE or < 0. "
                   "Download may slow down or fail.");
       continue;
     }
-#endif // !__MINGW32__
+#endif // !_WIN32
     int events = e.getEvents();
     if (events & EventPoll::EVENT_READ) {
-#ifdef __MINGW32__
+#ifdef _WIN32
       checkFdCountMingw(rfdset_);
-#endif // __MINGW32__
+#endif // _WIN32
       FD_SET(fd, &rfdset_);
     }
     if (events & EventPoll::EVENT_WRITE) {
-#ifdef __MINGW32__
+#ifdef _WIN32
       checkFdCountMingw(wfdset_);
-#endif // __MINGW32__
+#endif // _WIN32
       FD_SET(fd, &wfdset_);
     }
     if (fdmax_ < fd) {

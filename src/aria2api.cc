@@ -112,7 +112,7 @@ Session* sessionNew(const KeyVals& options, const SessionConfig& config)
   int rv;
   std::unique_ptr<Session> session;
   try {
-    session = make_unique<Session>(options);
+    session = aria2::make_unique<Session>(options);
   }
   catch (RecoverableException& e) {
     return nullptr;
@@ -129,10 +129,10 @@ Session* sessionNew(const KeyVals& options, const SessionConfig& config)
     if (config.keepRunning) {
       e->getRequestGroupMan()->setKeepRunning(true);
       // Add command to make aria2 keep event polling
-      e->addCommand(make_unique<KeepRunningCommand>(e->newCUID(), e.get()));
+      e->addCommand(aria2::make_unique<KeepRunningCommand>(e->newCUID(), e.get()));
     }
     if (config.downloadEventCallback) {
-      session->listener = make_unique<ApiCallbackDownloadEventListener>(
+      session->listener = aria2::make_unique<ApiCallbackDownloadEventListener>(
           session.get(), config.downloadEventCallback, config.userData);
       SingletonHolder<Notifier>::instance()->addDownloadEventListener(
           session->listener.get());

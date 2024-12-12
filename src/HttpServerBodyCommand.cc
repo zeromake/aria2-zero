@@ -146,11 +146,11 @@ void HttpServerBodyCommand::sendJsonRpcBatchResponse(
 
 void HttpServerBodyCommand::addHttpServerResponseCommand(bool delayed)
 {
-  auto resp = make_unique<HttpServerResponseCommand>(getCuid(), httpServer_, e_,
+  auto resp = aria2::make_unique<HttpServerResponseCommand>(getCuid(), httpServer_, e_,
                                                      socket_);
   if (delayed) {
     e_->addCommand(
-        make_unique<DelayedCommand>(getCuid(), e_, 1_s, std::move(resp), true));
+        aria2::make_unique<DelayedCommand>(getCuid(), e_, 1_s, std::move(resp), true));
     return;
   }
 

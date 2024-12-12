@@ -75,7 +75,7 @@ bool HttpDownloadCommand::prepareForNextSegment()
 {
   bool downloadFinished = getRequestGroup()->downloadFinished();
   if (getRequest()->isPipeliningEnabled() && !downloadFinished) {
-    auto command = make_unique<HttpRequestCommand>(
+    auto command = aria2::make_unique<HttpRequestCommand>(
         getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
         httpConnection_, getDownloadEngine(), getSocket());
     // Set proxy request here. aria2 sends the HTTP request specialized for

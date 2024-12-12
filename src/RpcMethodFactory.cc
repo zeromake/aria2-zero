@@ -116,151 +116,151 @@ namespace {
 std::unique_ptr<RpcMethod> createMethod(const std::string& methodName)
 {
   if (methodName == AddUriRpcMethod::getMethodName()) {
-    return make_unique<AddUriRpcMethod>();
+    return aria2::make_unique<AddUriRpcMethod>();
   }
 
 #ifdef ENABLE_BITTORRENT
   if (methodName == AddTorrentRpcMethod::getMethodName()) {
-    return make_unique<AddTorrentRpcMethod>();
+    return aria2::make_unique<AddTorrentRpcMethod>();
   }
 
   if (methodName == GetPeersRpcMethod::getMethodName()) {
-    return make_unique<GetPeersRpcMethod>();
+    return aria2::make_unique<GetPeersRpcMethod>();
   }
 #endif // ENABLE_BITTORRENT
 
 #ifdef ENABLE_METALINK
   if (methodName == AddMetalinkRpcMethod::getMethodName()) {
-    return make_unique<AddMetalinkRpcMethod>();
+    return aria2::make_unique<AddMetalinkRpcMethod>();
   }
 #endif // ENABLE_METALINK
 
   if (methodName == RemoveRpcMethod::getMethodName()) {
-    return make_unique<RemoveRpcMethod>();
+    return aria2::make_unique<RemoveRpcMethod>();
   }
 
   if (methodName == PauseRpcMethod::getMethodName()) {
-    return make_unique<PauseRpcMethod>();
+    return aria2::make_unique<PauseRpcMethod>();
   }
 
   if (methodName == ForcePauseRpcMethod::getMethodName()) {
-    return make_unique<ForcePauseRpcMethod>();
+    return aria2::make_unique<ForcePauseRpcMethod>();
   }
 
   if (methodName == PauseAllRpcMethod::getMethodName()) {
-    return make_unique<PauseAllRpcMethod>();
+    return aria2::make_unique<PauseAllRpcMethod>();
   }
 
   if (methodName == ForcePauseAllRpcMethod::getMethodName()) {
-    return make_unique<ForcePauseAllRpcMethod>();
+    return aria2::make_unique<ForcePauseAllRpcMethod>();
   }
 
   if (methodName == UnpauseRpcMethod::getMethodName()) {
-    return make_unique<UnpauseRpcMethod>();
+    return aria2::make_unique<UnpauseRpcMethod>();
   }
 
   if (methodName == UnpauseAllRpcMethod::getMethodName()) {
-    return make_unique<UnpauseAllRpcMethod>();
+    return aria2::make_unique<UnpauseAllRpcMethod>();
   }
 
   if (methodName == ForceRemoveRpcMethod::getMethodName()) {
-    return make_unique<ForceRemoveRpcMethod>();
+    return aria2::make_unique<ForceRemoveRpcMethod>();
   }
 
   if (methodName == ChangePositionRpcMethod::getMethodName()) {
-    return make_unique<ChangePositionRpcMethod>();
+    return aria2::make_unique<ChangePositionRpcMethod>();
   }
 
   if (methodName == TellStatusRpcMethod::getMethodName()) {
-    return make_unique<TellStatusRpcMethod>();
+    return aria2::make_unique<TellStatusRpcMethod>();
   }
 
   if (methodName == GetUrisRpcMethod::getMethodName()) {
-    return make_unique<GetUrisRpcMethod>();
+    return aria2::make_unique<GetUrisRpcMethod>();
   }
 
   if (methodName == GetFilesRpcMethod::getMethodName()) {
-    return make_unique<GetFilesRpcMethod>();
+    return aria2::make_unique<GetFilesRpcMethod>();
   }
 
   if (methodName == GetServersRpcMethod::getMethodName()) {
-    return make_unique<GetServersRpcMethod>();
+    return aria2::make_unique<GetServersRpcMethod>();
   }
 
   if (methodName == TellActiveRpcMethod::getMethodName()) {
-    return make_unique<TellActiveRpcMethod>();
+    return aria2::make_unique<TellActiveRpcMethod>();
   }
 
   if (methodName == TellWaitingRpcMethod::getMethodName()) {
-    return make_unique<TellWaitingRpcMethod>();
+    return aria2::make_unique<TellWaitingRpcMethod>();
   }
 
   if (methodName == TellStoppedRpcMethod::getMethodName()) {
-    return make_unique<TellStoppedRpcMethod>();
+    return aria2::make_unique<TellStoppedRpcMethod>();
   }
 
   if (methodName == GetOptionRpcMethod::getMethodName()) {
-    return make_unique<GetOptionRpcMethod>();
+    return aria2::make_unique<GetOptionRpcMethod>();
   }
 
   if (methodName == ChangeUriRpcMethod::getMethodName()) {
-    return make_unique<ChangeUriRpcMethod>();
+    return aria2::make_unique<ChangeUriRpcMethod>();
   }
 
   if (methodName == ChangeOptionRpcMethod::getMethodName()) {
-    return make_unique<ChangeOptionRpcMethod>();
+    return aria2::make_unique<ChangeOptionRpcMethod>();
   }
 
   if (methodName == GetGlobalOptionRpcMethod::getMethodName()) {
-    return make_unique<GetGlobalOptionRpcMethod>();
+    return aria2::make_unique<GetGlobalOptionRpcMethod>();
   }
 
   if (methodName == ChangeGlobalOptionRpcMethod::getMethodName()) {
-    return make_unique<ChangeGlobalOptionRpcMethod>();
+    return aria2::make_unique<ChangeGlobalOptionRpcMethod>();
   }
 
   if (methodName == PurgeDownloadResultRpcMethod::getMethodName()) {
-    return make_unique<PurgeDownloadResultRpcMethod>();
+    return aria2::make_unique<PurgeDownloadResultRpcMethod>();
   }
 
   if (methodName == RemoveDownloadResultRpcMethod::getMethodName()) {
-    return make_unique<RemoveDownloadResultRpcMethod>();
+    return aria2::make_unique<RemoveDownloadResultRpcMethod>();
   }
 
   if (methodName == GetVersionRpcMethod::getMethodName()) {
-    return make_unique<GetVersionRpcMethod>();
+    return aria2::make_unique<GetVersionRpcMethod>();
   }
 
   if (methodName == GetSessionInfoRpcMethod::getMethodName()) {
-    return make_unique<GetSessionInfoRpcMethod>();
+    return aria2::make_unique<GetSessionInfoRpcMethod>();
   }
 
   if (methodName == ShutdownRpcMethod::getMethodName()) {
-    return make_unique<ShutdownRpcMethod>();
+    return aria2::make_unique<ShutdownRpcMethod>();
   }
 
   if (methodName == ForceShutdownRpcMethod::getMethodName()) {
-    return make_unique<ForceShutdownRpcMethod>();
+    return aria2::make_unique<ForceShutdownRpcMethod>();
   }
 
   if (methodName == GetGlobalStatRpcMethod::getMethodName()) {
-    return make_unique<GetGlobalStatRpcMethod>();
+    return aria2::make_unique<GetGlobalStatRpcMethod>();
   }
 
   if (methodName == SaveSessionRpcMethod::getMethodName()) {
-    return make_unique<SaveSessionRpcMethod>();
+    return aria2::make_unique<SaveSessionRpcMethod>();
   }
 
   if (methodName == SystemMulticallRpcMethod::getMethodName()) {
-    return make_unique<SystemMulticallRpcMethod>();
+    return aria2::make_unique<SystemMulticallRpcMethod>();
   }
 
   if (methodName == SystemListMethodsRpcMethod::getMethodName()) {
-    return make_unique<SystemListMethodsRpcMethod>();
+    return aria2::make_unique<SystemListMethodsRpcMethod>();
   }
 
   if (methodName == SystemListNotificationsRpcMethod::getMethodName()) {
-    return make_unique<SystemListNotificationsRpcMethod>();
+    return aria2::make_unique<SystemListNotificationsRpcMethod>();
   }
 
   return nullptr;
@@ -278,7 +278,7 @@ RpcMethod* getMethod(const std::string& methodName)
     }
 
     if (!noSuchRpcMethod) {
-      noSuchRpcMethod = make_unique<NoSuchMethodRpcMethod>();
+      noSuchRpcMethod = aria2::make_unique<NoSuchMethodRpcMethod>();
     }
 
     return noSuchRpcMethod.get();

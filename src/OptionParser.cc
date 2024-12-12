@@ -34,8 +34,8 @@
 /* copyright --> */
 #include "OptionParser.h"
 
-#include <unistd.h>
-#include <getopt.h>
+#include "a2io.h"
+#include "a2getopt.h"
 
 #include <cstring>
 #include <cassert>
@@ -159,7 +159,7 @@ void OptionParser::parseArg(std::ostream& out,
   size_t numPublicOption =
       countPublicOption(handlers_.begin(), handlers_.end());
   int lopt;
-  auto longOpts = make_unique<struct option[]>(numPublicOption + 1);
+  auto longOpts = aria2::make_unique<struct option[]>(numPublicOption + 1);
   putOptions(longOpts.get(), &lopt, handlers_.begin(), handlers_.end());
   std::string optstring = createOptstring(handlers_.begin(), handlers_.end());
   while (1) {

@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2007 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,27 +33,25 @@
  */
 /* copyright --> */
 
-#ifndef _D_LIBGEN_H
-#define _D_LIBGEN_H 1
+#ifndef _D_GETTIMEOFDAY_H
+#define _D_GETTIMEOFDAY_H 1
+
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif // HAVE_CONFIG_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-#ifdef __MINGW32__
+#ifndef HAVE_GETTIMEOFDAY
 
-char* basename(char* path);
-char* dirname(char* path);
+int gettimeofday(struct timeval* tp, void* tzp);
 
-#else
-
-char* basename(const char* path);
-char* dirname(const char* path);
-
-#endif // __MINGW32__
+#endif // HAVE_GETTIMEOFDAY
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif /* not _D_LIBGEN_H */
+#endif /* not _D_GETTIMEOFDAY_H */

@@ -113,7 +113,7 @@ public:
   template <typename InputIterator>
   static std::unique_ptr<String> g(InputIterator first, InputIterator last)
   {
-    return make_unique<String>(first, last);
+    return aria2::make_unique<String>(first, last);
   }
 
   virtual void accept(ValueBaseVisitor& visitor) const CXX11_OVERRIDE;

@@ -125,7 +125,7 @@ RequestGroup::RequestGroup(const std::shared_ptr<GroupId>& gid,
       gid_(gid),
       option_(option),
       progressInfoFile_(std::make_shared<NullProgressInfoFile>()),
-      uriSelector_(make_unique<InorderURISelector>()),
+      uriSelector_(aria2::make_unique<InorderURISelector>()),
       requestGroupMan_(nullptr),
 #ifdef ENABLE_BITTORRENT
       btRuntime_(nullptr),
@@ -228,7 +228,7 @@ std::unique_ptr<CheckIntegrityEntry> RequestGroup::createCheckIntegrityEntry()
     // When checking piece hash, we don't care file is downloaded and
     // infoFile exists.
     loadAndOpenFile(infoFile);
-    return make_unique<StreamCheckIntegrityEntry>(this);
+    return aria2::make_unique<StreamCheckIntegrityEntry>(this);
   }
 
   if (isPreLocalFileCheckEnabled() &&
@@ -243,7 +243,7 @@ std::unique_ptr<CheckIntegrityEntry> RequestGroup::createCheckIntegrityEntry()
     if (downloadFinished()) {
       if (downloadContext_->isChecksumVerificationNeeded()) {
         A2_LOG_INFO(MSG_HASH_CHECK_NOT_DONE);
-        auto tempEntry = make_unique<ChecksumCheckIntegrityEntry>(this);
+        auto tempEntry = aria2::make_unique<ChecksumCheckIntegrityEntry>(this);
         tempEntry->setRedownload(true);
         return std::move(tempEntry);
       }
@@ -252,20 +252,20 @@ std::unique_ptr<CheckIntegrityEntry> RequestGroup::createCheckIntegrityEntry()
                         downloadContext_->getBasePath().c_str()));
       return nullptr;
     }
-    return make_unique<StreamCheckIntegrityEntry>(this);
+    return aria2::make_unique<StreamCheckIntegrityEntry>(this);
   }
 
   if (downloadFinishedByFileLength() &&
       downloadContext_->isChecksumVerificationAvailable()) {
     pieceStorage_->markAllPiecesDone();
     loadAndOpenFile(infoFile);
-    auto tempEntry = make_unique<ChecksumCheckIntegrityEntry>(this);
+    auto tempEntry = aria2::make_unique<ChecksumCheckIntegrityEntry>(this);
     tempEntry->setRedownload(true);
     return std::move(tempEntry);
   }
 
   loadAndOpenFile(infoFile);
-  return make_unique<StreamCheckIntegrityEntry>(this);
+  return aria2::make_unique<StreamCheckIntegrityEntry>(this);
 }
 
 void RequestGroup::createInitialCommand(
@@ -343,7 +343,7 @@ void RequestGroup::createInitialCommand(
     assert(!btRegistry->get(gid_->getNumericId()));
     btRegistry->put(
         gid_->getNumericId(),
-        make_unique<BtObject>(
+        aria2::make_unique<BtObject>(
             downloadContext_, pieceStorage_, peerStorage, btAnnounce, btRuntime,
             (progressInfoFile ? progressInfoFile : progressInfoFile_)));
 
@@ -374,7 +374,7 @@ void RequestGroup::createInitialCommand(
       const auto& nodes = torrentAttrs->nodes;
       if (!torrentAttrs->privateTorrent && !nodes.empty()) {
         if (DHTRegistry::isInitialized()) {
-          auto command = make_unique<DHTEntryPointNameResolveCommand>(
+          auto command = aria2::make_unique<DHTEntryPointNameResolveCommand>(
               e->newCUID(), e, AF_INET, nodes);
           const auto& data = DHTRegistry::getData();
           command->setTaskQueue(data.taskQueue.get());
@@ -385,7 +385,7 @@ void RequestGroup::createInitialCommand(
         }
 
         if (DHTRegistry::isInitialized6()) {
-          auto command = make_unique<DHTEntryPointNameResolveCommand>(
+          auto command = aria2::make_unique<DHTEntryPointNameResolveCommand>(
               e->newCUID(), e, AF_INET6, nodes);
           const auto& data = DHTRegistry::getData6();
           command->setTaskQueue(data.taskQueue.get());
@@ -448,7 +448,7 @@ void RequestGroup::createInitialCommand(
     }
     progressInfoFile_ = progressInfoFile;
 
-    auto entry = make_unique<BtCheckIntegrityEntry>(this);
+    auto entry = aria2::make_unique<BtCheckIntegrityEntry>(this);
     // --bt-seed-unverified=true is given and download has completed, skip
     // validation for piece hashes.
     if (option_->getAsBool(PREF_BT_SEED_UNVERIFIED) &&
@@ -523,7 +523,7 @@ void RequestGroup::createInitialCommand(
   }
   progressInfoFile_ = progressInfoFile;
   processCheckIntegrityEntry(commands,
-                             make_unique<StreamCheckIntegrityEntry>(this), e);
+                             aria2::make_unique<StreamCheckIntegrityEntry>(this), e);
 }
 
 void RequestGroup::processCheckIntegrityEntry(
@@ -573,7 +573,7 @@ void RequestGroup::initPieceStorage()
         // Use LongestSequencePieceSelector when HTTP/FTP/BitTorrent
         // integrated downloads.
         A2_LOG_DEBUG("Using LongestSequencePieceSelector");
-        ps->setPieceSelector(make_unique<LongestSequencePieceSelector>());
+        ps->setPieceSelector(aria2::make_unique<LongestSequencePieceSelector>());
       }
       if (option_->defined(PREF_BT_PRIORITIZE_PIECE)) {
         std::vector<size_t> result;
@@ -585,7 +585,7 @@ void RequestGroup::initPieceStorage()
           std::shuffle(std::begin(result), std::end(result),
                        *SimpleRandomizer::getInstance());
           auto priSelector =
-              make_unique<PriorityPieceSelector>(ps->popPieceSelector());
+              aria2::make_unique<PriorityPieceSelector>(ps->popPieceSelector());
           priSelector->setPriorityPiece(std::begin(result), std::end(result));
           ps->setPieceSelector(std::move(priSelector));
         }
@@ -619,7 +619,7 @@ void RequestGroup::initPieceStorage()
       std::make_shared<SegmentMan>(downloadContext_, tempPieceStorage);
   pieceStorage_ = tempPieceStorage;
 
-#ifdef __MINGW32__
+#ifdef _WIN32
   // Windows build: --file-allocation=falloc uses SetFileValidData
   // which requires SE_MANAGE_VOLUME_NAME privilege.  SetFileValidData
   // has security implications (see
@@ -646,7 +646,7 @@ void RequestGroup::initPieceStorage()
 
     gainPrivilegeAttempted = true;
   }
-#endif // __MINGW32__
+#endif // _WIN32
 }
 
 void RequestGroup::dropPieceStorage()
@@ -875,7 +875,7 @@ void RequestGroup::createNextCommand(
 {
   for (; numCommand > 0; --numCommand) {
     commands.push_back(
-        make_unique<CreateRequestCommand>(e->newCUID(), this, e));
+        aria2::make_unique<CreateRequestCommand>(e->newCUID(), this, e));
   }
   if (!commands.empty()) {
     e->setNoWait(true);

@@ -85,7 +85,7 @@ std::unique_ptr<Command> HttpInitiateConnectionCommand::createNextCommand(
       getSocket()->establishConnection(addr, port);
 
       getRequest()->setConnectedAddrInfo(hostname, addr, port);
-      auto c = make_unique<ConnectCommand>(
+      auto c = aria2::make_unique<ConnectCommand>(
           getCuid(), getRequest(), proxyRequest, getFileEntry(),
           getRequestGroup(), getDownloadEngine(), getSocket());
       if (proxyMethod == V_TUNNEL) {
@@ -103,7 +103,7 @@ std::unique_ptr<Command> HttpInitiateConnectionCommand::createNextCommand(
     }
     else {
       setConnectedAddrInfo(getRequest(), hostname, pooledSocket);
-      auto c = make_unique<HttpRequestCommand>(
+      auto c = aria2::make_unique<HttpRequestCommand>(
           getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
           std::make_shared<HttpConnection>(
               getCuid(), pooledSocket,
@@ -125,7 +125,7 @@ std::unique_ptr<Command> HttpInitiateConnectionCommand::createNextCommand(
       getSocket()->establishConnection(addr, port);
 
       getRequest()->setConnectedAddrInfo(hostname, addr, port);
-      auto c = make_unique<ConnectCommand>(getCuid(), getRequest(),
+      auto c = aria2::make_unique<ConnectCommand>(getCuid(), getRequest(),
                                            proxyRequest, // must be null
                                            getFileEntry(), getRequestGroup(),
                                            getDownloadEngine(), getSocket());
@@ -137,7 +137,7 @@ std::unique_ptr<Command> HttpInitiateConnectionCommand::createNextCommand(
       setSocket(pooledSocket);
       setConnectedAddrInfo(getRequest(), hostname, pooledSocket);
 
-      return make_unique<HttpRequestCommand>(
+      return aria2::make_unique<HttpRequestCommand>(
           getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
           std::make_shared<HttpConnection>(
               getCuid(), getSocket(),

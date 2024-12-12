@@ -59,8 +59,8 @@ const size_t MAX_PEER_LIST_SIZE = 512;
 
 DefaultPeerStorage::DefaultPeerStorage()
     : maxPeerListSize_(MAX_PEER_LIST_SIZE),
-      seederStateChoke_(make_unique<BtSeederStateChoke>()),
-      leecherStateChoke_(make_unique<BtLeecherStateChoke>()),
+      seederStateChoke_(aria2::make_unique<BtSeederStateChoke>()),
+      leecherStateChoke_(aria2::make_unique<BtLeecherStateChoke>()),
       lastTransferStatMapUpdated_(Timer::zero())
 {
 }

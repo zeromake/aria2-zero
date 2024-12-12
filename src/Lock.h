@@ -35,6 +35,10 @@
 #ifndef D_LOCK_H
 #define D_LOCK_H
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif /* HAVE_CONFIG_H */
+
 #if defined(_WIN32)
 #  include <windows.h>
 #elif defined(ENABLE_PTHREAD)

@@ -58,7 +58,7 @@ bool PieceHashCheckIntegrityEntry::isValidationReady()
 
 void PieceHashCheckIntegrityEntry::initValidator()
 {
-  auto validator = make_unique<IteratableChunkChecksumValidator>(
+  auto validator = aria2::make_unique<IteratableChunkChecksumValidator>(
       getRequestGroup()->getDownloadContext(),
       getRequestGroup()->getPieceStorage());
   validator->init();

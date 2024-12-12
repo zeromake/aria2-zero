@@ -910,7 +910,7 @@ std::unique_ptr<TorrentAttribute> parseMagnet(const std::string& magnet)
     throw DL_ABORT_EX2("Missing xt parameter in Magnet URI.",
                        error_code::MAGNET_PARSE_ERROR);
   }
-  auto attrs = make_unique<TorrentAttribute>();
+  auto attrs = aria2::make_unique<TorrentAttribute>();
   std::string infoHash;
   for (auto xtiter = xts->begin(), eoi = xts->end();
        xtiter != eoi && infoHash.empty(); ++xtiter) {
