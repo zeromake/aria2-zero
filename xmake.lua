@@ -4,7 +4,6 @@ add_rules("mode.debug", "mode.release")
 add_repositories("zeromake https://github.com/zeromake/xrepo.git")
 
 add_requires(
-    "ssh2",
     "expat",
     "zlib",
     "sqlite3",
@@ -14,13 +13,23 @@ add_requires(
 option("uv")
     set_default(false)
     set_showmenu(true)
+    set_description("Use external uv library")
 option_end()
 
-local openssldir = "/etc/ssl"
-if is_plat("windows", "mingw") then
-    openssldir = "$(env HOMEDRIVE)/Windows/System32"
+option("ssl_external")
+    set_default(false)
+    set_showmenu(true)
+    set_description("Use external ssl library")
+option_end()
+
+if get_config("ssl_external") then
+    local openssldir = "/etc/ssl"
+    if is_plat("windows", "mingw") then
+        openssldir = "$(env HOMEDRIVE)/Windows/System32"
+    end
+    add_requires("libressl", {configs = {openssldir = openssldir}})
+    add_requires("ssh2")
 end
-add_requires("libressl", {configs = {openssldir = openssldir}})
 if get_config("uv") then
     add_requires("uv")
 end
@@ -111,16 +120,20 @@ end
 set_configvar("ENABLE_METALINK", 1)
 set_configvar("ENABLE_XML_RPC", 1)
 set_configvar("ENABLE_BITTORRENT", 1)
-set_configvar("USE_INTERNAL_ARC4", 1)
-set_configvar("USE_INTERNAL_BIGNUM", 1)
 set_configvar("ENABLE_SSL", 1)
 set_configvar("HAVE_LIBCARES", 1)
-set_configvar("HAVE_LIBSSH2", 1)
-set_configvar("HAVE_OPENSSL", 1)
-set_configvar("HAVE_EVP_SHA224", 1)
-set_configvar("HAVE_EVP_SHA256", 1)
-set_configvar("HAVE_EVP_SHA384", 1)
-set_configvar("HAVE_EVP_SHA512", 1)
+
+if get_config("ssl_external") then
+    set_configvar("HAVE_LIBSSH2", 1)
+    set_configvar("HAVE_OPENSSL", 1)
+    set_configvar("HAVE_EVP_SHA224", 1)
+    set_configvar("HAVE_EVP_SHA256", 1)
+    set_configvar("HAVE_EVP_SHA384", 1)
+    set_configvar("HAVE_EVP_SHA512", 1)
+else
+    set_configvar("USE_INTERNAL_ARC4", 1)
+    set_configvar("USE_INTERNAL_BIGNUM", 1)
+end
 set_configvar("HAVE_SQLITE3", 1)
 set_configvar("HAVE_SQLITE3_OPEN_V2", 1)
 set_configvar("HAVE_LIBEXPAT", 1)
@@ -186,6 +199,11 @@ local removes = {
     "src/LibgnutlsTLSContext.cc",
     "src/LibgnutlsTLSSession.cc",
 
+    "src/LibsslTLSContext.cc",
+    "src/LibsslTLSSession.cc",
+
+    "src/SSHSession.cc",
+
     "src/Xml2XmlParser.cc",
 
     "src/a2gmp.cc",
@@ -199,9 +217,9 @@ local removes = {
     "src/LibnettleMessageDigestImpl.cc",
 
     -- 使用内部实现
-    -- "src/InternalARC4Encryptor.cc",
-    -- "src/InternalDHKeyExchange.cc",
-    -- "src/InternalMessageDigestImpl.cc",
+    "src/InternalARC4Encryptor.cc",
+    "src/InternalDHKeyExchange.cc",
+    "src/InternalMessageDigestImpl.cc",
 
     "src/LibsslARC4Encryptor.cc",
     "src/LibsslDHKeyExchange.cc",
@@ -213,6 +231,10 @@ local removes = {
     "src/LibuvEventPoll.cc",
     "src/PortEventPoll.cc",
     "src/EpollEventPoll.cc",
+    
+    "src/SftpDownloadCommand.cc",
+    "src/SftpFinishDownloadCommand.cc",
+    "src/SftpNegotiationCommand.cc",
 }
 
 target("aria2c")
@@ -260,7 +282,34 @@ target("aria2c")
     local skip = {}
     if is_plat("windows", "mingw") then
         skip["src/WinConsoleFile.cc"] = true
-        add_syslinks("shell32", "iphlpapi")
+        add_syslinks("ws2_32", "shell32", "iphlpapi")
+    end
+    if get_config("ssl_external") ~= true then
+        if is_plat("windows", "mingw") then
+            skip["src/WinTLSContext.cc"] = true
+            skip["src/WinTLSSession.cc"] = true
+            add_syslinks("crypt32", "secur32")
+            set_configvar("SECURITY_WIN32", 1)
+        elseif is_plat("macosx", "iphoneos") then
+            skip["src/AppleTLSContext.cc"] = true
+            skip["src/AppleTLSSession.cc"] = true
+        end
+        skip["src/InternalARC4Encryptor.cc"] = true
+        skip["src/InternalDHKeyExchange.cc"] = true
+        skip["src/InternalMessageDigestImpl.cc"] = true
+    else
+        add_packages("libressl", "ssh2")
+        skip["src/LibsslTLSContext.cc"] = true
+        skip["src/LibsslTLSSession.cc"] = true
+
+        skip["src/LibsslARC4Encryptor.cc"] = true
+        skip["src/LibsslDHKeyExchange.cc"] = true
+        skip["src/LibsslMessageDigestImpl.cc"] = true
+
+        skip["src/SSHSession.cc"] = true
+        skip["src/SftpDownloadCommand.cc"] = true
+        skip["src/SftpFinishDownloadCommand.cc"] = true
+        skip["src/SftpNegotiationCommand.cc"] = true
     end
     if get_config("uv") then
         set_configvar("HAVE_LIBUV", 1)
@@ -286,8 +335,6 @@ target("aria2c")
     set_encodings("utf-8")
     add_defines("CXX11_OVERRIDE=override")
     add_packages(
-        "libressl",
-        "ssh2",
         "expat",
         "zlib",
         "sqlite3",
