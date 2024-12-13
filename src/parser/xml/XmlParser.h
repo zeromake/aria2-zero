@@ -1,7 +1,8 @@
+/* <!-- copyright */
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2010 Tatsuhiro Tsujikawa
+ * Copyright (C) 2011 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,3 +31,49 @@
  * version.  If you delete this exception statement from all source
  * files in the program, then also delete it here.
  */
+/* copyright --> */
+#ifndef D_XML_PARSER_H
+#define D_XML_PARSER_H
+
+#include "common.h"
+
+#include <cstdlib>
+#include <string>
+#include <deque>
+
+namespace aria2 {
+
+class ParserStateMachine;
+
+namespace xml {
+
+enum XmlError { ERR_XML_PARSE = -1, ERR_RESET = -2 };
+
+struct SessionData {
+  std::deque<std::string> charactersStack;
+  ParserStateMachine* psm;
+  SessionData(ParserStateMachine* psm) : psm(psm) {}
+  void reset() { charactersStack.clear(); }
+};
+
+} // namespace xml
+
+} // namespace aria2
+
+#ifdef HAVE_LIBXML2
+#  include "libxml2/Xml2XmlParser.h"
+#elif HAVE_LIBEXPAT
+#  include "expat/ExpatXmlParser.h"
+#endif
+
+namespace aria2 {
+
+namespace xml {
+
+bool parseFile(const std::string& filename, ParserStateMachine* psm);
+
+} // namespace xml
+
+} // namespace aria2
+
+#endif // D_XML_PARSER_H

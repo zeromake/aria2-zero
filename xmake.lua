@@ -187,29 +187,45 @@ configvar_check_cfuncs("HAVE_GAI_STRERROR", "gai_strerror", {includes = network_
 configvar_check_cfuncs("HAVE_STRCASECMP", "strcasecmp", {includes = "strings.h"})
 configvar_check_cfuncs("HAVE_STRNCASECMP", "strncasecmp", {includes = "strings.h"})
 
-local removes = {
-    "src/WinConsoleFile.cc",
-    "src/Xml2XmlParser.cc",
-    "src/a2gmp.cc",
-    "src/SSHSession.cc",
-    "src/SftpDownloadCommand.cc",
-    "src/SftpFinishDownloadCommand.cc",
-    "src/SftpNegotiationCommand.cc",
+
+local sourceDirs = {
+    "src/core",
+    "src/crypto/common",
+    "src/network",
+    "src/parser",
+    "src/parser/json",
+    "src/parser/xml",
+    "src/protocol",
+    "src/protocol/announce",
+    "src/protocol/bt",
+    "src/protocol/lpd",
+    "src/protocol/metalink",
+    "src/protocol/peer",
+    "src/protocol/piece",
+    "src/protocol/utm",
+    "src/protocol/ws",
+    "src/rpc",
+    "src/storage",
+    "src/stream",
+    "src/parser",
+    "src/util",
 }
 
 target("aria2c")
     add_files("deps/wslay/lib/*.c")
+    add_files("src/*.cc")
+    for _, dir in ipairs(sourceDirs) do
+        add_files(dir .. "/*.cc")
+        add_includedirs(dir)
+    end
     add_files(
-        "src/*.cc",
-        "src/bt/*.cc",
         "src/poll/select/*.cc",
-        "src/uri_split.c",
+        "src/parser/xml/expat/*.cc",
+        "src/util/uri_split.c",
         "compat/gai_strerror.c"
     )
     add_includedirs(
         "compat",
-        "src",
-        "src/bt",
         "src/tls",
         "src/crypto",
         "src/poll"
@@ -254,7 +270,7 @@ target("aria2c")
     end)
     local skip = {}
     if is_plat("windows", "mingw") then
-        skip["src/WinConsoleFile.cc"] = true
+        add_files("src/win32/*.cc")
         add_syslinks("ws2_32", "shell32", "iphlpapi")
     end
     if get_config("ssl_external") ~= true then
@@ -269,12 +285,7 @@ target("aria2c")
         add_files("src/crypto/internal/*.cc")
     else
         add_packages("libressl", "ssh2")
-        add_files("src/tls/libssl/*.cc", "src/crypto/libssl/*.cc")
-
-        skip["src/SSHSession.cc"] = true
-        skip["src/SftpDownloadCommand.cc"] = true
-        skip["src/SftpFinishDownloadCommand.cc"] = true
-        skip["src/SftpNegotiationCommand.cc"] = true
+        add_files("src/tls/libssl/*.cc", "src/crypto/libssl/*.cc", "src/sftp/*.cc")
     end
     if get_config("uv") then
         set_configvar("HAVE_LIBUV", 1)
@@ -290,11 +301,6 @@ target("aria2c")
         end
     end
 
-    for _, f in ipairs(removes) do
-        if not skip[f] then
-            remove_files(f)
-        end
-    end
     add_includedirs("include", "deps/wslay/lib/includes")
     set_languages("c++14")
     set_encodings("utf-8")
