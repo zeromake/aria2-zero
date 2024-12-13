@@ -273,6 +273,7 @@ target("aria2c")
     local skip = {}
     if is_plat("windows", "mingw") then
         add_files("src/win32/*.cc")
+        add_includedirs("src/win32")
         add_syslinks("ws2_32", "shell32", "iphlpapi")
     end
     if ssl_external ~= true then
