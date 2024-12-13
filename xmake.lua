@@ -150,10 +150,10 @@ else
     add_defines("_GNU_SOURCE=1")
     set_configvar("ENABLE_PTHREAD", 1)
 end
-local PROJECT_NAME = "aria2"
+local PROJECT_NAME = "aria2-zero"
 local PROJECT_VERSION = "1.36.0"
 local PACKAGE_URL = "https://aria2.github.io"
-local PACKAGE_BUGREPORT = "https://github.com/aria2/aria2/issues"
+local PACKAGE_BUGREPORT = "https://github.com/zeromake/aria2-zero/issues"
 
 set_configvar("PACKAGE", PROJECT_NAME)
 set_configvar("PACKAGE_NAME", PROJECT_NAME)
@@ -188,50 +188,10 @@ configvar_check_cfuncs("HAVE_STRCASECMP", "strcasecmp", {includes = "strings.h"}
 configvar_check_cfuncs("HAVE_STRNCASECMP", "strncasecmp", {includes = "strings.h"})
 
 local removes = {
-    "src/WinTLSContext.cc",
-    "src/WinTLSSession.cc",
     "src/WinConsoleFile.cc",
-
-    "src/AppleTLSContext.cc",
-    "src/AppleTLSSession.cc",
-    "src/AppleMessageDigestImpl.cc",
-
-    "src/LibgnutlsTLSContext.cc",
-    "src/LibgnutlsTLSSession.cc",
-
-    "src/LibsslTLSContext.cc",
-    "src/LibsslTLSSession.cc",
-
-    "src/SSHSession.cc",
-
     "src/Xml2XmlParser.cc",
-
     "src/a2gmp.cc",
-    "src/LibgmpDHKeyExchange.cc",
-
-    "src/LibgcryptARC4Encryptor.cc",
-    "src/LibgcryptDHKeyExchange.cc",
-    "src/LibgcryptMessageDigestImpl.cc",
-
-    "src/LibnettleARC4Encryptor.cc",
-    "src/LibnettleMessageDigestImpl.cc",
-
-    -- 使用内部实现
-    "src/InternalARC4Encryptor.cc",
-    "src/InternalDHKeyExchange.cc",
-    "src/InternalMessageDigestImpl.cc",
-
-    "src/LibsslARC4Encryptor.cc",
-    "src/LibsslDHKeyExchange.cc",
-    "src/LibsslMessageDigestImpl.cc",
-
-    -- "src/SelectEventPoll.cc",
-    "src/PollEventPoll.cc",
-    "src/KqueueEventPoll.cc",
-    "src/LibuvEventPoll.cc",
-    "src/PortEventPoll.cc",
-    "src/EpollEventPoll.cc",
-    
+    "src/SSHSession.cc",
     "src/SftpDownloadCommand.cc",
     "src/SftpFinishDownloadCommand.cc",
     "src/SftpNegotiationCommand.cc",
@@ -239,8 +199,20 @@ local removes = {
 
 target("aria2c")
     add_files("deps/wslay/lib/*.c")
-    add_files("src/*.cc", "src/uri_split.c", "compat/gai_strerror.c")
-    add_includedirs("compat", "src")
+    add_files(
+        "src/*.cc",
+        "src/bt/*.cc",
+        "src/poll/select/*.cc",
+        "src/uri_split.c",
+        "compat/gai_strerror.c"
+    )
+    add_includedirs(
+        "compat",
+        "src",
+        "src/bt",
+        "src/crypto",
+        "src/poll"
+    )
     add_defines("WSLAY_VERSION=\""..PROJECT_VERSION.."\"")
     on_config(function (target)
         local variables = target:get("configvar") or {}
@@ -260,8 +232,8 @@ target("aria2c")
             variables[k] = v
         end
         set_configvar("HOST", vformat("$(host)"))
-        set_configvar("BUILD", vformat("$(arch)-pc-$(os)"))
-        set_configvar("TARGET", vformat("$(arch)-pc-$(os)"))
+        set_configvar("BUILD", vformat("$(arch)-$(os)"))
+        set_configvar("TARGET", vformat("$(arch)-$(os)"))
         local is_msvc = is_plat("windows")
         local compat_sources = {
             ["HAVE_ASCTIME_R"] = {"compat/asctime_r.c"},
@@ -286,26 +258,17 @@ target("aria2c")
     end
     if get_config("ssl_external") ~= true then
         if is_plat("windows", "mingw") then
-            skip["src/WinTLSContext.cc"] = true
-            skip["src/WinTLSSession.cc"] = true
+            add_files("src/tls/wintls/*.cc")
             add_syslinks("crypt32", "secur32")
             set_configvar("SECURITY_WIN32", 1)
         elseif is_plat("macosx", "iphoneos") then
-            skip["src/AppleTLSContext.cc"] = true
-            skip["src/AppleTLSSession.cc"] = true
+            add_files("src/tls/apple/*.cc")
             add_frameworks("CoreFoundation")
         end
-        skip["src/InternalARC4Encryptor.cc"] = true
-        skip["src/InternalDHKeyExchange.cc"] = true
-        skip["src/InternalMessageDigestImpl.cc"] = true
+        add_files("src/crypto/internal/*.cc")
     else
         add_packages("libressl", "ssh2")
-        skip["src/LibsslTLSContext.cc"] = true
-        skip["src/LibsslTLSSession.cc"] = true
-
-        skip["src/LibsslARC4Encryptor.cc"] = true
-        skip["src/LibsslDHKeyExchange.cc"] = true
-        skip["src/LibsslMessageDigestImpl.cc"] = true
+        add_files("src/tls/libssl/*.cc", "src/crypto/libssl/*.cc")
 
         skip["src/SSHSession.cc"] = true
         skip["src/SftpDownloadCommand.cc"] = true
@@ -314,14 +277,14 @@ target("aria2c")
     end
     if get_config("uv") then
         set_configvar("HAVE_LIBUV", 1)
-        skip["src/LibuvEventPoll.cc"] = true
+        add_files("src/poll/libuv/*.cc")
         add_packages("uv")
     else
         if is_plat("linux", "android") then
-            skip["src/EpollEventPoll.cc"] = true
+            add_files("src/poll/epoll/*.cc")
             set_configvar("HAVE_EPOLL", 1)
         elseif is_plat("macosx", "iphoneos", "bsd") then
-            skip["src/KqueueEventPoll.cc"] = true
+            add_files("src/poll/kqueue/*.cc")
             set_configvar("HAVE_KQUEUE", 1)
         end
     end

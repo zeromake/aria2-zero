@@ -58,22 +58,7 @@
 #include "DownloadContext.h"
 #include "array_fun.h"
 #include "EvictSocketPoolCommand.h"
-#ifdef HAVE_LIBUV
-#  include "LibuvEventPoll.h"
-#endif // HAVE_LIBUV
-#ifdef HAVE_EPOLL
-#  include "EpollEventPoll.h"
-#endif // HAVE_EPOLL
-#ifdef HAVE_PORT_ASSOCIATE
-#  include "PortEventPoll.h"
-#endif // HAVE_PORT_ASSOCIATE
-#ifdef HAVE_KQUEUE
-#  include "KqueueEventPoll.h"
-#endif // HAVE_KQUEUE
-#ifdef HAVE_POLL
-#  include "PollEventPoll.h"
-#endif // HAVE_POLL
-#include "SelectEventPoll.h"
+#include "EventPollImport.h"
 #include "DlAbortEx.h"
 #include "FileAllocationEntry.h"
 #include "HttpListenCommand.h"
