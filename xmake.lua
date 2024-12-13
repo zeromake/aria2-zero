@@ -22,7 +22,9 @@ option("ssl_external")
     set_description("Use external ssl library")
 option_end()
 
-if get_config("ssl_external") then
+local ssl_external = get_config("ssl_external") or is_plat("linux", "android")
+
+if ssl_external then
     local openssldir = "/etc/ssl"
     if is_plat("windows", "mingw") then
         openssldir = "$(env HOMEDRIVE)/Windows/System32"
@@ -123,7 +125,7 @@ set_configvar("ENABLE_BITTORRENT", 1)
 set_configvar("ENABLE_SSL", 1)
 set_configvar("HAVE_LIBCARES", 1)
 
-if get_config("ssl_external") then
+if ssl_external then
     set_configvar("HAVE_LIBSSH2", 1)
     set_configvar("HAVE_OPENSSL", 1)
     set_configvar("HAVE_EVP_SHA224", 1)
@@ -273,7 +275,7 @@ target("aria2c")
         add_files("src/win32/*.cc")
         add_syslinks("ws2_32", "shell32", "iphlpapi")
     end
-    if get_config("ssl_external") ~= true then
+    if ssl_external ~= true then
         if is_plat("windows", "mingw") then
             add_files("src/tls/wintls/*.cc")
             add_syslinks("crypt32", "secur32")
