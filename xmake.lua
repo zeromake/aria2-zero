@@ -210,6 +210,7 @@ target("aria2c")
         "compat",
         "src",
         "src/bt",
+        "src/tls",
         "src/crypto",
         "src/poll"
     )
@@ -294,7 +295,7 @@ target("aria2c")
             remove_files(f)
         end
     end
-    add_includedirs("src/includes", "deps/wslay/lib/includes")
+    add_includedirs("include", "deps/wslay/lib/includes")
     set_languages("c++14")
     set_encodings("utf-8")
     add_defines("CXX11_OVERRIDE=override")
