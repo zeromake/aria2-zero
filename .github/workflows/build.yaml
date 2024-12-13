@@ -8,7 +8,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: xmake
-        run: choco install xmake && xmake --version
+        uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
       - name: build x64
         run: xmake f -a x86_64 -c -y && xmake b
       - uses: actions/upload-artifact@v4
@@ -21,7 +23,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: xmake
-        run: sudo apt-get install -y xmake && xmake --version
+        uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
       - name: build x64
         run: xmake f -a x86_64 -c -y && xmake b
       - uses: actions/upload-artifact@v4
