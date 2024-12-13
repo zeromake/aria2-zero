@@ -1,0 +1,24 @@
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: xmake
+        run: brew install xmake && xmake --version
+      - name: build x64
+        run: xmake f -a x86_64 -c -y && xmake b
+      - name: build arm64
+        run: xmake f -a arm64 -c -y && xmake b
+      - name: build universal
+        run: lipo -create -output dist/aria2c-macosx-universal dist/aria2c-macosx-x86_64 dist/aria2c-macosx-arm64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aria2c-macos-${{ github.run_id }}
+          path: |
+            dist/aria2c-macosx-x86_64
+            dist/aria2c-macosx-arm64
+            dist/aria2c-macosx-universal
