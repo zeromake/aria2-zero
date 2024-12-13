@@ -1,6 +1,6 @@
 #include "strncasecmp.h"
 
-#ifdef HAVE_STRNCASECMP
+#ifndef HAVE_STRNCASECMP
 #include <ctype.h>
 
 int strncasecmp(const char *s1, const char *s2, size_t n)
