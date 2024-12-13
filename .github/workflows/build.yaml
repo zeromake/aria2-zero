@@ -3,7 +3,33 @@ on:
     branches:
       - master
 jobs:
-  build:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: xmake
+        run: choco install xmake && xmake --version
+      - name: build x64
+        run: xmake f -a x86_64 -c -y && xmake b
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aria2c-windows-${{ github.run_id }}
+          path: |
+            dist/aria2c-windows-x86_64.exe
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: xmake
+        run: sudo apt-get install -y xmake && xmake --version
+      - name: build x64
+        run: xmake f -a x86_64 -c -y && xmake b
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aria2c-linux-${{ github.run_id }}
+          path: |
+            dist/aria2c-linux-x86_64
+  build-macos:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
