@@ -54,6 +54,7 @@ void showVersion()
 {
   std::cout
       << PACKAGE << _(" version ") << PACKAGE_VERSION << "\n"
+      << "Copyright (C) 2024 zeromake<a390720046@gmail.com>"
       << "Copyright (C) 2006, 2019 Tatsuhiro Tsujikawa"
       << "\n"
       << "\n"

@@ -70,6 +70,9 @@
 #ifdef HAVE_LIBSSH2
 #  include <libssh2.h>
 #endif // HAVE_LIBSSH2
+#ifdef HAVE_LIBUV
+#  include <uv/version.h>
+#endif // HAVE_LIBUV
 #include "util.h"
 
 namespace aria2 {
@@ -182,6 +185,14 @@ const char* strSupportedFeature(int feature)
     return nullptr;
 #endif // !HAVE_LIBSSH2
     break;
+  
+  case (FEATURE_UV):
+#ifdef HAVE_LIBUV
+    return "LIBUV";
+#else  // !HAVE_LIBUV
+    return nullptr;
+#endif // !HAVE_LIBUV
+    break;
 
   default:
     return nullptr;
@@ -247,6 +258,10 @@ std::string usedLibs()
 #ifdef HAVE_LIBSSH2
   res += "libssh2/" LIBSSH2_VERSION " ";
 #endif // HAVE_LIBSSH2
+
+#ifdef HAVE_LIBUV
+  res += fmt("libuv/%d.%d.%d ", UV_VERSION_MAJOR, UV_VERSION_MINOR, UV_VERSION_PATCH);
+#endif // HAVE_LIBUV
 
   if (!res.empty()) {
     res.erase(res.length() - 1);
