@@ -35,6 +35,7 @@
 #include "MultiUrlRequestInfo.h"
 
 #include <signal.h>
+#include <vector>
 
 #include <cstring>
 #include <ostream>
@@ -173,7 +174,7 @@ void MultiUrlRequestInfo::printMessageForContinue()
           "help/man page for details."));
   }
 }
-const static std::array<std::string, 4> global_certfiles = {
+const static std::vector<std::string> global_certfiles = {
   "cert.pem",
   "cacert.pem",
   "ca-certificates.crt",
