@@ -27,7 +27,7 @@ local ssl_external = get_config("ssl_external") or is_plat("linux", "android")
 if ssl_external then
     local openssldir = "/etc/ssl"
     if is_plat("windows", "mingw") then
-        openssldir = "$(env HOMEDRIVE)/Windows/System32"
+        openssldir = "$(env HOMEDRIVE)/Windows/libressl/ssl"
     end
     add_requires("libressl", {configs = {openssldir = openssldir}})
     add_requires("ssh2")
@@ -288,7 +288,8 @@ target("aria2c")
         add_files("src/crypto/internal/*.cc")
     else
         add_packages("libressl", "ssh2")
-        add_files("src/tls/libssl/*.cc", "src/crypto/libssl/*.cc", "src/sftp/*.cc")
+        add_includedirs("src/protocol/sftp")
+        add_files("src/tls/libssl/*.cc", "src/crypto/libssl/*.cc", "src/protocol/sftp/*.cc")
     end
     if get_config("uv") then
         set_configvar("HAVE_LIBUV", 1)

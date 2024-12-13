@@ -173,6 +173,36 @@ void MultiUrlRequestInfo::printMessageForContinue()
           "help/man page for details."));
   }
 }
+const static std::array<std::string, 4> global_certfiles = {
+  "cert.pem",
+  "cacert.pem",
+  "ca-certificates.crt",
+  "curl-ca-bundle.crt",
+};
+const static std::vector<std::string> global_certdirs = {
+  aria2::File::getCurrentDir(),
+  aria2::util::getHomeDir(),
+#ifdef _WIN32
+  "C:\\Windows\\System32",
+  "C:\\Windows\\libressl\\ssl",
+#else
+  "/etc/ssl",
+  "/etc/ssl/certs",
+#endif
+};
+static bool addOtherSystemTrustedCACerts(std::shared_ptr<TLSContext> &clTlsContext) {
+  for (const auto& certfile : global_certfiles) {
+    for (const auto& certdir : global_certdirs) {
+      auto certpath = aria2::util::applyDir(certdir, certfile);
+      File cert(certpath);
+      if (!cert.exists()) continue;
+      if (clTlsContext->addTrustedCACertFile(certpath)) {
+        A2_LOG_INFO(fmt("System trusted CA certificates: %s were successfully added.", certpath.c_str()));
+        return true;
+      }
+    }
+  }
+}
 
 int MultiUrlRequestInfo::prepare()
 {
@@ -266,7 +296,10 @@ int MultiUrlRequestInfo::prepare()
     }
     else if (option_->getAsBool(PREF_CHECK_CERTIFICATE)) {
       if (!clTlsContext->addSystemTrustedCACerts()) {
-        A2_LOG_INFO(MSG_WARN_NO_CA_CERT);
+        // 尝试手动加载其它位置的 CA 证书
+        if (!addOtherSystemTrustedCACerts(clTlsContext)) {
+          A2_LOG_INFO(MSG_WARN_NO_CA_CERT);
+        }
       }
     }
     clTlsContext->setVerifyPeer(option_->getAsBool(PREF_CHECK_CERTIFICATE));
