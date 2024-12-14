@@ -54,6 +54,8 @@ TLSContext* TLSContext::make(TLSSessionSide side, TLSVersion ver)
   return new GnuTLSContext(side, ver);
 }
 
+const char* TLSContext::name() { return "GnuTLS"; }
+
 GnuTLSContext::GnuTLSContext(TLSSessionSide side, TLSVersion ver)
     : certCred_(0), side_(side), minTLSVer_(ver), verifyPeer_(true)
 {

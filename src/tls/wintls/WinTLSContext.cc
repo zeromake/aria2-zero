@@ -112,6 +112,8 @@ TLSContext* TLSContext::make(TLSSessionSide side, TLSVersion ver)
   return new WinTLSContext(side, ver);
 }
 
+const char* TLSContext::name() { return "WinTLS"; }
+
 WinTLSContext::~WinTLSContext()
 {
   if (store_) {

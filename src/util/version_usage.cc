@@ -47,6 +47,9 @@
 #include "OptionParser.h"
 #include "OptionHandler.h"
 #include "util.h"
+#ifdef ENABLE_SSL
+#  include "TLSContext.h"
+#endif // ENABLE_SSL
 
 namespace aria2 {
 
@@ -71,6 +74,9 @@ void showVersion()
            "GNU General Public License for more details.\n")
       << "\n"
       << _("** Configuration **") << "\n"
+#ifdef ENABLE_SSL
+      << "TLS" << ": " << TLSContext::name() << "\n"
+#endif // ENABLE_SSL
       << _("Enabled Features") << ": " << featureSummary() << "\n"
       << _("Hash Algorithms") << ": "
       << MessageDigest::getSupportedHashTypeString() << "\n"

@@ -181,6 +181,8 @@ TLSContext* TLSContext::make(TLSSessionSide side, TLSVersion ver)
   return new AppleTLSContext(side, ver);
 }
 
+const char* TLSContext::name() { return "AppleTLS"; }
+
 AppleTLSContext::~AppleTLSContext()
 {
   if (credentials_) {

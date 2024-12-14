@@ -7,7 +7,9 @@ add_requires(
     "expat",
     "zlib",
     "sqlite3",
-    "c-ares"
+    "c-ares",
+    "libressl",
+    "ssh2"
 )
 set_policy("package.install_only", true)
 
@@ -25,14 +27,6 @@ option_end()
 
 local ssl_external = get_config("ssl_external") or is_plat("linux", "android")
 
-if ssl_external then
-    local openssldir = "/etc/ssl"
-    if is_plat("windows", "mingw") then
-        openssldir = "$(env HOMEDRIVE)/Windows/libressl/ssl"
-    end
-    add_requires("libressl", {configs = {openssldir = openssldir}})
-    add_requires("ssh2")
-end
 if get_config("uv") then
     add_requires("uv")
 end
@@ -132,9 +126,9 @@ set_configvar("ENABLE_XML_RPC", 1)
 set_configvar("ENABLE_BITTORRENT", 1)
 set_configvar("ENABLE_SSL", 1)
 set_configvar("HAVE_LIBCARES", 1)
+set_configvar("HAVE_LIBSSH2", 1)
 
 if ssl_external then
-    set_configvar("HAVE_LIBSSH2", 1)
     set_configvar("HAVE_OPENSSL", 1)
     set_configvar("HAVE_EVP_SHA224", 1)
     set_configvar("HAVE_EVP_SHA256", 1)
@@ -231,6 +225,7 @@ target("aria2")
     add_files(
         "src/poll/select/*.cc",
         "src/parser/xml/expat/*.cc",
+        "src/protocol/sftp/*.cc",
         "src/util/uri_split.c",
         "compat/gai_strerror.c"
     )
@@ -238,7 +233,8 @@ target("aria2")
         "compat",
         "src/tls",
         "src/crypto",
-        "src/poll"
+        "src/poll",
+        "src/protocol/sftp"
     )
     add_defines("WSLAY_VERSION=\""..PROJECT_VERSION.."\"")
     on_config(function (target)
@@ -277,6 +273,9 @@ target("aria2")
                 target:add("files", table.unpack(v))
             end
         end
+        if target:has_cfuncs("X509_get_default_cert_file", {includes = {"openssl/x509.h"}}) then
+            set_configvar("HAVE_X509_GET_DEFAULT_CERT_FILE", 1)
+        end
     end)
     local skip = {}
     if is_plat("windows", "mingw") then
@@ -295,9 +294,7 @@ target("aria2")
         end
         add_files("src/crypto/internal/*.cc")
     else
-        add_packages("libressl", "ssh2", {public = true})
-        add_includedirs("src/protocol/sftp")
-        add_files("src/tls/libssl/*.cc", "src/crypto/libssl/*.cc", "src/protocol/sftp/*.cc")
+        add_files("src/tls/libssl/*.cc", "src/crypto/libssl/*.cc")
     end
     if get_config("uv") then
         set_configvar("HAVE_LIBUV", 1)
@@ -318,7 +315,9 @@ target("aria2")
         "expat",
         "zlib",
         "sqlite3",
-        "c-ares"
+        "c-ares",
+        "libressl",
+        "ssh2"
     )
     add_configfiles("config.h.in")
     add_defines("HAVE_CONFIG_H=1")
@@ -327,7 +326,6 @@ target("aria2")
     end
 
 target("aria2c")
-    set_default(false)
     add_files("src/*.cc")
     add_deps("aria2")
     add_includedirs("include", "compat", "src/core", "src/tls", "src/network", "src/util")

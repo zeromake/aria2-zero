@@ -58,8 +58,12 @@ char* asctime_r(const struct tm* tyme, char* buf)
   }
 
   EnterCriticalSection(&asctime_r_cs);
+#ifdef _WIN32
+  asctime_s(buf, 26, tyme);
+#else
   p = asctime(tyme);
   memcpy(buf, p, 26);
+#endif
   LeaveCriticalSection(&asctime_r_cs);
   return buf;
 };

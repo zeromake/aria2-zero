@@ -53,6 +53,7 @@ enum TLSVersion {
 class TLSContext {
 public:
   static TLSContext* make(TLSSessionSide side, TLSVersion minVer);
+  static const char* name();
   virtual ~TLSContext() = default;
 
   // private key `keyfile' must be decrypted.

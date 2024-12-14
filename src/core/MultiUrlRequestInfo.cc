@@ -36,6 +36,7 @@
 
 #include <signal.h>
 #include <vector>
+#include <array>
 
 #include <cstring>
 #include <ostream>
@@ -174,23 +175,23 @@ void MultiUrlRequestInfo::printMessageForContinue()
           "help/man page for details."));
   }
 }
-const static std::vector<std::string> global_certfiles = {
+const static std::array<std::string, 4> global_certfiles ={
   "cert.pem",
   "cacert.pem",
   "ca-certificates.crt",
   "curl-ca-bundle.crt",
 };
-const static std::vector<std::string> global_certdirs = {
-  aria2::File::getCurrentDir(),
-  aria2::util::getHomeDir(),
+
+const static std::array<std::string, 3> global_certdirs = {
 #ifdef _WIN32
+  "C:\\Windows\\ssl",
   "C:\\Windows\\System32",
-  "C:\\Windows\\libressl\\ssl",
 #else
   "/etc/ssl",
   "/etc/ssl/certs",
 #endif
 };
+
 static bool addOtherSystemTrustedCACerts(std::shared_ptr<TLSContext> &clTlsContext) {
   for (const auto& certfile : global_certfiles) {
     for (const auto& certdir : global_certdirs) {
@@ -198,11 +199,12 @@ static bool addOtherSystemTrustedCACerts(std::shared_ptr<TLSContext> &clTlsConte
       File cert(certpath);
       if (!cert.exists()) continue;
       if (clTlsContext->addTrustedCACertFile(certpath)) {
-        A2_LOG_INFO(fmt("System trusted CA certificates: %s were successfully added.", certpath.c_str()));
+        A2_LOG_INFO(fmt("System Other trusted CA certificates: %s were successfully added.", certpath.c_str()));
         return true;
       }
     }
   }
+  return false;
 }
 
 int MultiUrlRequestInfo::prepare()

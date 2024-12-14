@@ -47,6 +47,11 @@
 #include "message.h"
 #include "BufferedFile.h"
 
+#ifdef HAVE_X509_GET_DEFAULT_CERT_FILE
+#include "File.h"
+extern "C" const char * X509_get_default_cert_file(void);
+#endif
+
 namespace {
 struct bio_deleter {
   void operator()(BIO* b)
@@ -97,6 +102,13 @@ TLSContext* TLSContext::make(TLSSessionSide side, TLSVersion minVer)
   return new OpenSSLTLSContext(side, minVer);
 }
 
+const char* TLSContext::name() {
+#ifdef LIBRESSL_VERSION_NUMBER
+  return "LibreSSL";
+#else
+  return "OpenSSL";
+#endif
+}
 
 OpenSSLTLSContext::OpenSSLTLSContext(TLSSessionSide side, TLSVersion minVer)
     : sslCtx_(nullptr), side_(side), verifyPeer_(true)
@@ -282,6 +294,14 @@ bool OpenSSLTLSContext::addSystemTrustedCACerts()
     return false;
   }
   else {
+#ifdef HAVE_X509_GET_DEFAULT_CERT_FILE
+    auto default_cert = X509_get_default_cert_file();
+    aria2::File default_cert_file(default_cert);
+    if (!default_cert_file.exists()) {
+      A2_LOG_INFO(fmt("System certificates: %s not exists.", default_cert));
+      return false;
+    }
+#endif
     A2_LOG_INFO("System trusted CA certificates were successfully added.");
     return true;
   }
@@ -295,7 +315,7 @@ bool OpenSSLTLSContext::addTrustedCACertFile(const std::string& certfile)
     return false;
   }
   else {
-    A2_LOG_INFO("Trusted CA certificates were successfully added.");
+    A2_LOG_INFO(fmt("Trusted CA certificates were successfully added: %s.", certfile.c_str()));
     return true;
   }
 }

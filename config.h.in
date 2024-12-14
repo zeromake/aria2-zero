@@ -83,6 +83,7 @@ ${define HAVE_MMAP}
 ${define HAVE_GAI_STRERROR}
 ${define HAVE_STRCASECMP}
 ${define HAVE_STRNCASECMP}
+${define HAVE_X509_GET_DEFAULT_CERT_FILE}
 
 ${define HAVE_LIBUV}
 ${define HAVE_EPOLL}
@@ -96,6 +97,7 @@ ${define SECURITY_WIN32}
 
 ${define ENABLE_WEBSOCKET}
 ${define ENABLE_ASYNC_DNS}
+${define ENABLE_TLS_CHECK_DEFAULT_CERT}
 
 ${define ENABLE_PTHREAD}
 

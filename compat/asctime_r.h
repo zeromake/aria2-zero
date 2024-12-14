@@ -40,6 +40,9 @@
 extern "C" {
 #endif /* __cplusplus */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #ifndef HAVE_ASCTIME_R
 #ifdef HAVE_TIME_H
