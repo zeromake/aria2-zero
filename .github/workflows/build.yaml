@@ -11,8 +11,12 @@ jobs:
         uses: xmake-io/github-action-setup-xmake@v1
         with:
           xmake-version: latest
+      - name: build x86
+        run: xmake f -a x86 -c -y && xmake b
       - name: build x64
         run: xmake f -a x64 -c -y && xmake b
+      - name: build arm64
+        run: xmake f -a arm64 -c -y && xmake b
       - uses: actions/upload-artifact@v4
         with:
           name: aria2c-windows-${{ github.run_id }}
