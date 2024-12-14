@@ -191,6 +191,8 @@ configvar_check_cfuncs("HAVE_GAI_STRERROR", "gai_strerror", {includes = network_
 configvar_check_cfuncs("HAVE_STRCASECMP", "strcasecmp", {includes = "strings.h"})
 configvar_check_cfuncs("HAVE_STRNCASECMP", "strncasecmp", {includes = "strings.h"})
 
+configvar_check_ctypes("HAVE___INT64", "__int64")
+configvar_check_ctypes("HAVE_LONG_LONG", "long long")
 
 local sourceDirs = {
     "src/core",

@@ -70,6 +70,9 @@ ${define HAVE_SECURITY_H}
 ${define HAVE_PTHREAD_H}
 ${define HAVE_GETOPT_H}
 
+${define HAVE___INT64}
+${define HAVE_LONG_LONG}
+
 ${define HAVE_GETADDRINFO}
 ${define HAVE_A2_STRUCT_TIMESPEC}
 ${define HAVE_SLEEP}
@@ -145,6 +148,9 @@ ${define HAVE_GZSETPARAMS}
 #ifdef HAVE_WINDOWS_H
 #ifdef _MSC_VER 
 #define NOMINMAX
+#if (!defined(HAVE_SSIZE_T) && !defined(ssize_t))
+#define HAVE_SSIZE_T 1
 typedef long long ssize_t;
+#endif
 #endif
 #endif

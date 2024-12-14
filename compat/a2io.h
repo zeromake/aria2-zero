@@ -38,6 +38,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#ifdef HAVE_STDINT_H
+#include <stdint.h>
+#endif // HAVE_STDINT_H
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -131,14 +134,14 @@
 #ifdef _WIN32
 #  define a2lseek(fd, offset, origin) _lseeki64(fd, offset, origin)
 #  define a2fseek(fd, offset, origin) _fseeki64(fd, offset, origin)
-#  define a2fstat(fd, buf) _fstati64(fd, buf)
+#  define a2fstat(fd, buf) _fstat64(fd, buf)
 #  define a2ftell(fd) _ftelli64(fd)
-#  define a2wstat(path, buf) _wstati64(path, buf)
+#  define a2wstat(path, buf) _wstat64(path, buf)
 #  ifdef stat
 #    undef stat
 #  endif // stat
-#  define a2_struct_stat struct _stati64
-#  define a2stat(path, buf) _wstati64(path, buf)
+#  define a2_struct_stat struct _stat64
+#  define a2stat(path, buf) _wstat64(path, buf)
 #  define a2tell(handle) _telli64(handle)
 #  define a2mkdir(path, openMode) _wmkdir(path)
 #  define a2utimbuf _utimbuf
@@ -149,7 +152,15 @@
 #  define a2open(path, flags, mode) _wsopen(path, flags, _SH_DENYNO, mode)
 #  define a2fopen(path, mode) _wfsopen(path, mode, _SH_DENYNO)
 // # define a2ftruncate(fd, length): We don't use ftruncate in Mingw build
-#  define a2_off_t off_t
+#ifdef HAVE_STDINT_H
+#  define a2_off_t int64_t
+#else
+#ifdef HAVE_LONG_LONG
+#  define a2_off_t long long
+#else
+#  define a2_off_t __int64
+#endif
+#endif
 
 #  define a2close(fd) _close(fd)
 #  define a2dup(fd) _dup(fd)

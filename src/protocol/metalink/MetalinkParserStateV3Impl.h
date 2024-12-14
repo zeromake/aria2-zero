@@ -41,6 +41,7 @@
 namespace aria2 {
 
 extern const char METALINK3_NAMESPACE_URI[];
+extern const char METALINK3_NAMESPACE_URI_V2[];
 
 class MetalinkMetalinkParserState : public MetalinkParserState {
 public:

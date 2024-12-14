@@ -63,7 +63,7 @@ void MetalinkMetalinkParserStateV4::beginElement(
   }
 
   psm->setFileStateV4();
-  auto itr = findAttr(attrs, "name", METALINK4_NAMESPACE_URI);
+  auto itr = findAttr(attrs, "name", nsUri);
   if (itr == attrs.end() || (*itr).valueLength == 0) {
     psm->logError("Missing file@name");
     return;
@@ -102,7 +102,7 @@ void FileMetalinkParserStateV4::beginElement(MetalinkParserStateMachine* psm,
     psm->setMetaurlStateV4();
     std::string name;
     {
-      auto itr = findAttr(attrs, "name", METALINK4_NAMESPACE_URI);
+      auto itr = findAttr(attrs, "name", nsUri);
       if (itr != attrs.end()) {
         name.assign((*itr).value, (*itr).valueLength);
         if (name.empty() || util::detectDirTraversal(name)) {
@@ -113,7 +113,7 @@ void FileMetalinkParserStateV4::beginElement(MetalinkParserStateMachine* psm,
     }
     int priority;
     {
-      auto itr = findAttr(attrs, "priority", METALINK4_NAMESPACE_URI);
+      auto itr = findAttr(attrs, "priority", nsUri);
       if (itr == attrs.end()) {
         priority = MetalinkResource::getLowestPriority();
       }
@@ -131,7 +131,7 @@ void FileMetalinkParserStateV4::beginElement(MetalinkParserStateMachine* psm,
     }
     std::string mediatype;
     {
-      auto itr = findAttr(attrs, "mediatype", METALINK4_NAMESPACE_URI);
+      auto itr = findAttr(attrs, "mediatype", nsUri);
       if (itr == attrs.end() || (*itr).valueLength == 0) {
         psm->logError("Missing metaurl@mediatype");
         return;
@@ -147,14 +147,14 @@ void FileMetalinkParserStateV4::beginElement(MetalinkParserStateMachine* psm,
     psm->setURLStateV4();
     std::string location;
     {
-      auto itr = findAttr(attrs, "location", METALINK4_NAMESPACE_URI);
+      auto itr = findAttr(attrs, "location", nsUri);
       if (itr != attrs.end()) {
         location.assign((*itr).value, (*itr).valueLength);
       }
     }
     int priority;
     {
-      auto itr = findAttr(attrs, "priority", METALINK4_NAMESPACE_URI);
+      auto itr = findAttr(attrs, "priority", nsUri);
       if (itr == attrs.end()) {
         priority = MetalinkResource::getLowestPriority();
       }
@@ -176,7 +176,7 @@ void FileMetalinkParserStateV4::beginElement(MetalinkParserStateMachine* psm,
   }
   else if (strcmp(localname, "hash") == 0) {
     psm->setHashStateV4();
-    auto itr = findAttr(attrs, "type", METALINK4_NAMESPACE_URI);
+    auto itr = findAttr(attrs, "type", nsUri);
     if (itr == attrs.end() || (*itr).valueLength == 0) {
       psm->logError("Missing hash@type");
       return;
@@ -188,7 +188,7 @@ void FileMetalinkParserStateV4::beginElement(MetalinkParserStateMachine* psm,
     psm->setPiecesStateV4();
     uint32_t length;
     {
-      auto itr = findAttr(attrs, "length", METALINK4_NAMESPACE_URI);
+      auto itr = findAttr(attrs, "length", nsUri);
       if (itr == attrs.end() || (*itr).valueLength == 0) {
         psm->logError("Missing pieces@length");
         return;
@@ -201,7 +201,7 @@ void FileMetalinkParserStateV4::beginElement(MetalinkParserStateMachine* psm,
     }
     std::string type;
     {
-      auto itr = findAttr(attrs, "type", METALINK4_NAMESPACE_URI);
+      auto itr = findAttr(attrs, "type", nsUri);
       if (itr == attrs.end() || (*itr).valueLength == 0) {
         psm->logError("Missing pieces@type");
         return;
@@ -214,7 +214,7 @@ void FileMetalinkParserStateV4::beginElement(MetalinkParserStateMachine* psm,
   }
   else if (strcmp(localname, "signature") == 0) {
     psm->setSignatureStateV4();
-    auto itr = findAttr(attrs, "mediatype", METALINK4_NAMESPACE_URI);
+    auto itr = findAttr(attrs, "mediatype", nsUri);
     if (itr == attrs.end() || (*itr).valueLength == 0) {
       psm->logError("Missing signature@mediatype");
       return;
