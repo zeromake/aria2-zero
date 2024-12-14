@@ -315,11 +315,13 @@ findFirstDiskWriterEntry(const DiskWriterEntries& diskWriterEntries,
   auto first =
       std::upper_bound(std::begin(diskWriterEntries),
                        std::end(diskWriterEntries), offset, OffsetCompare());
+  if (first == std::begin(diskWriterEntries)) {
+    throw DL_ABORT_EX(fmt(EX_FILE_OFFSET_OUT_OF_RANGE, offset));
+  }
   --first;
   // In case when offset is out-of-range
   if (!isInRange((*first).get(), offset)) {
-    throw DL_ABORT_EX(
-        fmt(EX_FILE_OFFSET_OUT_OF_RANGE, static_cast<int64_t>(offset)));
+    throw DL_ABORT_EX(fmt(EX_FILE_OFFSET_OUT_OF_RANGE, offset));
   }
   return first;
 }
