@@ -9,6 +9,7 @@ add_requires(
     "sqlite3",
     "c-ares"
 )
+set_policy("package.install_only", true)
 
 option("uv")
     set_default(false)
