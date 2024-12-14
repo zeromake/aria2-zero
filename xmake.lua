@@ -325,11 +325,6 @@ target("aria2")
     if is_plat("macosx", "iphoneos") then
         add_frameworks("Security")
     end
-    after_build(function (target)
-        os.mkdir("dist")
-        local ext = is_plat("windows") and ".exe" or ""
-        os.cp(target:targetfile(), format("dist/aria2c-%s-%s%s", target:plat(), target:arch(), ext))
-    end)
 
 target("aria2c")
     set_default(false)
@@ -340,3 +335,8 @@ target("aria2c")
     if is_plat("mingw") then
         add_ldflags("-static")
     end
+    after_build(function (target)
+        os.mkdir("dist")
+        local ext = is_plat("windows") and ".exe" or ""
+        os.cp(target:targetfile(), format("dist/aria2c-%s-%s%s", target:plat(), target:arch(), ext))
+    end)
