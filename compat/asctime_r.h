@@ -40,11 +40,14 @@
 extern "C" {
 #endif /* __cplusplus */
 
+
+#ifndef HAVE_ASCTIME_R
+#ifdef HAVE_TIME_H
 #include <time.h>
-
+#endif
 #undef asctime_r
-
 char* asctime_r(const struct tm*, char*);
+#endif
 
 #ifdef __cplusplus
 }

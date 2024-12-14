@@ -33,17 +33,14 @@
  */
 /* copyright --> */
 
-#include <time.h>
+#include "asctime_r.h"
+#ifndef HAVE_ASCTIME_R
+#ifdef _WIN32
 #include <stdlib.h>
-
 #ifdef _WIN32
 #  define WIN32_LEAN_AND_MEAN
 #  include <windows.h>
 #endif // _WIN32
-
-#include "asctime_r.h"
-
-#ifdef _WIN32
 
 static CRITICAL_SECTION asctime_r_cs;
 
@@ -68,3 +65,4 @@ char* asctime_r(const struct tm* tyme, char* buf)
 };
 
 #endif // _WIN32
+#endif // HAVE_ASCTIME_R

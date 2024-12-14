@@ -37,6 +37,13 @@ if get_config("uv") then
     add_requires("uv")
 end
 
+set_languages("c++14")
+set_encodings("utf-8")
+set_rundir(".")
+add_defines("CXX11_OVERRIDE=override")
+set_configdir("$(buildir)/config")
+add_includedirs("$(buildir)/config")
+
 local common_headers = {
     "argz.h",
     "arpa/inet.h",
@@ -214,9 +221,9 @@ local sourceDirs = {
     "src/util",
 }
 
-target("aria2c")
+target("aria2")
+    set_kind("$(kind)")
     add_files("deps/wslay/lib/*.c")
-    add_files("src/*.cc")
     for _, dir in ipairs(sourceDirs) do
         add_files(dir .. "/*.cc")
         add_includedirs(dir)
@@ -288,7 +295,7 @@ target("aria2c")
         end
         add_files("src/crypto/internal/*.cc")
     else
-        add_packages("libressl", "ssh2")
+        add_packages("libressl", "ssh2", {public = true})
         add_includedirs("src/protocol/sftp")
         add_files("src/tls/libssl/*.cc", "src/crypto/libssl/*.cc", "src/protocol/sftp/*.cc")
     end
@@ -307,28 +314,29 @@ target("aria2c")
     end
 
     add_includedirs("include", "deps/wslay/lib/includes")
-    set_languages("c++14")
-    set_encodings("utf-8")
-    add_defines("CXX11_OVERRIDE=override")
     add_packages(
         "expat",
         "zlib",
         "sqlite3",
         "c-ares"
     )
-    set_configdir("$(buildir)/config")
-    set_rundir(".")
-    add_includedirs("$(buildir)/config")
     add_configfiles("config.h.in")
     add_defines("HAVE_CONFIG_H=1")
     if is_plat("macosx", "iphoneos") then
         add_frameworks("Security")
-    end
-    if is_plat("mingw") then
-        add_ldflags("-static")
     end
     after_build(function (target)
         os.mkdir("dist")
         local ext = is_plat("windows") and ".exe" or ""
         os.cp(target:targetfile(), format("dist/aria2c-%s-%s%s", target:plat(), target:arch(), ext))
     end)
+
+target("aria2c")
+    set_default(false)
+    add_files("src/*.cc")
+    add_deps("aria2")
+    add_includedirs("include", "compat", "src/core", "src/tls", "src/network", "src/util")
+    add_defines("HAVE_CONFIG_H=1")
+    if is_plat("mingw") then
+        add_ldflags("-static")
+    end
