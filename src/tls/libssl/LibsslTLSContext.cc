@@ -48,8 +48,8 @@
 #include "BufferedFile.h"
 
 #ifdef HAVE_X509_GET_DEFAULT_CERT_FILE
-#include "File.h"
-extern "C" const char * X509_get_default_cert_file(void);
+#  include "File.h"
+extern "C" const char* X509_get_default_cert_file(void);
 #endif
 
 namespace {
@@ -102,7 +102,8 @@ TLSContext* TLSContext::make(TLSSessionSide side, TLSVersion minVer)
   return new OpenSSLTLSContext(side, minVer);
 }
 
-const char* TLSContext::name() {
+const char* TLSContext::name()
+{
 #ifdef LIBRESSL_VERSION_NUMBER
   return "LibreSSL";
 #else
@@ -151,7 +152,8 @@ OpenSSLTLSContext::OpenSSLTLSContext(TLSSessionSide side, TLSVersion minVer)
   };
 
   // Disable SSLv2 and enable all workarounds for buggy servers
-  SSL_CTX_set_options(sslCtx_, SSL_OP_ALL | SSL_OP_NO_SSLv2 | ver_opts | ssl_global_op);
+  SSL_CTX_set_options(sslCtx_,
+                      SSL_OP_ALL | SSL_OP_NO_SSLv2 | ver_opts | ssl_global_op);
   SSL_CTX_set_mode(sslCtx_, SSL_MODE_AUTO_RETRY);
   SSL_CTX_set_mode(sslCtx_, SSL_MODE_ENABLE_PARTIAL_WRITE);
 #ifdef SSL_MODE_RELEASE_BUFFERS
@@ -315,7 +317,8 @@ bool OpenSSLTLSContext::addTrustedCACertFile(const std::string& certfile)
     return false;
   }
   else {
-    A2_LOG_INFO(fmt("Trusted CA certificates were successfully added: %s.", certfile.c_str()));
+    A2_LOG_INFO(fmt("Trusted CA certificates were successfully added: %s.",
+                    certfile.c_str()));
     return true;
   }
 }

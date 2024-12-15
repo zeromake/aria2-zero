@@ -238,8 +238,8 @@ DHTSetup::setup(DownloadEngine* e, int family)
       tempCommands.push_back(std::move(command));
     }
     {
-      auto command =
-          aria2::make_unique<DHTAutoSaveCommand>(e->newCUID(), e, family, 30_min);
+      auto command = aria2::make_unique<DHTAutoSaveCommand>(e->newCUID(), e,
+                                                            family, 30_min);
       command->setLocalNode(localNode);
       command->setRoutingTable(routingTable.get());
       tempCommands.push_back(std::move(command));

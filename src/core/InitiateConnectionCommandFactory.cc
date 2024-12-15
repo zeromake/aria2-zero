@@ -67,8 +67,8 @@ InitiateConnectionCommandFactory::createInitiateConnectionCommand(
       req->setPipeliningHint(true);
     }
 
-    return aria2::make_unique<HttpInitiateConnectionCommand>(cuid, req, fileEntry,
-                                                      requestGroup, e);
+    return aria2::make_unique<HttpInitiateConnectionCommand>(
+        cuid, req, fileEntry, requestGroup, e);
   }
   else if (req->getProtocol() == "ftp"
 #ifdef HAVE_LIBSSH2
@@ -79,8 +79,8 @@ InitiateConnectionCommandFactory::createInitiateConnectionCommand(
       throw DL_ABORT_EX(fmt("FTP/SFTP URI %s doesn't contain file path.",
                             req->getUri().c_str()));
     }
-    return aria2::make_unique<FtpInitiateConnectionCommand>(cuid, req, fileEntry,
-                                                     requestGroup, e);
+    return aria2::make_unique<FtpInitiateConnectionCommand>(
+        cuid, req, fileEntry, requestGroup, e);
   }
   else {
     // these protocols are not supported yet

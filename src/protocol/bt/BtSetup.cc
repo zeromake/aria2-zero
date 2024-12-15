@@ -108,7 +108,8 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
   auto& btAnnounce = btObject->btAnnounce;
   // commands
   {
-    auto c = aria2::make_unique<TrackerWatcherCommand>(e->newCUID(), requestGroup, e);
+    auto c = aria2::make_unique<TrackerWatcherCommand>(e->newCUID(),
+                                                       requestGroup, e);
     c->setPeerStorage(peerStorage);
     c->setPieceStorage(pieceStorage);
     c->setBtRuntime(btRuntime);
@@ -174,8 +175,8 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
       }
     }
     if (!unionCri->getSeedCriterion().empty()) {
-      auto c = aria2::make_unique<SeedCheckCommand>(e->newCUID(), requestGroup, e,
-                                             std::move(unionCri));
+      auto c = aria2::make_unique<SeedCheckCommand>(e->newCUID(), requestGroup,
+                                                    e, std::move(unionCri));
       c->setPieceStorage(pieceStorage);
       c->setBtRuntime(btRuntime);
       commands.push_back(std::move(c));
@@ -247,8 +248,8 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
                         " localAddr=%s",
                         LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT,
                         receiver->getLocalAddress().c_str()));
-        e->addCommand(
-            aria2::make_unique<LpdReceiveMessageCommand>(e->newCUID(), receiver, e));
+        e->addCommand(aria2::make_unique<LpdReceiveMessageCommand>(
+            e->newCUID(), receiver, e));
       }
       else {
         A2_LOG_INFO("LpdMessageReceiver not initialized.");
@@ -262,10 +263,11 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
           std::string(&infoHash[0], &infoHash[INFO_HASH_LENGTH]),
           btReg->getTcpPort(), LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT);
       if (dispatcher->init(btReg->getLpdMessageReceiver()->getLocalAddress(),
-                           /*ttl*/ 1, /*loop*/ 1)) {
+                           /*ttl*/ 1,
+                           /*loop*/ 1)) {
         A2_LOG_INFO("LpdMessageDispatcher initialized.");
-        auto cmd =
-            aria2::make_unique<LpdDispatchMessageCommand>(e->newCUID(), dispatcher, e);
+        auto cmd = aria2::make_unique<LpdDispatchMessageCommand>(e->newCUID(),
+                                                                 dispatcher, e);
         cmd->setBtRuntime(btRuntime);
         e->addCommand(std::move(cmd));
       }

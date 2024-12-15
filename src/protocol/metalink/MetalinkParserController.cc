@@ -88,7 +88,8 @@ void MetalinkParserController::setFileNameOfEntry(std::string filename)
     return;
   }
   if (!tEntry_->file) {
-    tEntry_->file = aria2::make_unique<FileEntry>(util::escapePath(filename), 0, 0);
+    tEntry_->file =
+        aria2::make_unique<FileEntry>(util::escapePath(filename), 0, 0);
   }
   else {
     tEntry_->file->setPath(util::escapePath(filename));

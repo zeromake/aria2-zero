@@ -126,15 +126,15 @@ AbstractSingleDiskAdaptor::fileAllocationIterator()
   switch (getFileAllocationMethod()) {
 #ifdef HAVE_SOME_FALLOCATE
   case (DiskAdaptor::FILE_ALLOC_FALLOC):
-    return aria2::make_unique<FallocFileAllocationIterator>(diskWriter_.get(), size(),
-                                                     totalLength_);
+    return aria2::make_unique<FallocFileAllocationIterator>(
+        diskWriter_.get(), size(), totalLength_);
 #endif // HAVE_SOME_FALLOCATE
   case (DiskAdaptor::FILE_ALLOC_TRUNC):
-    return aria2::make_unique<TruncFileAllocationIterator>(diskWriter_.get(), size(),
-                                                    totalLength_);
+    return aria2::make_unique<TruncFileAllocationIterator>(
+        diskWriter_.get(), size(), totalLength_);
   default:
-    return aria2::make_unique<AdaptiveFileAllocationIterator>(diskWriter_.get(),
-                                                       size(), totalLength_);
+    return aria2::make_unique<AdaptiveFileAllocationIterator>(
+        diskWriter_.get(), size(), totalLength_);
   }
 }
 

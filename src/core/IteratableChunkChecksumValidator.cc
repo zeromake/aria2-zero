@@ -60,7 +60,7 @@ IteratableChunkChecksumValidator::IteratableChunkChecksumValidator(
     : dctx_(dctx),
       pieceStorage_(pieceStorage),
       bitfield_(aria2::make_unique<BitfieldMan>(dctx_->getPieceLength(),
-                                         dctx_->getTotalLength())),
+                                                dctx_->getTotalLength())),
       currentIndex_(0)
 {
 }

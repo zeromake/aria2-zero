@@ -496,8 +496,8 @@ void RequestGroupMan::configureRequestGroup(
     requestGroup->setURISelector(aria2::make_unique<InorderURISelector>());
   }
   else if (uriSelectorValue == V_ADAPTIVE) {
-    requestGroup->setURISelector(
-        aria2::make_unique<AdaptiveURISelector>(serverStatMan_, requestGroup.get()));
+    requestGroup->setURISelector(aria2::make_unique<AdaptiveURISelector>(
+        serverStatMan_, requestGroup.get()));
   }
 }
 

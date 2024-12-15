@@ -328,7 +328,8 @@ bool DownloadCommand::prepareForNextSegment()
       }
     }
     if (getDownloadContext()->getPieceHashType().empty()) {
-      auto entry = aria2::make_unique<ChecksumCheckIntegrityEntry>(getRequestGroup());
+      auto entry =
+          aria2::make_unique<ChecksumCheckIntegrityEntry>(getRequestGroup());
       if (entry->isValidationReady()) {
         entry->initValidator();
         entry->cutTrailingGarbage();

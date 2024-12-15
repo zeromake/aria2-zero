@@ -175,31 +175,36 @@ void MultiUrlRequestInfo::printMessageForContinue()
           "help/man page for details."));
   }
 }
-static const std::array<std::string, 4> global_certfiles ={
-  "cert.pem",
-  "cacert.pem",
-  "ca-certificates.crt",
-  "curl-ca-bundle.crt",
+static const std::array<std::string, 4> global_certfiles = {
+    "cert.pem",
+    "cacert.pem",
+    "ca-certificates.crt",
+    "curl-ca-bundle.crt",
 };
 
 static const std::array<std::string, 3> global_certdirs = {
 #ifdef _WIN32
-  "C:\\Windows\\ssl",
-  "C:\\Windows\\System32",
+    "C:\\Windows\\ssl",
+    "C:\\Windows\\System32",
 #else
-  "/etc/ssl",
-  "/etc/ssl/certs",
+    "/etc/ssl",
+    "/etc/ssl/certs",
 #endif
 };
 
-static bool addOtherSystemTrustedCACerts(std::shared_ptr<TLSContext> &clTlsContext) {
+static bool
+addOtherSystemTrustedCACerts(std::shared_ptr<TLSContext>& clTlsContext)
+{
   for (const auto& certfile : global_certfiles) {
     for (const auto& certdir : global_certdirs) {
       auto certpath = aria2::util::applyDir(certdir, certfile);
       File cert(certpath);
-      if (!cert.exists()) continue;
+      if (!cert.exists())
+        continue;
       if (clTlsContext->addTrustedCACertFile(certpath)) {
-        A2_LOG_INFO(fmt("System Other trusted CA certificates: %s were successfully added.", certpath.c_str()));
+        A2_LOG_INFO(fmt(
+            "System Other trusted CA certificates: %s were successfully added.",
+            certpath.c_str()));
         return true;
       }
     }
@@ -241,7 +246,8 @@ int MultiUrlRequestInfo::prepare()
 
 #ifdef ENABLE_WEBSOCKET
     if (option_->getAsBool(PREF_ENABLE_RPC)) {
-      e_->setWebSocketSessionMan(aria2::make_unique<rpc::WebSocketSessionMan>());
+      e_->setWebSocketSessionMan(
+          aria2::make_unique<rpc::WebSocketSessionMan>());
       SingletonHolder<Notifier>::instance()->addDownloadEventListener(
           e_->getWebSocketSessionMan().get());
     }

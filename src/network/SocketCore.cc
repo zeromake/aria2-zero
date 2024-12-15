@@ -657,8 +657,8 @@ void SocketCore::closeConnection()
 #ifndef _WIN32
 #  define CHECK_FD(fd)                                                         \
     if (fd < 0 || FD_SETSIZE <= fd) {                                          \
-      A2_LOG_WARN("Detected file descriptor >= FD_SETSIZE or < 0. "          \
-                    "Download may slow down or fail.");                        \
+      A2_LOG_WARN("Detected file descriptor >= FD_SETSIZE or < 0. "            \
+                  "Download may slow down or fail.");                          \
       return false;                                                            \
     }
 #endif // !_WIN32

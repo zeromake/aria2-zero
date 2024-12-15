@@ -129,7 +129,8 @@ Session* sessionNew(const KeyVals& options, const SessionConfig& config)
     if (config.keepRunning) {
       e->getRequestGroupMan()->setKeepRunning(true);
       // Add command to make aria2 keep event polling
-      e->addCommand(aria2::make_unique<KeepRunningCommand>(e->newCUID(), e.get()));
+      e->addCommand(
+          aria2::make_unique<KeepRunningCommand>(e->newCUID(), e.get()));
     }
     if (config.downloadEventCallback) {
       session->listener = aria2::make_unique<ApiCallbackDownloadEventListener>(

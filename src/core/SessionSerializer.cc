@@ -82,7 +82,8 @@ bool SessionSerializer::save(const std::string& filename) const
     else
 #endif
     {
-      fp = aria2::make_unique<BufferedFile>(tempFilename.c_str(), IOFile::WRITE);
+      fp =
+          aria2::make_unique<BufferedFile>(tempFilename.c_str(), IOFile::WRITE);
     }
     if (!*fp) {
       return false;

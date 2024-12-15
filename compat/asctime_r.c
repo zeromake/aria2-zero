@@ -35,12 +35,9 @@
 
 #include "asctime_r.h"
 #ifndef HAVE_ASCTIME_R
-#ifdef _WIN32
-#include <stdlib.h>
-#ifdef _WIN32
-#  define WIN32_LEAN_AND_MEAN
-#  include <windows.h>
-#endif // _WIN32
+#  ifdef _WIN32
+#    include <stdlib.h>
+#    include <windows.h>
 
 static CRITICAL_SECTION asctime_r_cs;
 
@@ -58,15 +55,10 @@ char* asctime_r(const struct tm* tyme, char* buf)
   }
 
   EnterCriticalSection(&asctime_r_cs);
-#ifdef _WIN32
   asctime_s(buf, 26, tyme);
-#else
-  p = asctime(tyme);
-  memcpy(buf, p, 26);
-#endif
   LeaveCriticalSection(&asctime_r_cs);
   return buf;
 };
 
-#endif // _WIN32
-#endif // HAVE_ASCTIME_R
+#  endif // _WIN32
+#endif   // HAVE_ASCTIME_R

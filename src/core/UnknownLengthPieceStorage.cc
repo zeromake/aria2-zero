@@ -234,8 +234,8 @@ int32_t UnknownLengthPieceStorage::getPieceLength(size_t index)
 void UnknownLengthPieceStorage::createBitfield()
 {
   if (totalLength_ > 0) {
-    bitfield_ = aria2::make_unique<BitfieldMan>(downloadContext_->getPieceLength(),
-                                         totalLength_);
+    bitfield_ = aria2::make_unique<BitfieldMan>(
+        downloadContext_->getPieceLength(), totalLength_);
     bitfield_->setAllBit();
   }
 }

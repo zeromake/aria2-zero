@@ -72,7 +72,7 @@ public:
   /**
    * preProcess() is called each time when execute() is called.
    */
-  virtual void preProcess(){};
+  virtual void preProcess() {};
 
   /**
    * process() is called only when execute() is called and specified time has
@@ -83,7 +83,7 @@ public:
   /**
    * postProcess() is called each time when execute() is called.
    */
-  virtual void postProcess(){};
+  virtual void postProcess() {};
 
 public:
   TimeBasedCommand(cuid_t cuid, DownloadEngine* e,

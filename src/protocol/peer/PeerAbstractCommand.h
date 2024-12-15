@@ -77,10 +77,10 @@ protected:
   }
 
   virtual bool prepareForNextPeer(time_t wait);
-  virtual void onAbort(){};
+  virtual void onAbort() {};
   // This function is called when DownloadFailureException is caught right after
   // the invocation of onAbort().
-  virtual void onFailure(const Exception& err){};
+  virtual void onFailure(const Exception& err) {};
   virtual bool exitBeforeExecute() = 0;
   virtual bool executeInternal() = 0;
   void setReadCheckSocket(const std::shared_ptr<SocketCore>& socket);

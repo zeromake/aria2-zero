@@ -71,7 +71,8 @@ NetrcAuthResolver::findNetrcAuthenticator(const std::string& hostname) const
         return getDefaultAuthConfig();
       }
       else {
-        return aria2::make_unique<AuthConfig>(auth->getLogin(), auth->getPassword());
+        return aria2::make_unique<AuthConfig>(auth->getLogin(),
+                                              auth->getPassword());
       }
     }
   }

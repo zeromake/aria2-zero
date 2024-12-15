@@ -57,7 +57,8 @@ std::unique_ptr<PreDownloadHandler> memoryPreDownloadHandler;
 const PreDownloadHandler* getMemoryPreDownloadHandler()
 {
   if (!memoryPreDownloadHandler) {
-    memoryPreDownloadHandler = aria2::make_unique<MemoryBufferPreDownloadHandler>();
+    memoryPreDownloadHandler =
+        aria2::make_unique<MemoryBufferPreDownloadHandler>();
   }
   return memoryPreDownloadHandler.get();
 }
@@ -72,10 +73,11 @@ std::unique_ptr<PostDownloadHandler> metalinkPostDownloadHandler;
 const PreDownloadHandler* getMetalinkPreDownloadHandler()
 {
   if (!metalinkPreDownloadHandler) {
-    metalinkPreDownloadHandler = aria2::make_unique<MemoryBufferPreDownloadHandler>();
+    metalinkPreDownloadHandler =
+        aria2::make_unique<MemoryBufferPreDownloadHandler>();
     metalinkPreDownloadHandler->setCriteria(
-        aria2::make_unique<ContentTypeRequestGroupCriteria>(getMetalinkContentTypes(),
-                                                     getMetalinkExtensions()));
+        aria2::make_unique<ContentTypeRequestGroupCriteria>(
+            getMetalinkContentTypes(), getMetalinkExtensions()));
   }
   return metalinkPreDownloadHandler.get();
 }
@@ -83,7 +85,8 @@ const PreDownloadHandler* getMetalinkPreDownloadHandler()
 const PostDownloadHandler* getMetalinkPostDownloadHandler()
 {
   if (!metalinkPostDownloadHandler) {
-    metalinkPostDownloadHandler = aria2::make_unique<MetalinkPostDownloadHandler>();
+    metalinkPostDownloadHandler =
+        aria2::make_unique<MetalinkPostDownloadHandler>();
   }
   return metalinkPostDownloadHandler.get();
 }
@@ -105,7 +108,7 @@ const PreDownloadHandler* getBtPreDownloadHandler()
         aria2::make_unique<bittorrent::MemoryBencodePreDownloadHandler>();
     btPreDownloadHandler->setCriteria(
         aria2::make_unique<ContentTypeRequestGroupCriteria>(getBtContentTypes(),
-                                                     getBtExtensions()));
+                                                            getBtExtensions()));
   }
   return btPreDownloadHandler.get();
 }

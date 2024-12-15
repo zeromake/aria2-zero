@@ -185,7 +185,7 @@ const char* strSupportedFeature(int feature)
     return nullptr;
 #endif // !HAVE_LIBSSH2
     break;
-  
+
   case (FEATURE_UV):
 #ifdef HAVE_LIBUV
     return "LIBUV";
@@ -225,16 +225,15 @@ std::string usedLibs()
   res += "GnuTLS/" GNUTLS_VERSION " ";
 #endif // HAVE_LIBGNUTLS
 #ifdef HAVE_OPENSSL
-#ifdef LIBRESSL_VERSION_NUMBER
+#  ifdef LIBRESSL_VERSION_NUMBER
   const char lib_name[] = "LibreSSL";
   const long version_number = LIBRESSL_VERSION_NUMBER;
-#elif defined(OPENSSL_VERSION_NUMBER)
+#  elif defined(OPENSSL_VERSION_NUMBER)
   const char lib_name[] = "OpenSSL";
   const long version_number = OPENSSL_VERSION_NUMBER;
-#endif
+#  endif
   res += fmt("%s/%ld.%ld.%ld", lib_name, version_number >> 28,
-             (version_number >> 20) & 0xff,
-             (version_number >> 12) & 0xff);
+             (version_number >> 20) & 0xff, (version_number >> 12) & 0xff);
   if ((version_number >> 4) & 0xff) {
     res += 'a' + ((version_number >> 4) & 0xff) - 1;
   }
@@ -260,7 +259,8 @@ std::string usedLibs()
 #endif // HAVE_LIBSSH2
 
 #ifdef HAVE_LIBUV
-  res += fmt("libuv/%d.%d.%d ", UV_VERSION_MAJOR, UV_VERSION_MINOR, UV_VERSION_PATCH);
+  res += fmt("libuv/%d.%d.%d ", UV_VERSION_MAJOR, UV_VERSION_MINOR,
+             UV_VERSION_PATCH);
 #endif // HAVE_LIBUV
 
   if (!res.empty()) {

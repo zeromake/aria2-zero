@@ -79,8 +79,9 @@ DefaultPieceStorage::DefaultPieceStorage(
     const std::shared_ptr<DownloadContext>& downloadContext,
     const Option* option)
     : downloadContext_(downloadContext),
-      bitfieldMan_(aria2::make_unique<BitfieldMan>(downloadContext->getPieceLength(),
-                                            downloadContext->getTotalLength())),
+      bitfieldMan_(
+          aria2::make_unique<BitfieldMan>(downloadContext->getPieceLength(),
+                                          downloadContext->getTotalLength())),
       diskWriterFactory_(std::make_shared<DefaultDiskWriterFactory>()),
       endGame_(false),
       endGamePieceNum_(END_GAME_PIECE_NUM),

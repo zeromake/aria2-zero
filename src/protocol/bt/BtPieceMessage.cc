@@ -88,8 +88,8 @@ BtPieceMessage::create(const unsigned char* data, size_t dataLength)
   bittorrent::assertPayloadLengthGreater(9, dataLength, NAME);
   bittorrent::assertID(ID, data, NAME);
   return aria2::make_unique<BtPieceMessage>(bittorrent::getIntParam(data, 1),
-                                     bittorrent::getIntParam(data, 5),
-                                     dataLength - 9);
+                                            bittorrent::getIntParam(data, 5),
+                                            dataLength - 9);
 }
 
 void BtPieceMessage::doReceivedAction()
@@ -223,8 +223,8 @@ void BtPieceMessage::pushPieceData(int64_t offset, int32_t length) const
   if (r == length) {
     const auto& peer = getPeer();
     getPeerConnection()->pushBytes(
-        std::move(buf), aria2::make_unique<PieceSendUpdate>(downloadContext_, peer,
-                                                     MESSAGE_HEADER_LENGTH));
+        std::move(buf), aria2::make_unique<PieceSendUpdate>(
+                            downloadContext_, peer, MESSAGE_HEADER_LENGTH));
     peer->updateUploadSpeed(length);
     downloadContext_->updateUploadSpeed(length);
   }

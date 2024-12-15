@@ -187,7 +187,8 @@ std::unique_ptr<DHTBucket> DHTBucket::split()
   bitfield::flipBit(min_, DHT_ID_LENGTH, prefixLength_);
 
   ++prefixLength_;
-  auto rBucket = aria2::make_unique<DHTBucket>(prefixLength_, rMax, rMin, localNode_);
+  auto rBucket =
+      aria2::make_unique<DHTBucket>(prefixLength_, rMax, rMin, localNode_);
 
   std::deque<std::shared_ptr<DHTNode>> lNodes;
   for (auto& elem : nodes_) {

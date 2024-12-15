@@ -109,9 +109,9 @@ std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommandProxied(
 
     getRequest()->setConnectedAddrInfo(hostname, addr, port);
 
-    auto c = aria2::make_unique<ConnectCommand>(getCuid(), getRequest(), proxyRequest,
-                                         getFileEntry(), getRequestGroup(),
-                                         getDownloadEngine(), getSocket());
+    auto c = aria2::make_unique<ConnectCommand>(
+        getCuid(), getRequest(), proxyRequest, getFileEntry(),
+        getRequestGroup(), getDownloadEngine(), getSocket());
     if (proxyMethod == V_GET) {
       // Use GET for FTP via HTTP proxy.
       getRequest()->setMethod(Request::METHOD_GET);
@@ -185,9 +185,9 @@ std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommandPlain(
     createSocket();
     getSocket()->establishConnection(addr, port);
     getRequest()->setConnectedAddrInfo(hostname, addr, port);
-    auto c = aria2::make_unique<ConnectCommand>(getCuid(), getRequest(), nullptr,
-                                         getFileEntry(), getRequestGroup(),
-                                         getDownloadEngine(), getSocket());
+    auto c = aria2::make_unique<ConnectCommand>(
+        getCuid(), getRequest(), nullptr, getFileEntry(), getRequestGroup(),
+        getDownloadEngine(), getSocket());
 
     if (getRequest()->getProtocol() == "sftp") {
 #ifdef HAVE_LIBSSH2

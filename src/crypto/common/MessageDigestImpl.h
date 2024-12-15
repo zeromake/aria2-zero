@@ -56,7 +56,8 @@ public:
 
   template <typename T> inline static hash_info_t make_hi()
   {
-    return std::make_tuple([]() { return aria2::make_unique<T>(); }, T::length());
+    return std::make_tuple([]() { return aria2::make_unique<T>(); },
+                           T::length());
   }
 
 private:

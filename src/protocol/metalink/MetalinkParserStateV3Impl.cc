@@ -50,7 +50,8 @@ const char METALINK3_NAMESPACE_URI_V2[] = "https://www.metalinker.org/";
 namespace {
 bool checkNsUri(const char* nsUri)
 {
-  return nsUri && (strcmp(nsUri, METALINK3_NAMESPACE_URI) == 0 || strcmp(nsUri, METALINK3_NAMESPACE_URI_V2) == 0);
+  return nsUri && (strcmp(nsUri, METALINK3_NAMESPACE_URI) == 0 ||
+                   strcmp(nsUri, METALINK3_NAMESPACE_URI_V2) == 0);
 }
 } // namespace
 

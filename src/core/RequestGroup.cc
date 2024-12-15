@@ -522,8 +522,8 @@ void RequestGroup::createInitialCommand(
     pieceStorage_->getDiskAdaptor()->openFile();
   }
   progressInfoFile_ = progressInfoFile;
-  processCheckIntegrityEntry(commands,
-                             aria2::make_unique<StreamCheckIntegrityEntry>(this), e);
+  processCheckIntegrityEntry(
+      commands, aria2::make_unique<StreamCheckIntegrityEntry>(this), e);
 }
 
 void RequestGroup::processCheckIntegrityEntry(
@@ -573,7 +573,8 @@ void RequestGroup::initPieceStorage()
         // Use LongestSequencePieceSelector when HTTP/FTP/BitTorrent
         // integrated downloads.
         A2_LOG_DEBUG("Using LongestSequencePieceSelector");
-        ps->setPieceSelector(aria2::make_unique<LongestSequencePieceSelector>());
+        ps->setPieceSelector(
+            aria2::make_unique<LongestSequencePieceSelector>());
       }
       if (option_->defined(PREF_BT_PRIORITIZE_PIECE)) {
         std::vector<size_t> result;

@@ -64,9 +64,9 @@
 #include "strptime.h"
 
 #ifdef _WIN32
-#define my_tzname _tzname
+#  define my_tzname _tzname
 #else
-#define my_tzname tzname
+#  define my_tzname tzname
 #endif
 
 static const char* abb_weekdays[] = {"Sun", "Mon", "Tue", "Wed",

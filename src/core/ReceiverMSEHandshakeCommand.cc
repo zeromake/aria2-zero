@@ -104,8 +104,8 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
               "The legacy BitTorrent handshake is not acceptable by the"
               " preference.");
         }
-        auto peerConnection =
-            aria2::make_unique<PeerConnection>(getCuid(), getPeer(), getSocket());
+        auto peerConnection = aria2::make_unique<PeerConnection>(
+            getCuid(), getPeer(), getSocket());
         peerConnection->presetBuffer(mseHandshake_->getBuffer(),
                                      mseHandshake_->getBufferLength());
         getDownloadEngine()->addCommand(
@@ -228,9 +228,10 @@ void ReceiverMSEHandshakeCommand::createCommand()
   // TODO add mseHandshake_->getInfoHash() to PeerReceiveHandshakeCommand
   // as a hint. If this info hash and one in BitTorrent Handshake does not
   // match, then drop connection.
-  getDownloadEngine()->addCommand(aria2::make_unique<PeerReceiveHandshakeCommand>(
-      getCuid(), getPeer(), getDownloadEngine(), getSocket(),
-      std::move(peerConnection)));
+  getDownloadEngine()->addCommand(
+      aria2::make_unique<PeerReceiveHandshakeCommand>(
+          getCuid(), getPeer(), getDownloadEngine(), getSocket(),
+          std::move(peerConnection)));
 }
 
 } // namespace aria2

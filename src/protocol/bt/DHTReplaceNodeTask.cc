@@ -69,7 +69,8 @@ void DHTReplaceNodeTask::sendMessage()
   else {
     getMessageDispatcher()->addMessageToQueue(
         getMessageFactory()->createPingMessage(questionableNode), timeout_,
-        aria2::make_unique<DHTPingReplyMessageCallback<DHTReplaceNodeTask>>(this));
+        aria2::make_unique<DHTPingReplyMessageCallback<DHTReplaceNodeTask>>(
+            this));
   }
 }
 

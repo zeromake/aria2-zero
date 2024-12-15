@@ -187,9 +187,9 @@ bool AuthConfigFactory::activateBasicCred(const std::string& host,
       return false;
     }
     else {
-      basicCreds_.insert(aria2::make_unique<BasicCred>(authConfig->getUser(),
-                                                authConfig->getPassword(), host,
-                                                port, path, true));
+      basicCreds_.insert(aria2::make_unique<BasicCred>(
+          authConfig->getUser(), authConfig->getPassword(), host, port, path,
+          true));
       return true;
     }
   }
