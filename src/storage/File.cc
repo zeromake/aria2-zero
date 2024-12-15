@@ -128,8 +128,9 @@ HANDLE openFile(const std::string& filename, bool readOnly = true)
   DWORD sharedMode = FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE;
   DWORD creationDisp = OPEN_EXISTING;
   return a2CreateFileW(utf8ToWChar(filename).c_str(), desiredAccess, sharedMode,
-                     /* lpSecurityAttributes */ nullptr, creationDisp,
-                     FILE_ATTRIBUTE_NORMAL, /* hTemplateFile */ nullptr);
+                       /* lpSecurityAttributes */ nullptr, creationDisp,
+                       FILE_ATTRIBUTE_NORMAL,
+                       /* hTemplateFile */ nullptr);
 }
 } // namespace
 #endif // _WIN32

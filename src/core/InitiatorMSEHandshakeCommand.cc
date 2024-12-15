@@ -67,7 +67,8 @@ InitiatorMSEHandshakeCommand::InitiatorMSEHandshakeCommand(
       requestGroup_(requestGroup),
       btRuntime_(btRuntime),
       sequence_(INITIATOR_SEND_KEY),
-      mseHandshake_(aria2::make_unique<MSEHandshake>(cuid, s, getOption().get()))
+      mseHandshake_(
+          aria2::make_unique<MSEHandshake>(cuid, s, getOption().get()))
 {
   disableReadCheckSocket();
   setWriteCheckSocket(getSocket());
@@ -152,8 +153,8 @@ bool InitiatorMSEHandshakeCommand::executeInternal()
     }
     case INITIATOR_RECEIVE_PAD_D: {
       if (mseHandshake_->receivePad()) {
-        auto peerConnection =
-            aria2::make_unique<PeerConnection>(getCuid(), getPeer(), getSocket());
+        auto peerConnection = aria2::make_unique<PeerConnection>(
+            getCuid(), getPeer(), getSocket());
         if (mseHandshake_->getNegotiatedCryptoType() ==
             MSEHandshake::CRYPTO_ARC4) {
           size_t buflen = mseHandshake_->getBufferLength();
@@ -167,11 +168,12 @@ bool InitiatorMSEHandshakeCommand::executeInternal()
           peerConnection->presetBuffer(mseHandshake_->getBuffer(),
                                        mseHandshake_->getBufferLength());
         }
-        getDownloadEngine()->addCommand(aria2::make_unique<PeerInteractionCommand>(
-            getCuid(), requestGroup_, getPeer(), getDownloadEngine(),
-            btRuntime_, pieceStorage_, peerStorage_, getSocket(),
-            PeerInteractionCommand::INITIATOR_SEND_HANDSHAKE,
-            std::move(peerConnection)));
+        getDownloadEngine()->addCommand(
+            aria2::make_unique<PeerInteractionCommand>(
+                getCuid(), requestGroup_, getPeer(), getDownloadEngine(),
+                btRuntime_, pieceStorage_, peerStorage_, getSocket(),
+                PeerInteractionCommand::INITIATOR_SEND_HANDSHAKE,
+                std::move(peerConnection)));
         return true;
       }
       else {

@@ -39,7 +39,7 @@
 #endif // HAVE_MMAP
 
 #ifdef HAVE_FCNTL_H
-#include <fcntl.h>
+#  include <fcntl.h>
 #endif // HAVE_FCNTL_H
 
 #include <cerrno>
@@ -199,8 +199,9 @@ HANDLE openFileWithFlags(const std::string& filename, int flags,
     creationDisp |= OPEN_EXISTING;
   }
   hn = a2CreateFileW(utf8ToWChar(filename).c_str(), desiredAccess, sharedMode,
-                   /* lpSecurityAttributes */ 0, creationDisp,
-                   FILE_ATTRIBUTE_NORMAL, /* hTemplateFile */ 0);
+                     /* lpSecurityAttributes */ 0, creationDisp,
+                     FILE_ATTRIBUTE_NORMAL,
+                     /* hTemplateFile */ 0);
   if (hn == INVALID_HANDLE_VALUE) {
     int errNum = GetLastError();
     throw DL_ABORT_EX3(

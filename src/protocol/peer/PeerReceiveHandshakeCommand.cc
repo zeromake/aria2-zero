@@ -75,7 +75,8 @@ PeerReceiveHandshakeCommand::PeerReceiveHandshakeCommand(
     }
   }
   else {
-    peerConnection_ = aria2::make_unique<PeerConnection>(cuid, getPeer(), getSocket());
+    peerConnection_ =
+        aria2::make_unique<PeerConnection>(cuid, getPeer(), getSocket());
   }
 }
 
@@ -137,11 +138,12 @@ bool PeerReceiveHandshakeCommand::executeInternal()
       // TODO addPeer and checkoutPeer must be "atomic", in a sense
       // that the added peer must be checked out.
       if (peerStorage->addAndCheckoutPeer(getPeer(), getCuid())) {
-        getDownloadEngine()->addCommand(aria2::make_unique<PeerInteractionCommand>(
-            getCuid(), downloadContext->getOwnerRequestGroup(), getPeer(),
-            getDownloadEngine(), btRuntime, pieceStorage, peerStorage,
-            getSocket(), PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE,
-            std::move(peerConnection_)));
+        getDownloadEngine()->addCommand(
+            aria2::make_unique<PeerInteractionCommand>(
+                getCuid(), downloadContext->getOwnerRequestGroup(), getPeer(),
+                getDownloadEngine(), btRuntime, pieceStorage, peerStorage,
+                getSocket(), PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE,
+                std::move(peerConnection_)));
         A2_LOG_DEBUG(
             fmt(MSG_INCOMING_PEER_CONNECTION, getCuid(), getPeer()->usedBy()));
       }

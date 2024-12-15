@@ -104,14 +104,11 @@ namespace {
 template <typename OutputStream>
 std::string encodeAll(OutputStream& o, int code, const ValueBase* param)
 {
-  o << "<?xml version=\"1.0\"?>"
-    << "<methodResponse>";
+  o << "<?xml version=\"1.0\"?>" << "<methodResponse>";
   if (code == 0) {
-    o << "<params>"
-      << "<param>";
+    o << "<params>" << "<param>";
     encodeValue(param, o);
-    o << "</param>"
-      << "</params>";
+    o << "</param>" << "</params>";
   }
   else {
     o << "<fault>";

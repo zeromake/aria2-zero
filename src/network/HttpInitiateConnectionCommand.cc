@@ -125,10 +125,10 @@ std::unique_ptr<Command> HttpInitiateConnectionCommand::createNextCommand(
       getSocket()->establishConnection(addr, port);
 
       getRequest()->setConnectedAddrInfo(hostname, addr, port);
-      auto c = aria2::make_unique<ConnectCommand>(getCuid(), getRequest(),
-                                           proxyRequest, // must be null
-                                           getFileEntry(), getRequestGroup(),
-                                           getDownloadEngine(), getSocket());
+      auto c = aria2::make_unique<ConnectCommand>(
+          getCuid(), getRequest(),
+          proxyRequest, // must be null
+          getFileEntry(), getRequestGroup(), getDownloadEngine(), getSocket());
       c->setControlChain(std::make_shared<HttpRequestConnectChain>());
       setupBackupConnection(hostname, addr, port, c.get());
       return std::move(c);

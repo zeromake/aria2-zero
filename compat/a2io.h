@@ -37,31 +37,31 @@
 #include "common.h"
 
 #ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
+#  include <sys/types.h>
 #endif
 
 #ifdef HAVE_SYS_STAT_H
-#include <sys/stat.h>
+#  include <sys/stat.h>
 #endif
 
 #ifdef HAVE_STDINT_H
-#include <stdint.h>
+#  include <stdint.h>
 #endif // HAVE_STDINT_H
 
 #ifdef HAVE_STDIO_H
-#include <stdio.h>
+#  include <stdio.h>
 #endif // HAVE_STDINT_H
 
 #ifdef HAVE_STDLIB_H
-#include <stdlib.h>
+#  include <stdlib.h>
 #endif // HAVE_STDLIB_H
 
 #ifdef HAVE_UNISTD_H
-#include <unistd.h>
+#  include <unistd.h>
 #endif // HAVE_UNISTD_H
 
 #ifdef HAVE_FCNTL_H
-#include <fcntl.h>
+#  include <fcntl.h>
 #endif // HAVE_FCNTL_H
 
 #include <cerrno>
@@ -156,90 +156,86 @@
 typedef struct _stat64 a2_struct_stat;
 typedef struct __utimbuf64 a2utimbuf;
 int a2stat(const wchar_t*, a2_struct_stat*);
-int a2mkdir(const wchar_t *path, int openMode);
-int a2unlink(const wchar_t *path);
-int a2rmdir(const wchar_t *path);
-int a2open(const wchar_t *path, int flags, int mode);
-FILE* a2fopen(const wchar_t *path, const wchar_t *mode);
-int a2rename(const wchar_t *oldpath, const wchar_t *newpath);
+int a2mkdir(const wchar_t* path, int openMode);
+int a2unlink(const wchar_t* path);
+int a2rmdir(const wchar_t* path);
+int a2open(const wchar_t* path, int flags, int mode);
+FILE* a2fopen(const wchar_t* path, const wchar_t* mode);
+int a2rename(const wchar_t* oldpath, const wchar_t* newpath);
 wchar_t* a2getcwd(wchar_t* buf, int size);
-HANDLE a2CreateFileW(
-    const wchar_t* lpFileName,
-    DWORD dwDesiredAccess,
-    DWORD dwShareMode,
-    LPSECURITY_ATTRIBUTES lpSecurityAttributes,
-    DWORD dwCreationDisposition,
-    DWORD dwFlagsAndAttributes,
-    HANDLE hTemplateFile);
-#ifdef HAVE_SYS_UTIME_H
+HANDLE a2CreateFileW(const wchar_t* lpFileName, DWORD dwDesiredAccess,
+                     DWORD dwShareMode,
+                     LPSECURITY_ATTRIBUTES lpSecurityAttributes,
+                     DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes,
+                     HANDLE hTemplateFile);
+#  ifdef HAVE_SYS_UTIME_H
 int a2utime(const wchar_t* path, a2utimbuf* t);
-#endif
+#  endif
 #  define a2wstat(path, buf) a2stat(path, buf)
 #  define a2tell(handle) _telli64(handle)
 // For Windows, we share files for reading and writing.
 // # define a2ftruncate(fd, length): We don't use ftruncate in Mingw build
-#ifdef HAVE_STDINT_H
-#  define a2_off_t int64_t
-#else
-#ifdef HAVE_LONG_LONG
-#  define a2_off_t long long
-#else
-#  define a2_off_t __int64
-#endif
-#endif
+#  ifdef HAVE_STDINT_H
+#    define a2_off_t int64_t
+#  else
+#    ifdef HAVE_LONG_LONG
+#      define a2_off_t long long
+#    else
+#      define a2_off_t __int64
+#    endif
+#  endif
 
 #  define a2close(fd) _close(fd)
 #  define a2dup(fd) _dup(fd)
 #  define a2dup2(fd) _dup2(fd)
 #  define a2fileno(fp) _fileno(fp)
 #  ifdef _MSC_VER
-#  define mode_t int
+#    define mode_t int
 #  endif // _MSC_VER
 
-#ifndef S_ISTYPE
-#define S_ISTYPE(mode, mask) (((mode) & S_IFMT) == (mask))
-#endif /* S_ISTYPE */
+#  ifndef S_ISTYPE
+#    define S_ISTYPE(mode, mask) (((mode) & S_IFMT) == (mask))
+#  endif /* S_ISTYPE */
 
-#ifndef S_ISFIFO
-#define S_ISFIFO(mode) S_ISTYPE(mode, S_IFIFO)
-#endif /* S_ISFIFO */
+#  ifndef S_ISFIFO
+#    define S_ISFIFO(mode) S_ISTYPE(mode, S_IFIFO)
+#  endif /* S_ISFIFO */
 
-#ifndef S_ISCHR
-#define S_ISCHR(mode) S_ISTYPE(mode, S_IFCHR)
-#endif /* S_ISCHR */
+#  ifndef S_ISCHR
+#    define S_ISCHR(mode) S_ISTYPE(mode, S_IFCHR)
+#  endif /* S_ISCHR */
 
-#ifndef S_ISDIR
-#define S_ISDIR(mode) S_ISTYPE(mode, S_IFDIR)
-#endif /* S_ISDIR */
+#  ifndef S_ISDIR
+#    define S_ISDIR(mode) S_ISTYPE(mode, S_IFDIR)
+#  endif /* S_ISDIR */
 
-#ifndef S_ISBLK
-#define S_ISBLK(mode) S_ISTYPE(mode, S_IFBLK)
-#endif /* S_ISBLK */
+#  ifndef S_ISBLK
+#    define S_ISBLK(mode) S_ISTYPE(mode, S_IFBLK)
+#  endif /* S_ISBLK */
 
-#ifndef S_ISREG
-#define S_ISREG(mode) S_ISTYPE(mode, S_IFREG)
-#endif /* S_ISREG */
+#  ifndef S_ISREG
+#    define S_ISREG(mode) S_ISTYPE(mode, S_IFREG)
+#  endif /* S_ISREG */
 
-#ifndef S_ISLNK
-#define S_ISLNK(mode) S_ISTYPE(mode, S_IFLNK)
-#endif /* S_ISLNK */
+#  ifndef S_ISLNK
+#    define S_ISLNK(mode) S_ISTYPE(mode, S_IFLNK)
+#  endif /* S_ISLNK */
 
-#ifndef S_ISSOCK
-#define S_ISSOCK(mode) S_ISTYPE(mode, S_IFSOCK)
-#endif /* S_ISSOCK */
+#  ifndef S_ISSOCK
+#    define S_ISSOCK(mode) S_ISTYPE(mode, S_IFSOCK)
+#  endif /* S_ISSOCK */
 
+#  ifndef STDIN_FILENO
+#    define STDIN_FILENO 0
+#  endif /* STDIN_FILENO */
 
-#ifndef STDIN_FILENO
-#define STDIN_FILENO 0
-#endif /* STDIN_FILENO */
+#  ifndef STDOUT_FILENO
+#    define STDOUT_FILENO 1
+#  endif /* STDOUT_FILENO */
 
-#ifndef STDOUT_FILENO
-#define STDOUT_FILENO 1
-#endif /* STDOUT_FILENO */
-
-#ifndef STDERR_FILENO
-#define STDERR_FILENO 2
-#endif /* STDERR_FILENO */
+#  ifndef STDERR_FILENO
+#    define STDERR_FILENO 2
+#  endif /* STDERR_FILENO */
 
 #elif defined(__ANDROID__) || defined(ANDROID)
 #  define a2lseek(fd, offset, origin) lseek64(fd, offset, origin)

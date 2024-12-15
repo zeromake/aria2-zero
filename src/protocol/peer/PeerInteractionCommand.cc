@@ -123,8 +123,9 @@ PeerInteractionCommand::PeerInteractionCommand(
   exMsgRegistry->setExtensionMessageID(ExtensionMessageRegistry::UT_METADATA,
                                        9);
 
-  auto extensionMessageFactory = aria2::make_unique<DefaultExtensionMessageFactory>(
-      getPeer(), exMsgRegistry.get());
+  auto extensionMessageFactory =
+      aria2::make_unique<DefaultExtensionMessageFactory>(getPeer(),
+                                                         exMsgRegistry.get());
   auto extensionMessageFactoryPtr = extensionMessageFactory.get();
   extensionMessageFactory->setPeerStorage(peerStorage.get());
   extensionMessageFactory->setDownloadContext(
@@ -156,7 +157,8 @@ PeerInteractionCommand::PeerInteractionCommand(
   }
 
   if (!peerConnection) {
-    peerConnection = aria2::make_unique<PeerConnection>(cuid, getPeer(), getSocket());
+    peerConnection =
+        aria2::make_unique<PeerConnection>(cuid, getPeer(), getSocket());
   }
   else {
     if (sequence_ == RECEIVER_WAIT_HANDSHAKE &&
@@ -251,8 +253,10 @@ PeerInteractionCommand::PeerInteractionCommand(
   }
 
   if (metadataGetMode) {
-    auto utMetadataRequestFactory = aria2::make_unique<UTMetadataRequestFactory>();
-    auto utMetadataRequestTracker = aria2::make_unique<UTMetadataRequestTracker>();
+    auto utMetadataRequestFactory =
+        aria2::make_unique<UTMetadataRequestFactory>();
+    auto utMetadataRequestTracker =
+        aria2::make_unique<UTMetadataRequestTracker>();
 
     utMetadataRequestFactory->setCuid(cuid);
     utMetadataRequestFactory->setDownloadContext(

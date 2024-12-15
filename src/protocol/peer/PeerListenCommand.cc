@@ -111,8 +111,8 @@ bool PeerListenCommand::execute()
 
       auto peer = std::make_shared<Peer>(endpoint.addr, endpoint.port, true);
       cuid_t cuid = e_->newCUID();
-      e_->addCommand(
-          aria2::make_unique<ReceiverMSEHandshakeCommand>(cuid, peer, e_, peerSocket));
+      e_->addCommand(aria2::make_unique<ReceiverMSEHandshakeCommand>(
+          cuid, peer, e_, peerSocket));
       A2_LOG_DEBUG(fmt("Accepted the connection from %s:%u.",
                        peer->getIPAddress().c_str(), peer->getPort()));
       A2_LOG_DEBUG(fmt(

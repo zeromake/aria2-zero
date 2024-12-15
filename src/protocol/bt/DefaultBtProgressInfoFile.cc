@@ -328,7 +328,8 @@ void DefaultBtProgressInfoFile::load()
                           expectedBitfieldLength, bitfieldLength));
   }
 
-  auto savedBitfield = aria2::make_unique<unsigned char[]>((size_t)bitfieldLength);
+  auto savedBitfield =
+      aria2::make_unique<unsigned char[]>((size_t)bitfieldLength);
   READ_CHECK(fp, savedBitfield.get(), bitfieldLength);
   if (pieceLength == static_cast<uint32_t>(dctx_->getPieceLength())) {
     pieceStorage_->setBitfield(savedBitfield.get(), bitfieldLength);
@@ -370,7 +371,8 @@ void DefaultBtProgressInfoFile::load()
                 static_cast<unsigned long>(piece->getBitfieldLength()),
                 bitfieldLength));
       }
-      auto pieceBitfield = aria2::make_unique<unsigned char[]>((size_t)bitfieldLength);
+      auto pieceBitfield =
+          aria2::make_unique<unsigned char[]>((size_t)bitfieldLength);
       READ_CHECK(fp, pieceBitfield.get(), bitfieldLength);
       piece->setBitfield(pieceBitfield.get(), bitfieldLength);
       piece->setHashType(dctx_->getPieceHashType());

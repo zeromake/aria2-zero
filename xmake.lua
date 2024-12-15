@@ -230,7 +230,7 @@ target("aria2")
         "src/protocol/sftp/*.cc",
         "src/util/uri_split.c",
         "compat/gai_strerror.c",
-        "compat/a2io.cpp"
+        "compat/a2io.cc"
     )
     add_includedirs(
         "compat",

@@ -68,9 +68,10 @@ bool FtpDownloadCommand::prepareForNextSegment()
   if (getOption()->getAsBool(PREF_FTP_REUSE_CONNECTION) &&
       getFileEntry()->gtoloff(getSegments().front()->getPositionToWrite()) ==
           getFileEntry()->getLength()) {
-    getDownloadEngine()->addCommand(aria2::make_unique<FtpFinishDownloadCommand>(
-        getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
-        ftpConnection_, getDownloadEngine(), ctrlSocket_));
+    getDownloadEngine()->addCommand(
+        aria2::make_unique<FtpFinishDownloadCommand>(
+            getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
+            ftpConnection_, getDownloadEngine(), ctrlSocket_));
 
     if (getRequestGroup()->downloadFinished()) {
       // To run checksum checking, we had to call following function here.

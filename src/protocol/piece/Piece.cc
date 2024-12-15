@@ -178,8 +178,8 @@ void Piece::reconfigure(int64_t length)
   // BitfieldMan for each call is very expensive.  Therefore, we use
   // maximum block length for now to reduce the overhead.  Ideally, we
   // check the code thoroughly and remove bitfield_ if we can.
-  bitfield_ =
-      aria2::make_unique<BitfieldMan>(std::numeric_limits<int32_t>::max(), length_);
+  bitfield_ = aria2::make_unique<BitfieldMan>(
+      std::numeric_limits<int32_t>::max(), length_);
 }
 
 void Piece::setBitfield(const unsigned char* bitfield, size_t len)

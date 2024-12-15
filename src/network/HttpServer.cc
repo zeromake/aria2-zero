@@ -64,8 +64,8 @@ HttpServer::HttpServer(const std::shared_ptr<SocketCore>& socket)
     : socket_(socket),
       socketRecvBuffer_(std::make_shared<SocketRecvBuffer>(socket_)),
       socketBuffer_(socket),
-      headerProcessor_(
-          aria2::make_unique<HttpHeaderProcessor>(HttpHeaderProcessor::SERVER_PARSER)),
+      headerProcessor_(aria2::make_unique<HttpHeaderProcessor>(
+          HttpHeaderProcessor::SERVER_PARSER)),
       lastContentLength_(0),
       bodyConsumed_(0),
       reqType_(RPC_TYPE_NONE),

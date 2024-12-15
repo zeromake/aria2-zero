@@ -129,9 +129,10 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data,
     case BtBitfieldMessage::ID:
       msg = BtBitfieldMessage::create(data, dataLength);
       if (!metadataGetMode_) {
-        msg->setBtMessageValidator(aria2::make_unique<BtBitfieldMessageValidator>(
-            static_cast<BtBitfieldMessage*>(msg.get()),
-            downloadContext_->getNumPieces()));
+        msg->setBtMessageValidator(
+            aria2::make_unique<BtBitfieldMessageValidator>(
+                static_cast<BtBitfieldMessage*>(msg.get()),
+                downloadContext_->getNumPieces()));
       }
       break;
     case BtRequestMessage::ID: {
@@ -340,8 +341,8 @@ DefaultBtMessageFactory::createNotInterestedMessage()
 std::unique_ptr<BtBitfieldMessage>
 DefaultBtMessageFactory::createBitfieldMessage()
 {
-  auto msg = aria2::make_unique<BtBitfieldMessage>(pieceStorage_->getBitfield(),
-                                            pieceStorage_->getBitfieldLength());
+  auto msg = aria2::make_unique<BtBitfieldMessage>(
+      pieceStorage_->getBitfield(), pieceStorage_->getBitfieldLength());
   setCommonProperty(msg.get());
   return msg;
 }

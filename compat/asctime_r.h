@@ -41,14 +41,14 @@ extern "C" {
 #endif /* __cplusplus */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#  include "config.h"
 #endif
 
 #ifndef HAVE_ASCTIME_R
-#ifdef HAVE_TIME_H
-#include <time.h>
-#endif
-#undef asctime_r
+#  ifdef HAVE_TIME_H
+#    include <time.h>
+#  endif
+#  undef asctime_r
 char* asctime_r(const struct tm*, char*);
 #endif
 

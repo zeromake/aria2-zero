@@ -83,7 +83,8 @@ void InitialMetalinkParserState::beginElement(MetalinkParserStateMachine* psm,
   else if (strcmp(nsUri, METALINK4_NAMESPACE_URI) == 0) {
     psm->setMetalinkStateV4();
   }
-  else if (strcmp(nsUri, METALINK3_NAMESPACE_URI) == 0 || strcmp(nsUri, METALINK3_NAMESPACE_URI_V2) == 0) {
+  else if (strcmp(nsUri, METALINK3_NAMESPACE_URI) == 0 ||
+           strcmp(nsUri, METALINK3_NAMESPACE_URI_V2) == 0) {
     psm->setMetalinkState();
   }
   else {

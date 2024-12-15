@@ -100,8 +100,7 @@ Exception::~Exception() throw() = default;
 std::string Exception::stackTrace() const
 {
   std::stringstream s;
-  s << "Exception: "
-    << "[" << file_ << ":" << line_ << "] ";
+  s << "Exception: " << "[" << file_ << ":" << line_ << "] ";
   if (errNum_) {
     s << "errNum=" << errNum_ << " ";
   }
@@ -109,8 +108,7 @@ std::string Exception::stackTrace() const
   s << what() << "\n";
   std::shared_ptr<Exception> e = cause_;
   while (e) {
-    s << "  -> "
-      << "[" << e->file_ << ":" << e->line_ << "] ";
+    s << "  -> " << "[" << e->file_ << ":" << e->line_ << "] ";
     if (e->getErrNum()) {
       s << "errNum=" << e->getErrNum() << " ";
     }

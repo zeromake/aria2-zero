@@ -434,7 +434,8 @@ bool HttpResponseCommand::handleOtherEncoding(
     // See also FtpNegotiationCommand::onFileSizeDetermined()
     if (getDownloadContext()->isChecksumVerificationNeeded()) {
       A2_LOG_DEBUG("Zero length file exists. Verify checksum.");
-      auto entry = aria2::make_unique<ChecksumCheckIntegrityEntry>(getRequestGroup());
+      auto entry =
+          aria2::make_unique<ChecksumCheckIntegrityEntry>(getRequestGroup());
       entry->initValidator();
       getPieceStorage()->getDiskAdaptor()->openExistingFile();
       getDownloadEngine()->getCheckIntegrityMan()->pushEntry(std::move(entry));
@@ -464,7 +465,8 @@ bool HttpResponseCommand::handleOtherEncoding(
     // See also FtpNegotiationCommand::onFileSizeDetermined()
     if (getDownloadContext()->isChecksumVerificationNeeded()) {
       A2_LOG_DEBUG("Verify checksum for zero-length file");
-      auto entry = aria2::make_unique<ChecksumCheckIntegrityEntry>(getRequestGroup());
+      auto entry =
+          aria2::make_unique<ChecksumCheckIntegrityEntry>(getRequestGroup());
       entry->initValidator();
       getDownloadEngine()->getCheckIntegrityMan()->pushEntry(std::move(entry));
     }

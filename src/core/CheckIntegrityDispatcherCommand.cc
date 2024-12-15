@@ -57,8 +57,8 @@ CheckIntegrityDispatcherCommand::createCommand(CheckIntegrityEntry* entry)
   A2_LOG_INFO(fmt("CUID#%" PRId64 " - Dispatching CheckIntegrityCommand "
                   "CUID#%" PRId64 ".",
                   getCuid(), newCUID));
-  return aria2::make_unique<CheckIntegrityCommand>(newCUID, entry->getRequestGroup(),
-                                            getDownloadEngine(), entry);
+  return aria2::make_unique<CheckIntegrityCommand>(
+      newCUID, entry->getRequestGroup(), getDownloadEngine(), entry);
 }
 
 } // namespace aria2

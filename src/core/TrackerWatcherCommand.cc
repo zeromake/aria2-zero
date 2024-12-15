@@ -163,7 +163,8 @@ void UDPAnnRequest::stop(DownloadEngine* e)
 bool UDPAnnRequest::issue(DownloadEngine* e)
 {
   if (req_) {
-    e->addCommand(aria2::make_unique<NameResolveCommand>(e->newCUID(), e, req_));
+    e->addCommand(
+        aria2::make_unique<NameResolveCommand>(e->newCUID(), e, req_));
     e->setNoWait(true);
     return true;
   }

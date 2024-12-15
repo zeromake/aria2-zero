@@ -142,20 +142,20 @@ std::string getHostText(const std::string& host, uint16_t port)
 } // namespace
 
 static const std::vector<std::string> headersSort = {
-  "Host:",
-  "User-Agent:",
-  "Accept:",
-  "Accept-Encoding:",
-  "Referer:",
-  "Connection:",
-  "Cookie:",
-  "Range:",
-  "Authorization:",
-  "Proxy-Authorization:",
-  "Pragma:",
-  "Cache-Control:",
-  "If-Modified-Since:",
-  "Want-Digest:",
+    "Host:",
+    "User-Agent:",
+    "Accept:",
+    "Accept-Encoding:",
+    "Referer:",
+    "Connection:",
+    "Cookie:",
+    "Range:",
+    "Authorization:",
+    "Proxy-Authorization:",
+    "Pragma:",
+    "Cache-Control:",
+    "If-Modified-Since:",
+    "Want-Digest:",
 };
 
 std::string HttpRequest::createRequest()
@@ -282,10 +282,11 @@ std::string HttpRequest::createRequest()
       builtinHds.emplace_back("Want-Digest:", wantDigest);
     }
   }
-  // std::vector<std::string> headersSortCopy(headersSort.begin(), headersSort.end());
-  // for (const auto& hd : builtinHds) {
+  // std::vector<std::string> headersSortCopy(headersSort.begin(),
+  // headersSort.end()); for (const auto& hd : builtinHds) {
   //   builtinHdsMap[hd.first] = hd;
-  //   if (std::find(std::begin(headersSort), std::end(headersSort), hd.first) ==
+  //   if (std::find(std::begin(headersSort), std::end(headersSort), hd.first)
+  //   ==
   //       std::end(headersSort)) {
   //     headersSortCopy.push_back(hd.first);
   //   }
@@ -297,17 +298,14 @@ std::string HttpRequest::createRequest()
   std::set<std::string> skipHeaders;
   for (const auto& k : headersSort) {
     auto it = std::find_if(
-      std::begin(headers_),
-      std::end(headers_),
-      [&k](const std::string& hd) {
-        return util::istartsWith(hd, k);
-      }
-    );
+        std::begin(headers_), std::end(headers_),
+        [&k](const std::string& hd) { return util::istartsWith(hd, k); });
     if (it != std::end(headers_)) {
       skipHeaders.insert(*it);
       requestLine += *it;
       requestLine += "\r\n";
-    } else {
+    }
+    else {
       auto builtinHdIt = builtinHdsMap.find(k);
       if (builtinHdIt != std::end(builtinHdsMap)) {
         requestLine += builtinHdIt->second.first;

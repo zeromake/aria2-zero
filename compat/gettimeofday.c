@@ -30,8 +30,7 @@
 /* Offset between 1/1/1601 and 1/1/1970 in 100 nanosec units */
 #define _W32_FT_OFFSET (116444736000000000ULL)
 
-int gettimeofday(struct timeval* tp,
-                         void* tzp)
+int gettimeofday(struct timeval* tp, void* tzp)
 {
   union {
     unsigned long long ns100;

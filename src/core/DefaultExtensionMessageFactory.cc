@@ -126,8 +126,8 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data,
       }
       switch (msgType->i()) {
       case 0: {
-        auto m =
-            aria2::make_unique<UTMetadataRequestExtensionMessage>(extensionMessageID);
+        auto m = aria2::make_unique<UTMetadataRequestExtensionMessage>(
+            extensionMessageID);
         m->setIndex(index->i());
         m->setDownloadContext(dctx_);
         m->setPeer(peer_);
@@ -143,8 +143,8 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data,
         if (!totalSize || totalSize->i() < 0) {
           throw DL_ABORT_EX("Bad ut_metadata data: total_size not found");
         }
-        auto m =
-            aria2::make_unique<UTMetadataDataExtensionMessage>(extensionMessageID);
+        auto m = aria2::make_unique<UTMetadataDataExtensionMessage>(
+            extensionMessageID);
         m->setIndex(index->i());
         m->setTotalSize(totalSize->i());
         m->setData(&data[1 + end], &data[length]);
@@ -155,8 +155,8 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data,
         return std::move(m);
       }
       case 2: {
-        auto m =
-            aria2::make_unique<UTMetadataRejectExtensionMessage>(extensionMessageID);
+        auto m = aria2::make_unique<UTMetadataRejectExtensionMessage>(
+            extensionMessageID);
         m->setIndex(index->i());
         // No need to inject tracker because peer will be disconnected.
         return std::move(m);
