@@ -127,7 +127,7 @@ HANDLE openFile(const std::string& filename, bool readOnly = true)
   DWORD desiredAccess = GENERIC_READ | (readOnly ? 0 : GENERIC_WRITE);
   DWORD sharedMode = FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE;
   DWORD creationDisp = OPEN_EXISTING;
-  return CreateFileW(utf8ToWChar(filename).c_str(), desiredAccess, sharedMode,
+  return a2CreateFileW(utf8ToWChar(filename).c_str(), desiredAccess, sharedMode,
                      /* lpSecurityAttributes */ nullptr, creationDisp,
                      FILE_ATTRIBUTE_NORMAL, /* hTemplateFile */ nullptr);
 }
@@ -290,24 +290,17 @@ bool File::isDir(const std::string& filename) { return File(filename).isDir(); }
 bool File::renameTo(const std::string& dest)
 {
 #ifdef _WIN32
-  // MinGW's rename() doesn't delete an existing destination.  Better
-  // to use MoveFileEx, which usually provides atomic move in aria2
-  // usecase.
-  if (MoveFileExW(utf8ToWChar(name_).c_str(), utf8ToWChar(dest).c_str(),
-                  MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING)) {
+  if (a2rename(utf8ToWChar(name_).c_str(), utf8ToWChar(dest).c_str()) == 0) {
     name_ = dest;
     return true;
   }
-
   return false;
 #else  // !_WIN32
-  if (rename(name_.c_str(), dest.c_str()) == 0) {
+  if (a2rename(name_.c_str(), dest.c_str()) == 0) {
     name_ = dest;
     return true;
   }
-  else {
-    return false;
-  }
+  return false;
 #endif // !_WIN32
 }
 
@@ -377,7 +370,7 @@ std::string File::getCurrentDir()
 #ifdef _WIN32
   const size_t buflen = 2048;
   wchar_t buf[buflen];
-  if (_wgetcwd(buf, buflen)) {
+  if (a2getcwd(buf, buflen)) {
     return wCharToUtf8(buf);
   }
   else {
@@ -386,7 +379,7 @@ std::string File::getCurrentDir()
 #else  // !_WIN32
   const size_t buflen = 2048;
   char buf[buflen];
-  if (getcwd(buf, buflen)) {
+  if (a2getcwd(buf, buflen)) {
     return std::string(buf);
   }
   else {

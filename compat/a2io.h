@@ -35,12 +35,26 @@
 #ifndef D_A2IO_H
 #define D_A2IO_H
 #include "common.h"
+
+#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
+#endif
+
+#ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
+#endif
 
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
 #endif // HAVE_STDINT_H
+
+#ifdef HAVE_STDIO_H
+#include <stdio.h>
+#endif // HAVE_STDINT_H
+
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#endif // HAVE_STDLIB_H
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -136,21 +150,33 @@
 #  define a2fseek(fd, offset, origin) _fseeki64(fd, offset, origin)
 #  define a2fstat(fd, buf) _fstat64(fd, buf)
 #  define a2ftell(fd) _ftelli64(fd)
-#  define a2wstat(path, buf) _wstat64(path, buf)
 #  ifdef stat
 #    undef stat
 #  endif // stat
-#  define a2_struct_stat struct _stat64
-#  define a2stat(path, buf) _wstat64(path, buf)
+typedef struct _stat64 a2_struct_stat;
+typedef struct __utimbuf64 a2utimbuf;
+int a2stat(const wchar_t*, a2_struct_stat*);
+int a2mkdir(const wchar_t *path, int openMode);
+int a2unlink(const wchar_t *path);
+int a2rmdir(const wchar_t *path);
+int a2open(const wchar_t *path, int flags, int mode);
+FILE* a2fopen(const wchar_t *path, const wchar_t *mode);
+int a2rename(const wchar_t *oldpath, const wchar_t *newpath);
+wchar_t* a2getcwd(wchar_t* buf, int size);
+HANDLE a2CreateFileW(
+    const wchar_t* lpFileName,
+    DWORD dwDesiredAccess,
+    DWORD dwShareMode,
+    LPSECURITY_ATTRIBUTES lpSecurityAttributes,
+    DWORD dwCreationDisposition,
+    DWORD dwFlagsAndAttributes,
+    HANDLE hTemplateFile);
+#ifdef HAVE_SYS_UTIME_H
+int a2utime(const wchar_t* path, a2utimbuf* t);
+#endif
+#  define a2wstat(path, buf) a2stat(path, buf)
 #  define a2tell(handle) _telli64(handle)
-#  define a2mkdir(path, openMode) _wmkdir(path)
-#  define a2utimbuf _utimbuf
-#  define a2utime(path, times) _wutime(path, times)
-#  define a2unlink(path) _wunlink(path)
-#  define a2rmdir(path) _wrmdir(path)
 // For Windows, we share files for reading and writing.
-#  define a2open(path, flags, mode) _wsopen(path, flags, _SH_DENYNO, mode)
-#  define a2fopen(path, mode) _wfsopen(path, mode, _SH_DENYNO)
 // # define a2ftruncate(fd, length): We don't use ftruncate in Mingw build
 #ifdef HAVE_STDINT_H
 #  define a2_off_t int64_t
@@ -233,6 +259,8 @@
 #  define a2dup(fd) dup(fd)
 #  define a2dup2(fd) dup2(fd)
 #  define a2fileno(fp) fileno(fp)
+#  define a2rename(oldpath, newpath) rename(oldpath, newpath)
+#  define a2getcwd(buf, size) getcwd(buf, size)
 // Android NDK R8e does not provide ftruncate64 prototype, so let's
 // define it here.
 #  ifdef __cplusplus
@@ -265,6 +293,8 @@ extern int ftruncate64(int fd, off64_t length);
 #  define a2dup(fd) dup(fd)
 #  define a2dup2(fd) dup2(fd)
 #  define a2fileno(fp) fileno(fp)
+#  define a2rename(oldpath, newpath) rename(oldpath, newpath)
+#  define a2getcwd(buf, size) getcwd(buf, size)
 #  define a2_off_t off_t
 #endif
 

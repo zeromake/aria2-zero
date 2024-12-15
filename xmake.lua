@@ -37,6 +37,9 @@ set_rundir(".")
 add_defines("CXX11_OVERRIDE=override")
 set_configdir("$(buildir)/config")
 add_includedirs("$(buildir)/config")
+if is_plat("windows") then
+    add_cxxflags("/EHsc")
+end
 
 local common_headers = {
     "argz.h",
@@ -60,6 +63,7 @@ local common_headers = {
     "signal.h",
     "stddef.h",
     "stdint.h",
+    "stdio.h",
     "stdio_ext.h",
     "stdlib.h",
     "string.h",
@@ -74,6 +78,7 @@ local common_headers = {
     "sys/signal.h",
     "sys/socket.h",
     "sys/time.h",
+    "sys/utime.h",
     "sys/types.h",
     "sys/uio.h",
     "sys/utsname.h",
@@ -127,17 +132,12 @@ set_configvar("ENABLE_BITTORRENT", 1)
 set_configvar("ENABLE_SSL", 1)
 set_configvar("HAVE_LIBCARES", 1)
 set_configvar("HAVE_LIBSSH2", 1)
+set_configvar("HAVE_OPENSSL", 1)
+set_configvar("HAVE_EVP_SHA224", 1)
+set_configvar("HAVE_EVP_SHA256", 1)
+set_configvar("HAVE_EVP_SHA384", 1)
+set_configvar("HAVE_EVP_SHA512", 1)
 
-if ssl_external then
-    set_configvar("HAVE_OPENSSL", 1)
-    set_configvar("HAVE_EVP_SHA224", 1)
-    set_configvar("HAVE_EVP_SHA256", 1)
-    set_configvar("HAVE_EVP_SHA384", 1)
-    set_configvar("HAVE_EVP_SHA512", 1)
-else
-    set_configvar("USE_INTERNAL_ARC4", 1)
-    set_configvar("USE_INTERNAL_BIGNUM", 1)
-end
 set_configvar("HAVE_SQLITE3", 1)
 set_configvar("HAVE_SQLITE3_OPEN_V2", 1)
 set_configvar("HAVE_LIBEXPAT", 1)
@@ -229,7 +229,8 @@ target("aria2")
         "src/parser/xml/expat/*.cc",
         "src/protocol/sftp/*.cc",
         "src/util/uri_split.c",
-        "compat/gai_strerror.c"
+        "compat/gai_strerror.c",
+        "compat/a2io.cpp"
     )
     add_includedirs(
         "compat",
@@ -294,7 +295,7 @@ target("aria2")
             add_files("src/tls/apple/*.cc")
             add_frameworks("CoreFoundation")
         end
-        add_files("src/crypto/internal/*.cc")
+        add_files("src/crypto/libssl/*.cc")
     else
         add_files("src/tls/libssl/*.cc", "src/crypto/libssl/*.cc")
     end
@@ -319,7 +320,8 @@ target("aria2")
         "sqlite3",
         "c-ares",
         "libressl",
-        "ssh2"
+        "ssh2",
+        {public = true}
     )
     add_configfiles("config.h.in")
     add_defines("HAVE_CONFIG_H=1")

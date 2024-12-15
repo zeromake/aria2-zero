@@ -175,14 +175,14 @@ void MultiUrlRequestInfo::printMessageForContinue()
           "help/man page for details."));
   }
 }
-const static std::array<std::string, 4> global_certfiles ={
+static const std::array<std::string, 4> global_certfiles ={
   "cert.pem",
   "cacert.pem",
   "ca-certificates.crt",
   "curl-ca-bundle.crt",
 };
 
-const static std::array<std::string, 3> global_certdirs = {
+static const std::array<std::string, 3> global_certdirs = {
 #ifdef _WIN32
   "C:\\Windows\\ssl",
   "C:\\Windows\\System32",
