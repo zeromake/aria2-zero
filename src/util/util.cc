@@ -1805,12 +1805,9 @@ std::string getXDGDir(const std::string& environmentVariable,
 
 std::string getConfigFile()
 {
-  std::string filename = File::getCurrentDir() + "/.aria2/aria2.conf";
+  std::string filename = getHomeDir() + "/.aria2/aria2.conf";
   if (!File(filename).exists()) {
-    filename = File::getCurrentDir() + "/aria2.conf";
-  }
-  if (!File(filename).exists()) {
-    filename = getXDGDir("XDG_CONFIG_HOME", File::getCurrentDir() + "/.config") +
+    filename = getXDGDir("XDG_CONFIG_HOME", getHomeDir() + "/.config") +
                "/aria2/aria2.conf";
   }
   return filename;
@@ -1819,12 +1816,9 @@ std::string getConfigFile()
 std::string getDHTFile(bool ipv6)
 {
   std::string filename =
-      File::getCurrentDir() + (ipv6 ? "/.aria2/dht6.dat" : "/.aria2/dht.dat");
+      getHomeDir() + (ipv6 ? "/.aria2/dht6.dat" : "/.aria2/dht.dat");
   if (!File(filename).exists()) {
-    filename = File::getCurrentDir() + (ipv6 ? "/dht6.dat" : "/dht.dat");
-  }
-  if (!File(filename).exists()) {
-    filename = getXDGDir("XDG_CACHE_HOME", File::getCurrentDir() + "/.cache") +
+    filename = getXDGDir("XDG_CACHE_HOME", getHomeDir() + "/.cache") +
                (ipv6 ? "/aria2/dht6.dat" : "/aria2/dht.dat");
   }
   return filename;
