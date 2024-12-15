@@ -275,7 +275,7 @@ static int is_integer(s) const char* s;
  */
 static int is_address(s) const char* s;
 {
-  const static char delimiters[] = {'.', '.', '.', '\0'};
+  static const char delimiters[] = {'.', '.', '.', '\0'};
   int i, j;
   int octet;
 

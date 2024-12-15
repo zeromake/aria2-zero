@@ -7,6 +7,15 @@ This program comes with no warranty.
 You must use this program at your own risk.
 
 
+## Features
+
+- 使用 xmake 一键编译
+- 支持 msvc 编译
+- 支持 windows 超长路径（MAX_PATH 一般 260 个字符，拼接了 `\\?\` 应该是支持 32767 个字符？）
+- 对 http 头做了简单的排序
+- 统一使用 libressl 做 sftp 和 hashcheck 支持（internal 貌似在 windows 下有 bug）
+- 支持新版的 Metalink v3 命名空间
+
 ## ChangeLog
 
 - [x] 改为 xmake 工具编译
@@ -21,6 +30,7 @@ You must use this program at your own risk.
 - [ ] 从上游拉一些值得修复的问题
     + [x] [findFirstDiskWriterEntry 可能越界](https://github.com/aria2/aria2/issues/2216)
     + [x] [Metalink v3 支持新命名空间](https://github.com/aria2/aria2/issues/2267)
+    + [x] [对常规 http 头做强制排序](https://github.com/aria2/aria2/issues/2272)
     + [ ] [CDN 地址经常是重定向后有过期时间支持重试和分片下载时从源头链接开始](https://github.com/aria2/aria2/issues/2197)
     + [ ] [follow-torrent 不起作用](https://github.com/aria2/aria2/issues/2196)
     + [ ] [支持 m3u8](https://github.com/aria2/aria2/issues/2164)
@@ -40,7 +50,7 @@ You must use this program at your own risk.
     + [ ] [排布任务好像有问题](https://github.com/aria2/aria2/issues/2012)
     + [ ] [强制重新开始而不是继续](https://github.com/aria2/aria2/issues/2010)
     + [ ] [高精度超时](https://github.com/aria2/aria2/issues/2002)
-    + [ ] windows 下支持超过 255 字节的路径，额外支持超大路径 [1](https://github.com/aria2/aria2/issues/1997),[2](https://github.com/aria2/aria2/issues/1981),[3](https://github.com/aria2/aria2/issues/1070)
+    + [x] windows 下支持超过 255 字节的路径，额外支持超大路径 [1](https://github.com/aria2/aria2/issues/1997),[2](https://github.com/aria2/aria2/issues/1981),[3](https://github.com/aria2/aria2/issues/1070)
     + [ ] [Range 拼接错误](https://github.com/aria2/aria2/issues/1971)
     + [ ] [进度](https://github.com/aria2/aria2/issues?page=8&q=is%3Aissue+is%3Aopen),(#1971)[https://github.com/aria2/aria2/issues/1971]
 - [ ] 标记一些有报告，但是没有问题的 issues

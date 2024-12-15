@@ -141,7 +141,7 @@ std::string getHostText(const std::string& host, uint16_t port)
 }
 } // namespace
 
-const static std::vector<std::string> headersSort = {
+static const std::vector<std::string> headersSort = {
   "Host:",
   "User-Agent:",
   "Accept:",

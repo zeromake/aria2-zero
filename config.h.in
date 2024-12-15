@@ -31,6 +31,7 @@ ${define HAVE_PORT_H}
 ${define HAVE_SIGNAL_H}
 ${define HAVE_STDDEF_H}
 ${define HAVE_STDINT_H}
+${define HAVE_STDIO_H}
 ${define HAVE_STDIO_EXT_H}
 ${define HAVE_STDLIB_H }
 ${define HAVE_STRING_H}
@@ -69,6 +70,7 @@ ${define HAVE_WINCRYPT_H}
 ${define HAVE_SECURITY_H}
 ${define HAVE_PTHREAD_H}
 ${define HAVE_GETOPT_H}
+${define HAVE_SYS_UTIME_H}
 
 ${define HAVE___INT64}
 ${define HAVE_LONG_LONG}

@@ -198,7 +198,7 @@ HANDLE openFileWithFlags(const std::string& filename, int flags,
   else {
     creationDisp |= OPEN_EXISTING;
   }
-  hn = CreateFileW(utf8ToWChar(filename).c_str(), desiredAccess, sharedMode,
+  hn = a2CreateFileW(utf8ToWChar(filename).c_str(), desiredAccess, sharedMode,
                    /* lpSecurityAttributes */ 0, creationDisp,
                    FILE_ATTRIBUTE_NORMAL, /* hTemplateFile */ 0);
   if (hn == INVALID_HANDLE_VALUE) {

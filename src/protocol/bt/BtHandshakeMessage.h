@@ -48,7 +48,7 @@ public:
   constexpr static size_t PSTR_LENGTH = 19;
   constexpr static size_t RESERVED_LENGTH = 8;
   constexpr static size_t MESSAGE_LENGTH = 68;
-  const static unsigned char BT_PSTR[];
+  static const unsigned char BT_PSTR[];
 
 private:
   uint8_t pstrlen_;
@@ -75,7 +75,7 @@ public:
 
   static const uint8_t ID = INT8_MAX;
 
-  const static char NAME[];
+  static const char NAME[];
 
   virtual void doReceivedAction() CXX11_OVERRIDE{};
 
