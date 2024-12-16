@@ -50,6 +50,7 @@ private:
   bool open_;
   bool needsFileAllocation_;
   bool needsDiskWriter_;
+  bool skip_ = false;
 
 public:
   DiskWriterEntry(const std::shared_ptr<FileEntry>& fileEntry);
@@ -88,6 +89,10 @@ public:
   bool needsDiskWriter() const { return needsDiskWriter_; }
 
   void needsDiskWriter(bool f) { needsDiskWriter_ = f; }
+  
+  bool getSkip() const { return skip_; }
+
+  void setSkip(bool f) { skip_ = f; }
 };
 
 typedef std::vector<std::unique_ptr<DiskWriterEntry>> DiskWriterEntries;

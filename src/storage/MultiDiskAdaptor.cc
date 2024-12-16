@@ -158,6 +158,9 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
         A2_LOG_DEBUG(fmt("%s needs DiskWriter", fileEntry->getPath().c_str()));
         dwent->needsDiskWriter(true);
       }
+      if (fileEntry->isPaddingFile()) {
+        dwent->setSkip(true);
+      }
     }
     // Check shared piece backward
     lastOffset = std::numeric_limits<int64_t>::max();
@@ -180,6 +183,9 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
   }
   DefaultDiskWriterFactory dwFactory;
   for (auto& dwent : diskWriterEntries_) {
+    if (dwent->getSkip()) {
+      continue;
+    }
     if (dwent->needsFileAllocation() || dwent->needsDiskWriter() ||
         dwent->fileExists()) {
       A2_LOG_DEBUG(fmt("Creating DiskWriter for filename=%s",
@@ -344,13 +350,14 @@ void MultiDiskAdaptor::writeData(const unsigned char* data, size_t len,
   int64_t fileOffset = offset - (*first)->getFileEntry()->getOffset();
   for (auto i = first, eoi = diskWriterEntries_.cend(); i != eoi; ++i) {
     ssize_t writeLength = calculateLength((*i).get(), fileOffset, rem);
-    openIfNot((*i).get(), &DiskWriterEntry::openFile);
-    if (!(*i)->isOpen()) {
-      throwOnDiskWriterNotOpened((*i).get(), offset + (len - rem));
+    if (!(*i)->getSkip()) {
+      openIfNot((*i).get(), &DiskWriterEntry::openFile);
+      if (!(*i)->isOpen()) {
+        throwOnDiskWriterNotOpened((*i).get(), offset + (len - rem));
+      }
+      (*i)->getDiskWriter()->writeData(data + (len - rem), writeLength,
+                                      fileOffset);
     }
-
-    (*i)->getDiskWriter()->writeData(data + (len - rem), writeLength,
-                                     fileOffset);
     rem -= writeLength;
     fileOffset = 0;
     if (rem == 0) {
@@ -380,14 +387,24 @@ ssize_t MultiDiskAdaptor::readData(unsigned char* data, size_t len,
   int64_t fileOffset = offset - (*first)->getFileEntry()->getOffset();
   for (auto i = first, eoi = diskWriterEntries_.cend(); i != eoi; ++i) {
     ssize_t readLength = calculateLength((*i).get(), fileOffset, rem);
-    openIfNot((*i).get(), &DiskWriterEntry::openFile);
-    if (!(*i)->isOpen()) {
-      throwOnDiskWriterNotOpened((*i).get(), offset + (len - rem));
+    bool skip = (*i)->getSkip();
+    if (!skip) {
+      openIfNot((*i).get(), &DiskWriterEntry::openFile);
+      if (!(*i)->isOpen()) {
+        throwOnDiskWriterNotOpened((*i).get(), offset + (len - rem));
+      }
     }
 
     while (readLength > 0) {
-      auto nread = (*i)->getDiskWriter()->readData(data + (len - rem),
-                                                   readLength, fileOffset);
+      ssize_t nread = 0;
+      if (!skip) {
+        nread = (*i)->getDiskWriter()->readData(data + (len - rem), readLength,
+                                                fileOffset);
+      } else {
+        // Skip padding reading fill is zero
+        nread = readLength;
+        memset(data + (len - rem), 0, readLength);
+      }
 
       if (nread == 0) {
         return totalReadLength;
@@ -395,7 +412,7 @@ ssize_t MultiDiskAdaptor::readData(unsigned char* data, size_t len,
 
       totalReadLength += nread;
 
-      if (dropCache) {
+      if (dropCache && !skip) {
         (*i)->getDiskWriter()->dropCache(nread, fileOffset);
       }
 

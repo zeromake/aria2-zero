@@ -294,6 +294,10 @@ void extractFileEntries(const std::shared_ptr<DownloadContext>& ctx,
       fileEntry->setOriginalName(utf8Path);
       fileEntry->setSuffixPath(suffixPath);
       fileEntry->setMaxConnectionPerServer(maxConn);
+      if (utf8Path.find("_____padding_file_") != std::string::npos) {
+        fileEntry->setPaddingFile(true);
+        fileEntry->setRequested(false);
+      }
       fileEntries.push_back(fileEntry);
       offset += fileEntry->getLength();
     }

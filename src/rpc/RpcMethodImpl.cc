@@ -562,6 +562,7 @@ void createFileEntry(List* files, InputIterator first, InputIterator last,
 {
   size_t index = 1;
   for (; first != last; ++first, ++index) {
+    if ((*first)->isPaddingFile()) continue;
     auto entry = Dict::g();
     entry->put(KEY_INDEX, util::uitos(index));
     entry->put(KEY_PATH, (*first)->getPath());

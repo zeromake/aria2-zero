@@ -94,6 +94,7 @@ private:
 
   bool requested_;
   bool uniqueProtocol_;
+  bool paddingFile_ = false;
 
   void storePool(const std::shared_ptr<Request>& request);
 
@@ -132,6 +133,12 @@ public:
   bool isRequested() const { return requested_; }
 
   void setRequested(bool flag) { requested_ = flag; }
+  
+  bool isPaddingFile() const { return paddingFile_; }
+
+  void setPaddingFile(bool flag) {
+    paddingFile_ = flag;
+  }
 
   const std::deque<std::string>& getRemainingUris() const { return uris_; }
 
