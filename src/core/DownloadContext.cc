@@ -138,8 +138,9 @@ void DownloadContext::setFileFilter(SegList<int> sgl)
   using namespace std::placeholders;
 
   if (!sgl.hasNext() || fileEntries_.size() == 1) {
-    std::for_each(fileEntries_.begin(), fileEntries_.end(),
-                  std::bind(&FileEntry::setRequested, _1, true));
+    std::for_each(fileEntries_.begin(), fileEntries_.end(), [](auto& e) {
+      if (!e->isPaddingFile()) e->setRequested(true);
+    });
     return;
   }
   assert(sgl.peek() >= 1);
@@ -148,7 +149,9 @@ void DownloadContext::setFileFilter(SegList<int> sgl)
   for (; i < len && sgl.hasNext(); ++i) {
     size_t idx = sgl.peek() - 1;
     if (i == idx) {
-      fileEntries_[i]->setRequested(true);
+      if (!fileEntries_[i]->isPaddingFile()) {
+        fileEntries_[i]->setRequested(true);
+      }
       sgl.next();
     }
     else if (i < idx) {

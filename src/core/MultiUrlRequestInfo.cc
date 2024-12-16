@@ -95,6 +95,7 @@ static const DWORD mainThread = GetCurrentThreadId();
 
 static void handler(int signal)
 {
+  A2_LOG_NOTICE(fmt("handler signal %d %d", signal, global::globalHaltRequested));
   if (
 #ifdef SIGHUP
       signal == SIGHUP ||

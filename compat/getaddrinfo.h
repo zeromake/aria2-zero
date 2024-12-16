@@ -33,10 +33,6 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#ifdef _WIN32
-#  undef SIZE_MAX
-#endif // _WIN32
-
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif // HAVE_CONFIG_H

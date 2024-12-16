@@ -62,7 +62,7 @@ const std::wstring toNamespacedPath(const wchar_t* path)
     }
     originPath = L"\\\\?\\" + originPath;
   }
-  wprintf(L"toNamespacedPath: %s\n", originPath.c_str());
+  // wprintf(L"toNamespacedPath: %s\n", originPath.c_str());
   return std::move(originPath);
 }
 

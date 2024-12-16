@@ -65,7 +65,9 @@ namespace {
 void copyValues(const std::shared_ptr<FileEntry>& d,
                 const std::shared_ptr<FileEntry>& s)
 {
-  d->setRequested(true);
+  if (!d->isPaddingFile()) {
+    d->setRequested(true);
+  }
   d->setPath(s->getPath());
   d->addUris(std::begin(s->getRemainingUris()),
              std::end(s->getRemainingUris()));
