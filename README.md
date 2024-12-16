@@ -15,6 +15,8 @@ You must use this program at your own risk.
 - 对 http 头做了简单的排序
 - 统一使用 libressl 做 sftp 和 hashcheck 支持（internal 貌似在 windows 下有 bug）
 - 支持新版的 Metalink v3 命名空间
+- 支持默认跳过 bt 种子里的 `_____padding_file_` 文件，不会创建，也不会写入磁盘（但是依旧会下载，这个 bt 里是用来填充另一个文件的，不能不下载）
+- 应用了 [#2209](https://github.com/aria2/aria2/pull/2209) 补丁，未认证时没有正确回收 socket
 
 ## ChangeLog
 
@@ -50,8 +52,8 @@ You must use this program at your own risk.
     + [ ] [排布任务好像有问题](https://github.com/aria2/aria2/issues/2012)
     + [ ] [强制重新开始而不是继续](https://github.com/aria2/aria2/issues/2010)
     + [ ] [高精度超时](https://github.com/aria2/aria2/issues/2002)
-    + [x] windows 下支持超过 255 字节的路径，额外支持超大路径 [1](https://github.com/aria2/aria2/issues/1997),[2](https://github.com/aria2/aria2/issues/1981),[3](https://github.com/aria2/aria2/issues/1070)
-    + [ ] [Range 拼接错误](https://github.com/aria2/aria2/issues/1971)
+    + [x] windows 下支持超过 255 字节的路径，额外支持超大路径 [1](https://github.com/aria2/aria2/issues/1997),[2](https://github.com/aria2/aria2/issues/1981),[3](https://github.com/aria2/aria2/issues/1070), [4](https://github.com/imfile-io/imfile-desktop/issues/56)
+    + [ ] Range 拼接错误 [1](https://github.com/aria2/aria2/issues/1971), [2](https://github.com/aria2/aria2/issues/1344#issuecomment-1570701152), [3](https://github.com/aria2/aria2/pull/1587), [4]()
     + [ ] [进度](https://github.com/aria2/aria2/issues?page=8&q=is%3Aissue+is%3Aopen),(#1971)[https://github.com/aria2/aria2/issues/1971]
 - [ ] 标记一些有报告，但是没有问题的 issues
     - [无法使用 ip 直连下载内网文件](https://github.com/aria2/aria2/issues/2049)
