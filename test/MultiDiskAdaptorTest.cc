@@ -34,7 +34,7 @@ private:
 public:
   void setUp()
   {
-    adaptor = make_unique<MultiDiskAdaptor>();
+    adaptor = aria2::make_unique<MultiDiskAdaptor>();
     adaptor->setPieceLength(2);
   }
 

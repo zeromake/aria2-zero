@@ -26,11 +26,11 @@ CPPUNIT_TEST_SUITE_REGISTRATION(MetalinkerTest);
 void MetalinkerTest::testQueryEntry()
 {
   Metalinker metalinker;
-  auto entry1 = make_unique<MetalinkEntry>();
+  auto entry1 = aria2::make_unique<MetalinkEntry>();
   entry1->version = "0.5.2";
   entry1->languages.push_back("en-US");
   entry1->oses.push_back("Linux-x86");
-  auto entry2 = make_unique<MetalinkEntry>();
+  auto entry2 = aria2::make_unique<MetalinkEntry>();
   entry2->version = "0.5.1";
   entry2->languages.push_back("ja-JP");
   entry2->oses.push_back("Linux-m68k");

@@ -33,7 +33,7 @@ private:
 public:
   void setUp()
   {
-    dctx_ = make_unique<DownloadContext>();
+    dctx_ = aria2::make_unique<DownloadContext>();
 
     peer_ = std::make_shared<Peer>("192.168.0.1", 6969);
     peer_->allocateSessionResource(1_k, 1_m);
@@ -41,7 +41,7 @@ public:
 
     exmsgFactory_ = std::make_shared<MockExtensionMessageFactory>();
 
-    factory_ = make_unique<DefaultBtMessageFactory>();
+    factory_ = aria2::make_unique<DefaultBtMessageFactory>();
     factory_->setDownloadContext(dctx_.get());
     factory_->setPeer(peer_);
     factory_->setExtensionMessageFactory(exmsgFactory_.get());

@@ -42,7 +42,7 @@ public:
         std::vector<std::shared_ptr<DHTNode>> closestKNodes,
         const std::string& transactionID) CXX11_OVERRIDE
     {
-      auto m = make_unique<DHTFindNodeReplyMessage>(AF_INET, localNode_,
+      auto m = aria2::make_unique<DHTFindNodeReplyMessage>(AF_INET, localNode_,
                                                     remoteNode, transactionID);
       m->setClosestKNodes(std::move(closestKNodes));
       return m;

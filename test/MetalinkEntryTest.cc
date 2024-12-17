@@ -31,28 +31,28 @@ CPPUNIT_TEST_SUITE_REGISTRATION(MetalinkEntryTest);
 
 std::unique_ptr<MetalinkEntry> createTestEntry()
 {
-  auto entry = make_unique<MetalinkEntry>();
-  auto res1 = make_unique<MetalinkResource>();
+  auto entry = aria2::make_unique<MetalinkEntry>();
+  auto res1 = aria2::make_unique<MetalinkResource>();
   res1->url = "ftp://myhost/aria2.tar.bz2";
   res1->type = MetalinkResource::TYPE_FTP;
   res1->location = "ro";
   res1->priority = 50;
-  auto res2 = make_unique<MetalinkResource>();
+  auto res2 = aria2::make_unique<MetalinkResource>();
   res2->url = "http://myhost/aria2.tar.bz2";
   res2->type = MetalinkResource::TYPE_HTTP;
   res2->location = "at";
   res2->priority = 1;
-  auto res3 = make_unique<MetalinkResource>();
+  auto res3 = aria2::make_unique<MetalinkResource>();
   res3->url = "http://myhost/aria2.torrent";
   res3->type = MetalinkResource::TYPE_BITTORRENT;
   res3->location = "al";
   res3->priority = 40;
-  auto res4 = make_unique<MetalinkResource>();
+  auto res4 = aria2::make_unique<MetalinkResource>();
   res4->url = "http://myhost/aria2.ext";
   res4->type = MetalinkResource::TYPE_NOT_SUPPORTED;
   res4->location = "ad";
   res4->priority = 90;
-  auto res5 = make_unique<MetalinkResource>();
+  auto res5 = aria2::make_unique<MetalinkResource>();
   res5->url = "https://myhost/aria2.tar.bz2";
   res5->type = MetalinkResource::TYPE_HTTPS;
   res5->location = "jp";

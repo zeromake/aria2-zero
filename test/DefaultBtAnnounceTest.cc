@@ -63,7 +63,7 @@ public:
 
     dctx_.reset(new DownloadContext(pieceLength, totalLength));
     {
-      auto torrentAttrs = make_unique<TorrentAttribute>();
+      auto torrentAttrs = aria2::make_unique<TorrentAttribute>();
       torrentAttrs->infoHash.assign(std::begin(infoHash), std::end(infoHash));
       dctx_->setAttribute(CTX_ATTR_BT, std::move(torrentAttrs));
     }

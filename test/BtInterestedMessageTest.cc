@@ -74,7 +74,7 @@ void BtInterestedMessageTest::testDoReceivedAction()
   peer->allocateSessionResource(1_k, 1_m);
   msg.setPeer(peer);
 
-  auto peerStorage = make_unique<MockPeerStorage>();
+  auto peerStorage = aria2::make_unique<MockPeerStorage>();
 
   msg.setPeerStorage(peerStorage.get());
 

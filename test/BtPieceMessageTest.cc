@@ -55,7 +55,7 @@ public:
     createRejectMessage(size_t index, int32_t begin,
                         int32_t length) CXX11_OVERRIDE
     {
-      return make_unique<BtRejectMessage>(index, begin, length);
+      return aria2::make_unique<BtRejectMessage>(index, begin, length);
     }
   };
 
@@ -67,16 +67,16 @@ public:
 
   void setUp()
   {
-    dctx_ = make_unique<DownloadContext>(16_k, 256_k, "/path/to/file");
+    dctx_ = aria2::make_unique<DownloadContext>(16_k, 256_k, "/path/to/file");
 
     peer = std::make_shared<Peer>("host", 6969);
     peer->allocateSessionResource(dctx_->getPieceLength(),
                                   dctx_->getTotalLength());
 
-    btMessageDispatcher = make_unique<MockBtMessageDispatcher>();
-    btMessageFactory_ = make_unique<MockBtMessageFactory2>();
+    btMessageDispatcher = aria2::make_unique<MockBtMessageDispatcher>();
+    btMessageFactory_ = aria2::make_unique<MockBtMessageFactory2>();
 
-    msg = make_unique<BtPieceMessage>();
+    msg = aria2::make_unique<BtPieceMessage>();
     msg->setIndex(1);
     msg->setBegin(1_k);
     msg->setBlockLength(16_k);

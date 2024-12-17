@@ -26,8 +26,8 @@ public:
   {
     netrc_.reset(new Netrc());
     netrc_->addAuthenticator(
-        make_unique<Authenticator>("localhost", "name", "passwd", "account"));
-    netrc_->addAuthenticator(make_unique<DefaultAuthenticator>(
+        aria2::make_unique<Authenticator>("localhost", "name", "passwd", "account"));
+    netrc_->addAuthenticator(aria2::make_unique<DefaultAuthenticator>(
         "default", "defaultpasswd", "defaultaccount"));
 
     resolver_.reset(new NetrcAuthResolver());

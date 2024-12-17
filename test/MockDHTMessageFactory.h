@@ -38,7 +38,7 @@ public:
     // TODO At this point, removeNode's ID is random.
     remoteNode->setIPAddress(ipaddr);
     remoteNode->setPort(port);
-    return make_unique<MockDHTResponseMessage>(
+    return aria2::make_unique<MockDHTResponseMessage>(
         localNode_, remoteNode, downcast<String>(dict->get("t"))->s());
   }
 

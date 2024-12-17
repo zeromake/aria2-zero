@@ -73,7 +73,7 @@ void BtNotInterestedMessageTest::testDoReceivedAction()
   peer->allocateSessionResource(1_k, 1_m);
   peer->peerInterested(true);
 
-  auto peerStorage = make_unique<MockPeerStorage>();
+  auto peerStorage = aria2::make_unique<MockPeerStorage>();
 
   BtNotInterestedMessage msg;
   msg.setPeer(peer);

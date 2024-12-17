@@ -48,40 +48,40 @@ void MetalinkHelperTest::testGroupEntryByMetaurlName()
 {
   std::vector<std::unique_ptr<MetalinkEntry>> entries;
 
-  auto e1 = make_unique<MetalinkEntry>();
+  auto e1 = aria2::make_unique<MetalinkEntry>();
   e1->version = "1";
   e1->sizeKnown = true;
   // no name
   e1->metaurls.push_back(
-      make_unique<MetalinkMetaurl>("http://meta1", "torrent", "", 1));
+      aria2::make_unique<MetalinkMetaurl>("http://meta1", "torrent", "", 1));
 
-  auto e2 = make_unique<MetalinkEntry>();
+  auto e2 = aria2::make_unique<MetalinkEntry>();
   e2->version = "2";
   e2->sizeKnown = true;
 
-  auto e3 = make_unique<MetalinkEntry>();
+  auto e3 = aria2::make_unique<MetalinkEntry>();
   e3->version = "3";
   e3->sizeKnown = true;
   e3->metaurls.push_back(
-      make_unique<MetalinkMetaurl>("http://meta2", "torrent", "f3", 1));
+      aria2::make_unique<MetalinkMetaurl>("http://meta2", "torrent", "f3", 1));
 
-  auto e4 = make_unique<MetalinkEntry>();
+  auto e4 = aria2::make_unique<MetalinkEntry>();
   e4->version = "4";
   e4->sizeKnown = true;
   e4->metaurls.push_back(
-      make_unique<MetalinkMetaurl>("http://meta1", "torrent", "f4", 1));
+      aria2::make_unique<MetalinkMetaurl>("http://meta1", "torrent", "f4", 1));
 
-  auto e5 = make_unique<MetalinkEntry>();
+  auto e5 = aria2::make_unique<MetalinkEntry>();
   e5->version = "5";
   // no size
   e5->metaurls.push_back(
-      make_unique<MetalinkMetaurl>("http://meta1", "torrent", "f5", 1));
+      aria2::make_unique<MetalinkMetaurl>("http://meta1", "torrent", "f5", 1));
 
-  auto e6 = make_unique<MetalinkEntry>();
+  auto e6 = aria2::make_unique<MetalinkEntry>();
   e6->version = "6";
   e6->sizeKnown = true;
   e6->metaurls.push_back(
-      make_unique<MetalinkMetaurl>("http://meta1", "torrent", "f6", 1));
+      aria2::make_unique<MetalinkMetaurl>("http://meta1", "torrent", "f6", 1));
 
   entries.push_back(std::move(e1));
   entries.push_back(std::move(e2));

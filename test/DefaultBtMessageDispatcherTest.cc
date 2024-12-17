@@ -109,7 +109,7 @@ public:
     createCancelMessage(size_t index, int32_t begin,
                         int32_t length) CXX11_OVERRIDE
     {
-      return make_unique<BtCancelMessage>(index, begin, length);
+      return aria2::make_unique<BtCancelMessage>(index, begin, length);
     }
   };
 
@@ -118,7 +118,7 @@ public:
     option_ = std::make_shared<Option>();
     option_->put(PREF_DIR, ".");
 
-    rg_ = make_unique<RequestGroup>(GroupId::create(), option_);
+    rg_ = aria2::make_unique<RequestGroup>(GroupId::create(), option_);
 
     dctx_ = std::make_shared<DownloadContext>();
     bittorrent::load(A2_TEST_DIR "/test.torrent", dctx_, option_);
@@ -128,12 +128,12 @@ public:
     peer = std::make_shared<Peer>("192.168.0.1", 6969);
     peer->allocateSessionResource(dctx_->getPieceLength(),
                                   dctx_->getTotalLength());
-    messageFactory_ = make_unique<MockBtMessageFactory2>();
+    messageFactory_ = aria2::make_unique<MockBtMessageFactory2>();
 
-    rgman_ = make_unique<RequestGroupMan>(
+    rgman_ = aria2::make_unique<RequestGroupMan>(
         std::vector<std::shared_ptr<RequestGroup>>{}, 0, option_.get());
 
-    btMessageDispatcher = make_unique<DefaultBtMessageDispatcher>();
+    btMessageDispatcher = aria2::make_unique<DefaultBtMessageDispatcher>();
     btMessageDispatcher->setPeer(peer);
     btMessageDispatcher->setDownloadContext(dctx_.get());
     btMessageDispatcher->setBtMessageFactory(messageFactory_.get());
@@ -147,7 +147,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DefaultBtMessageDispatcherTest);
 void DefaultBtMessageDispatcherTest::testAddMessage()
 {
   auto evcheck = EventCheck{};
-  auto msg = make_unique<MockBtMessage2>(&evcheck);
+  auto msg = aria2::make_unique<MockBtMessage2>(&evcheck);
   btMessageDispatcher->addMessageToQueue(std::move(msg));
   CPPUNIT_ASSERT_EQUAL(true, evcheck.onQueuedCalled);
   CPPUNIT_ASSERT_EQUAL((size_t)1,
@@ -157,10 +157,10 @@ void DefaultBtMessageDispatcherTest::testAddMessage()
 void DefaultBtMessageDispatcherTest::testSendMessages()
 {
   auto evcheck1 = EventCheck{};
-  auto msg1 = make_unique<MockBtMessage2>(&evcheck1);
+  auto msg1 = aria2::make_unique<MockBtMessage2>(&evcheck1);
   msg1->setUploading(false);
   auto evcheck2 = EventCheck{};
-  auto msg2 = make_unique<MockBtMessage2>(&evcheck2);
+  auto msg2 = aria2::make_unique<MockBtMessage2>(&evcheck2);
   msg2->setUploading(false);
   btMessageDispatcher->addMessageToQueue(std::move(msg1));
   btMessageDispatcher->addMessageToQueue(std::move(msg2));
@@ -173,10 +173,10 @@ void DefaultBtMessageDispatcherTest::testSendMessages()
 void DefaultBtMessageDispatcherTest::testSendMessages_underUploadLimit()
 {
   auto evcheck1 = EventCheck{};
-  auto msg1 = make_unique<MockBtMessage2>(&evcheck1);
+  auto msg1 = aria2::make_unique<MockBtMessage2>(&evcheck1);
   msg1->setUploading(true);
   auto evcheck2 = EventCheck{};
-  auto msg2 = make_unique<MockBtMessage2>(&evcheck2);
+  auto msg2 = aria2::make_unique<MockBtMessage2>(&evcheck2);
   msg2->setUploading(true);
   btMessageDispatcher->addMessageToQueue(std::move(msg1));
   btMessageDispatcher->addMessageToQueue(std::move(msg2));
@@ -189,9 +189,9 @@ void DefaultBtMessageDispatcherTest::testSendMessages_underUploadLimit()
 void DefaultBtMessageDispatcherTest::testDoCancelSendingPieceAction()
 {
   auto evcheck1 = EventCheck{};
-  auto msg1 = make_unique<MockBtMessage2>(&evcheck1);
+  auto msg1 = aria2::make_unique<MockBtMessage2>(&evcheck1);
   auto evcheck2 = EventCheck{};
-  auto msg2 = make_unique<MockBtMessage2>(&evcheck2);
+  auto msg2 = aria2::make_unique<MockBtMessage2>(&evcheck2);
 
   btMessageDispatcher->addMessageToQueue(std::move(msg1));
   btMessageDispatcher->addMessageToQueue(std::move(msg2));
@@ -215,7 +215,7 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing()
 
   btMessageDispatcher->setRequestTimeout(1_min);
   btMessageDispatcher->addOutstandingRequest(
-      make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0, piece));
+      aria2::make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0, piece));
 
   btMessageDispatcher->checkRequestSlotAndDoNecessaryThing();
 
@@ -234,7 +234,7 @@ void DefaultBtMessageDispatcherTest::
   CPPUNIT_ASSERT_EQUAL((size_t)0, index);
 
   btMessageDispatcher->setRequestTimeout(1_min);
-  auto slot = make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0, piece);
+  auto slot = aria2::make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0, piece);
   // make this slot timeout
   slot->setDispatchedTime(Timer::zero());
   btMessageDispatcher->addOutstandingRequest(std::move(slot));
@@ -255,7 +255,7 @@ void DefaultBtMessageDispatcherTest::
   piece->completeBlock(0);
   btMessageDispatcher->setRequestTimeout(1_min);
   btMessageDispatcher->addOutstandingRequest(
-      make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0, piece));
+      aria2::make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0, piece));
 
   btMessageDispatcher->checkRequestSlotAndDoNecessaryThing();
 
@@ -268,7 +268,7 @@ void DefaultBtMessageDispatcherTest::
 void DefaultBtMessageDispatcherTest::testCountOutstandingRequest()
 {
   btMessageDispatcher->addOutstandingRequest(
-      make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0));
+      aria2::make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0));
   CPPUNIT_ASSERT_EQUAL((size_t)1,
                        btMessageDispatcher->countOutstandingRequest());
 }
@@ -276,7 +276,7 @@ void DefaultBtMessageDispatcherTest::testCountOutstandingRequest()
 void DefaultBtMessageDispatcherTest::testIsOutstandingRequest()
 {
   btMessageDispatcher->addOutstandingRequest(
-      make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0));
+      aria2::make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0));
 
   CPPUNIT_ASSERT(btMessageDispatcher->isOutstandingRequest(0, 0));
   CPPUNIT_ASSERT(!btMessageDispatcher->isOutstandingRequest(0, 1));
@@ -287,7 +287,7 @@ void DefaultBtMessageDispatcherTest::testIsOutstandingRequest()
 void DefaultBtMessageDispatcherTest::testGetOutstandingRequest()
 {
   btMessageDispatcher->addOutstandingRequest(
-      make_unique<RequestSlot>(1, 1_k, 16_k, 10));
+      aria2::make_unique<RequestSlot>(1, 1_k, 16_k, 10));
 
   CPPUNIT_ASSERT(btMessageDispatcher->getOutstandingRequest(1, 1_k, 16_k));
 
@@ -306,7 +306,7 @@ void DefaultBtMessageDispatcherTest::testRemoveOutstandingRequest()
   uint32_t begin = blockIndex * piece->getBlockLength();
   size_t length = piece->getBlockLength(blockIndex);
   RequestSlot slot;
-  btMessageDispatcher->addOutstandingRequest(make_unique<RequestSlot>(
+  btMessageDispatcher->addOutstandingRequest(aria2::make_unique<RequestSlot>(
       piece->getIndex(), begin, length, blockIndex, piece));
 
   auto s2 = btMessageDispatcher->getOutstandingRequest(piece->getIndex(), begin,

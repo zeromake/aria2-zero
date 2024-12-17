@@ -34,13 +34,13 @@ CPPUNIT_TEST_SUITE_REGISTRATION(NetrcTest);
 void NetrcTest::testFindAuthenticator()
 {
   Netrc netrc;
-  netrc.addAuthenticator(make_unique<Authenticator>(
+  netrc.addAuthenticator(aria2::make_unique<Authenticator>(
       "host1", "tujikawa", "tujikawapasswd", "tujikawaaccount"));
-  netrc.addAuthenticator(make_unique<Authenticator>(
+  netrc.addAuthenticator(aria2::make_unique<Authenticator>(
       "host2", "aria2", "aria2password", "aria2account"));
-  netrc.addAuthenticator(make_unique<Authenticator>(".my.domain", "dmname",
+  netrc.addAuthenticator(aria2::make_unique<Authenticator>(".my.domain", "dmname",
                                                     "dmpass", "dmaccount"));
-  netrc.addAuthenticator(make_unique<DefaultAuthenticator>(
+  netrc.addAuthenticator(aria2::make_unique<DefaultAuthenticator>(
       "default", "defaultpassword", "defaultaccount"));
 
   auto aria2auth = netrc.findAuthenticator("host2");

@@ -37,7 +37,7 @@ public:
 
 void SingletonHolderTest::testInstance()
 {
-  SingletonHolder<M>::instance(make_unique<M>("Hello world."));
+  SingletonHolder<M>::instance(aria2::make_unique<M>("Hello world."));
   CPPUNIT_ASSERT_EQUAL(std::string("Hello world."),
                        SingletonHolder<M>::instance()->greeting());
 

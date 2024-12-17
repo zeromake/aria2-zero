@@ -41,7 +41,7 @@ void BtRegistryTest::testGetDownloadContext()
   BtRegistry btRegistry;
   CPPUNIT_ASSERT(!btRegistry.getDownloadContext(1));
   auto dctx = std::make_shared<DownloadContext>();
-  auto btObject = make_unique<BtObject>();
+  auto btObject = aria2::make_unique<BtObject>();
   btObject->downloadContext = dctx;
   btRegistry.put(1, std::move(btObject));
   CPPUNIT_ASSERT_EQUAL(dctx.get(), btRegistry.getDownloadContext(1).get());
@@ -52,9 +52,9 @@ void addTwoDownloadContext(BtRegistry& btRegistry)
 {
   auto dctx1 = std::make_shared<DownloadContext>();
   auto dctx2 = std::make_shared<DownloadContext>();
-  auto btObject1 = make_unique<BtObject>();
+  auto btObject1 = aria2::make_unique<BtObject>();
   btObject1->downloadContext = dctx1;
-  auto btObject2 = make_unique<BtObject>();
+  auto btObject2 = aria2::make_unique<BtObject>();
   btObject2->downloadContext = dctx2;
   btRegistry.put(1, std::move(btObject1));
   btRegistry.put(2, std::move(btObject2));
@@ -66,9 +66,9 @@ void BtRegistryTest::testGetDownloadContext_infoHash()
   BtRegistry btRegistry;
   addTwoDownloadContext(btRegistry);
   {
-    auto attrs1 = make_unique<TorrentAttribute>();
+    auto attrs1 = aria2::make_unique<TorrentAttribute>();
     attrs1->infoHash = "hash1";
-    auto attrs2 = make_unique<TorrentAttribute>();
+    auto attrs2 = aria2::make_unique<TorrentAttribute>();
     attrs2->infoHash = "hash2";
     btRegistry.getDownloadContext(1)->setAttribute(CTX_ATTR_BT,
                                                    std::move(attrs1));

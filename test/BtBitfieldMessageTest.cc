@@ -87,7 +87,7 @@ void BtBitfieldMessageTest::testDoReceivedAction()
   peer->allocateSessionResource(16_k, 256_k);
   BtBitfieldMessage msg;
   msg.setPeer(peer);
-  auto pieceStorage = make_unique<MockPieceStorage>();
+  auto pieceStorage = aria2::make_unique<MockPieceStorage>();
   msg.setPieceStorage(pieceStorage.get());
   unsigned char bitfield[] = {0xff, 0xff};
   msg.setBitfield(bitfield, sizeof(bitfield));
@@ -107,7 +107,7 @@ void BtBitfieldMessageTest::testDoReceivedAction_goodByeSeeder()
   peer->allocateSessionResource(1_k, 1_k);
   BtBitfieldMessage msg;
   msg.setPeer(peer);
-  auto pieceStorage = make_unique<MockPieceStorage>();
+  auto pieceStorage = aria2::make_unique<MockPieceStorage>();
   msg.setPieceStorage(pieceStorage.get());
   unsigned char bitfield[] = {0x00};
   msg.setBitfield(bitfield, sizeof(bitfield));

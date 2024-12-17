@@ -50,9 +50,9 @@ public:
     // To enable paused RequestGroup
     option_->put(PREF_ENABLE_RPC, A2_V_TRUE);
     File(option_->get(PREF_DIR)).mkdirs();
-    e_ = make_unique<DownloadEngine>(make_unique<SelectEventPoll>());
+    e_ = aria2::make_unique<DownloadEngine>(aria2::make_unique<SelectEventPoll>());
     e_->setOption(option_.get());
-    auto rgman = make_unique<RequestGroupMan>(
+    auto rgman = aria2::make_unique<RequestGroupMan>(
         std::vector<std::shared_ptr<RequestGroup>>{}, 3, option_.get());
     rgman_ = rgman.get();
     e_->setRequestGroupMan(std::move(rgman));

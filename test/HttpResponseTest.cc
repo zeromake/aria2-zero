@@ -101,7 +101,7 @@ void HttpResponseTest::testGetContentLength_contentLength()
 {
   HttpResponse httpResponse;
 
-  auto httpHeader = make_unique<HttpHeader>();
+  auto httpHeader = aria2::make_unique<HttpHeader>();
   httpHeader->put(HttpHeader::CONTENT_LENGTH, "4294967296");
 
   httpResponse.setHttpHeader(std::move(httpHeader));
@@ -113,7 +113,7 @@ void HttpResponseTest::testGetEntityLength()
 {
   HttpResponse httpResponse;
 
-  auto httpHeader = make_unique<HttpHeader>();
+  auto httpHeader = aria2::make_unique<HttpHeader>();
   httpHeader->put(HttpHeader::CONTENT_LENGTH, "4294967296");
 
   httpResponse.setHttpHeader(std::move(httpHeader));
@@ -127,7 +127,7 @@ void HttpResponseTest::testGetEntityLength()
 void HttpResponseTest::testGetContentType()
 {
   HttpResponse httpResponse;
-  auto httpHeader = make_unique<HttpHeader>();
+  auto httpHeader = aria2::make_unique<HttpHeader>();
   httpHeader->put(HttpHeader::CONTENT_TYPE,
                   "application/metalink+xml; charset=UTF-8");
   httpResponse.setHttpHeader(std::move(httpHeader));
@@ -139,12 +139,12 @@ void HttpResponseTest::testGetContentType()
 void HttpResponseTest::testDetermineFilename_without_ContentDisposition()
 {
   HttpResponse httpResponse;
-  auto httpRequest = make_unique<HttpRequest>();
+  auto httpRequest = aria2::make_unique<HttpRequest>();
   auto request = std::make_shared<Request>();
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
 
-  httpResponse.setHttpHeader(make_unique<HttpHeader>());
+  httpResponse.setHttpHeader(aria2::make_unique<HttpHeader>());
   httpResponse.setHttpRequest(std::move(httpRequest));
 
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-1.0.0.tar.bz2"),
@@ -155,9 +155,9 @@ void HttpResponseTest::
     testDetermineFilename_with_ContentDisposition_zero_length()
 {
   HttpResponse httpResponse;
-  auto httpHeader = make_unique<HttpHeader>();
+  auto httpHeader = aria2::make_unique<HttpHeader>();
   httpHeader->put(HttpHeader::CONTENT_DISPOSITION, "attachment; filename=\"\"");
-  auto httpRequest = make_unique<HttpRequest>();
+  auto httpRequest = aria2::make_unique<HttpRequest>();
   auto request = std::make_shared<Request>();
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
@@ -172,10 +172,10 @@ void HttpResponseTest::
 void HttpResponseTest::testDetermineFilename_with_ContentDisposition()
 {
   HttpResponse httpResponse;
-  auto httpHeader = make_unique<HttpHeader>();
+  auto httpHeader = aria2::make_unique<HttpHeader>();
   httpHeader->put(HttpHeader::CONTENT_DISPOSITION,
                   "attachment; filename=\"aria2-current.tar.bz2\"");
-  auto httpRequest = make_unique<HttpRequest>();
+  auto httpRequest = aria2::make_unique<HttpRequest>();
   auto request = std::make_shared<Request>();
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
@@ -191,7 +191,7 @@ void HttpResponseTest::testGetRedirectURI_without_Location()
 {
   HttpResponse httpResponse;
 
-  httpResponse.setHttpHeader(make_unique<HttpHeader>());
+  httpResponse.setHttpHeader(aria2::make_unique<HttpHeader>());
 
   CPPUNIT_ASSERT_EQUAL(std::string(""), httpResponse.getRedirectURI());
 }
@@ -199,7 +199,7 @@ void HttpResponseTest::testGetRedirectURI_without_Location()
 void HttpResponseTest::testGetRedirectURI_with_Location()
 {
   HttpResponse httpResponse;
-  auto httpHeader = make_unique<HttpHeader>();
+  auto httpHeader = aria2::make_unique<HttpHeader>();
   httpHeader->put(HttpHeader::LOCATION,
                   "http://localhost/download/aria2-1.0.0.tar.bz2");
   httpResponse.setHttpHeader(std::move(httpHeader));
@@ -212,7 +212,7 @@ void HttpResponseTest::testGetRedirectURI_with_Location()
 void HttpResponseTest::testIsRedirect()
 {
   HttpResponse httpResponse;
-  httpResponse.setHttpHeader(make_unique<HttpHeader>());
+  httpResponse.setHttpHeader(aria2::make_unique<HttpHeader>());
 
   httpResponse.getHttpHeader()->setStatusCode(301);
   CPPUNIT_ASSERT(!httpResponse.isRedirect());
@@ -260,7 +260,7 @@ void HttpResponseTest::testIsTransferEncodingSpecified()
 {
   HttpResponse httpResponse;
 
-  httpResponse.setHttpHeader(make_unique<HttpHeader>());
+  httpResponse.setHttpHeader(aria2::make_unique<HttpHeader>());
   CPPUNIT_ASSERT(!httpResponse.isTransferEncodingSpecified());
 
   httpResponse.getHttpHeader()->put(HttpHeader::TRANSFER_ENCODING, "chunked");
@@ -271,7 +271,7 @@ void HttpResponseTest::testGetTransferEncoding()
 {
   HttpResponse httpResponse;
 
-  httpResponse.setHttpHeader(make_unique<HttpHeader>());
+  httpResponse.setHttpHeader(aria2::make_unique<HttpHeader>());
   CPPUNIT_ASSERT_EQUAL(std::string(""), httpResponse.getTransferEncoding());
 
   httpResponse.getHttpHeader()->put(HttpHeader::TRANSFER_ENCODING, "chunked");
@@ -283,7 +283,7 @@ void HttpResponseTest::testGetTransferEncodingStreamFilter()
 {
   HttpResponse httpResponse;
 
-  httpResponse.setHttpHeader(make_unique<HttpHeader>());
+  httpResponse.setHttpHeader(aria2::make_unique<HttpHeader>());
   CPPUNIT_ASSERT(!httpResponse.getTransferEncodingStreamFilter());
 
   httpResponse.getHttpHeader()->put(HttpHeader::TRANSFER_ENCODING, "chunked");
@@ -294,7 +294,7 @@ void HttpResponseTest::testIsContentEncodingSpecified()
 {
   HttpResponse httpResponse;
 
-  httpResponse.setHttpHeader(make_unique<HttpHeader>());
+  httpResponse.setHttpHeader(aria2::make_unique<HttpHeader>());
   CPPUNIT_ASSERT(!httpResponse.isContentEncodingSpecified());
 
   httpResponse.getHttpHeader()->put(HttpHeader::CONTENT_ENCODING, "gzip");
@@ -305,7 +305,7 @@ void HttpResponseTest::testGetContentEncoding()
 {
   HttpResponse httpResponse;
 
-  httpResponse.setHttpHeader(make_unique<HttpHeader>());
+  httpResponse.setHttpHeader(aria2::make_unique<HttpHeader>());
   CPPUNIT_ASSERT_EQUAL(A2STR::NIL, httpResponse.getContentEncoding());
 
   httpResponse.getHttpHeader()->put(HttpHeader::CONTENT_ENCODING, "gzip");
@@ -316,7 +316,7 @@ void HttpResponseTest::testGetContentEncodingStreamFilter()
 {
   HttpResponse httpResponse;
 
-  httpResponse.setHttpHeader(make_unique<HttpHeader>());
+  httpResponse.setHttpHeader(aria2::make_unique<HttpHeader>());
   CPPUNIT_ASSERT(!httpResponse.getContentEncodingStreamFilter());
 
 #ifdef HAVE_ZLIB
@@ -328,7 +328,7 @@ void HttpResponseTest::testGetContentEncodingStreamFilter()
     CPPUNIT_ASSERT_EQUAL(std::string("GZipDecodingStreamFilter"),
                          filter->getName());
   }
-  httpResponse.setHttpHeader(make_unique<HttpHeader>());
+  httpResponse.setHttpHeader(aria2::make_unique<HttpHeader>());
   httpResponse.getHttpHeader()->put(HttpHeader::CONTENT_ENCODING, "deflate");
   {
     std::shared_ptr<StreamFilter> filter =
@@ -338,7 +338,7 @@ void HttpResponseTest::testGetContentEncodingStreamFilter()
                          filter->getName());
   }
 #endif // HAVE_ZLIB
-  httpResponse.setHttpHeader(make_unique<HttpHeader>());
+  httpResponse.setHttpHeader(aria2::make_unique<HttpHeader>());
   httpResponse.getHttpHeader()->put(HttpHeader::CONTENT_ENCODING, "bzip2");
   {
     std::shared_ptr<StreamFilter> filter =
@@ -350,7 +350,7 @@ void HttpResponseTest::testGetContentEncodingStreamFilter()
 void HttpResponseTest::testValidateResponse()
 {
   HttpResponse httpResponse;
-  httpResponse.setHttpHeader(make_unique<HttpHeader>());
+  httpResponse.setHttpHeader(aria2::make_unique<HttpHeader>());
   httpResponse.getHttpHeader()->setStatusCode(301);
 
   try {
@@ -378,9 +378,9 @@ void HttpResponseTest::testValidateResponse_good_range()
 {
   HttpResponse httpResponse;
 
-  httpResponse.setHttpHeader(make_unique<HttpHeader>());
+  httpResponse.setHttpHeader(aria2::make_unique<HttpHeader>());
 
-  auto httpRequest = make_unique<HttpRequest>();
+  auto httpRequest = aria2::make_unique<HttpRequest>();
   auto p = std::make_shared<Piece>(1, 1_m);
   auto segment = std::make_shared<PiecedSegment>(1_m, p);
   httpRequest->setSegment(segment);
@@ -407,9 +407,9 @@ void HttpResponseTest::testValidateResponse_bad_range()
 {
   HttpResponse httpResponse;
 
-  httpResponse.setHttpHeader(make_unique<HttpHeader>());
+  httpResponse.setHttpHeader(aria2::make_unique<HttpHeader>());
 
-  auto httpRequest = make_unique<HttpRequest>();
+  auto httpRequest = aria2::make_unique<HttpRequest>();
   auto p = std::make_shared<Piece>(1, 1_m);
   auto segment = std::make_shared<PiecedSegment>(1_m, p);
   httpRequest->setSegment(segment);
@@ -434,9 +434,9 @@ void HttpResponseTest::testValidateResponse_bad_range()
 void HttpResponseTest::testValidateResponse_chunked()
 {
   HttpResponse httpResponse;
-  httpResponse.setHttpHeader(make_unique<HttpHeader>());
+  httpResponse.setHttpHeader(aria2::make_unique<HttpHeader>());
 
-  auto httpRequest = make_unique<HttpRequest>();
+  auto httpRequest = aria2::make_unique<HttpRequest>();
   auto p = std::make_shared<Piece>(1, 1_m);
   auto segment = std::make_shared<PiecedSegment>(1_m, p);
   httpRequest->setSegment(segment);
@@ -463,9 +463,9 @@ void HttpResponseTest::testValidateResponse_chunked()
 void HttpResponseTest::testValidateResponse_withIfModifiedSince()
 {
   HttpResponse httpResponse;
-  httpResponse.setHttpHeader(make_unique<HttpHeader>());
+  httpResponse.setHttpHeader(aria2::make_unique<HttpHeader>());
   httpResponse.getHttpHeader()->setStatusCode(304);
-  auto httpRequest = make_unique<HttpRequest>();
+  auto httpRequest = aria2::make_unique<HttpRequest>();
   httpResponse.setHttpRequest(std::move(httpRequest));
   try {
     httpResponse.validateResponse();
@@ -473,7 +473,7 @@ void HttpResponseTest::testValidateResponse_withIfModifiedSince()
   }
   catch (Exception& e) {
   }
-  httpRequest = make_unique<HttpRequest>();
+  httpRequest = aria2::make_unique<HttpRequest>();
   httpRequest->setIfModifiedSinceHeader("Fri, 16 Jul 2010 12:56:59 GMT");
   httpResponse.setHttpRequest(std::move(httpRequest));
   httpResponse.validateResponse();
@@ -483,9 +483,9 @@ void HttpResponseTest::testProcessRedirect()
 {
   HttpResponse httpResponse;
 
-  httpResponse.setHttpHeader(make_unique<HttpHeader>());
+  httpResponse.setHttpHeader(aria2::make_unique<HttpHeader>());
 
-  auto httpRequest = make_unique<HttpRequest>();
+  auto httpRequest = aria2::make_unique<HttpRequest>();
   auto request = std::make_shared<Request>();
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
@@ -525,9 +525,9 @@ void HttpResponseTest::testRetrieveCookie()
 {
   HttpResponse httpResponse;
 
-  httpResponse.setHttpHeader(make_unique<HttpHeader>());
+  httpResponse.setHttpHeader(aria2::make_unique<HttpHeader>());
 
-  auto httpRequest = make_unique<HttpRequest>();
+  auto httpRequest = aria2::make_unique<HttpRequest>();
   auto request = std::make_shared<Request>();
   request->setUri("http://www.aria2.org/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
@@ -557,8 +557,8 @@ void HttpResponseTest::testRetrieveCookie()
 void HttpResponseTest::testSupportsPersistentConnection()
 {
   HttpResponse httpResponse;
-  httpResponse.setHttpHeader(make_unique<HttpHeader>());
-  httpResponse.setHttpRequest(make_unique<HttpRequest>());
+  httpResponse.setHttpHeader(aria2::make_unique<HttpHeader>());
+  httpResponse.setHttpRequest(aria2::make_unique<HttpRequest>());
 
   httpResponse.getHttpHeader()->setVersion("HTTP/1.1");
   CPPUNIT_ASSERT(httpResponse.supportsPersistentConnection());
@@ -579,7 +579,7 @@ void HttpResponseTest::testSupportsPersistentConnection()
   httpResponse.getHttpHeader()->clearField();
 
   // test proxy connection
-  auto httpRequest = make_unique<HttpRequest>();
+  auto httpRequest = aria2::make_unique<HttpRequest>();
   httpRequest->setProxyRequest(std::make_shared<Request>());
   httpResponse.setHttpRequest(std::move(httpRequest));
 
@@ -605,7 +605,7 @@ void HttpResponseTest::testSupportsPersistentConnection()
 void HttpResponseTest::testGetMetalinKHttpEntries()
 {
   HttpResponse httpResponse;
-  httpResponse.setHttpHeader(make_unique<HttpHeader>());
+  httpResponse.setHttpHeader(aria2::make_unique<HttpHeader>());
   std::shared_ptr<Option> option(new Option());
 
   httpResponse.getHttpHeader()->put(
@@ -659,7 +659,7 @@ void HttpResponseTest::testGetMetalinKHttpEntries()
 void HttpResponseTest::testGetDigest()
 {
   HttpResponse httpResponse;
-  httpResponse.setHttpHeader(make_unique<HttpHeader>());
+  httpResponse.setHttpHeader(aria2::make_unique<HttpHeader>());
   std::shared_ptr<Option> option(new Option());
   // Python binascii.hexlify(base64.b64decode(B64ED_HASH)) is handy to
   // retrieve ascii hex hash string.

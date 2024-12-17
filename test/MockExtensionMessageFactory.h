@@ -13,7 +13,7 @@ public:
   virtual std::unique_ptr<ExtensionMessage>
   createMessage(const unsigned char* data, size_t length) CXX11_OVERRIDE
   {
-    return make_unique<MockExtensionMessage>("a2_mock", *data, data + 1,
+    return aria2::make_unique<MockExtensionMessage>("a2_mock", *data, data + 1,
                                              length - 1, nullptr);
   }
 };

@@ -87,7 +87,7 @@ void BtExtendedMessageTest::testDoReceivedAction()
 {
   auto evcheck = MockExtensionMessageEventCheck{};
   BtExtendedMessage msg{
-      make_unique<MockExtensionMessage>("charlie", 1, "", &evcheck)};
+      aria2::make_unique<MockExtensionMessage>("charlie", 1, "", &evcheck)};
   msg.doReceivedAction();
   CPPUNIT_ASSERT(evcheck.doReceivedActionCalled);
 }

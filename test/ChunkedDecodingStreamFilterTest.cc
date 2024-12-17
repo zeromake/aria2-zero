@@ -35,9 +35,9 @@ public:
   void setUp()
   {
     writer_ = std::make_shared<ByteArrayDiskWriter>();
-    auto sinkFilter = make_unique<SinkStreamFilter>();
+    auto sinkFilter = aria2::make_unique<SinkStreamFilter>();
     sinkFilter->init();
-    filter_ = make_unique<ChunkedDecodingStreamFilter>(std::move(sinkFilter));
+    filter_ = aria2::make_unique<ChunkedDecodingStreamFilter>(std::move(sinkFilter));
     filter_->init();
     segment_ = std::make_shared<MockSegment>();
   }

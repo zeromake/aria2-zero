@@ -43,7 +43,7 @@ public:
     {
       unsigned char id[DHT_ID_LENGTH];
       std::fill(std::begin(id), std::end(id), '0');
-      return make_unique<DHTPingReplyMessage>(localNode_, remoteNode, id,
+      return aria2::make_unique<DHTPingReplyMessage>(localNode_, remoteNode, id,
                                               transactionID);
     }
   };

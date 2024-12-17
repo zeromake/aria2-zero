@@ -77,7 +77,7 @@ void BtHaveAllMessageTest::testDoReceivedAction()
   peer->allocateSessionResource(16_k, 256_k);
   peer->setFastExtensionEnabled(true);
   msg.setPeer(peer);
-  auto pieceStorage = make_unique<MockPieceStorage>();
+  auto pieceStorage = aria2::make_unique<MockPieceStorage>();
   msg.setPieceStorage(pieceStorage.get());
 
   msg.doReceivedAction();
@@ -101,7 +101,7 @@ void BtHaveAllMessageTest::testDoReceivedAction_goodByeSeeder()
   peer->allocateSessionResource(1_k, 1_k);
   peer->setFastExtensionEnabled(true);
   msg.setPeer(peer);
-  auto pieceStorage = make_unique<MockPieceStorage>();
+  auto pieceStorage = aria2::make_unique<MockPieceStorage>();
   msg.setPieceStorage(pieceStorage.get());
 
   pieceStorage->setDownloadFinished(true);
