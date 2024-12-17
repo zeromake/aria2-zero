@@ -151,12 +151,12 @@ void HttpRequestTest::testCreateRequest()
   request->setPipeliningHint(true);
 
   std::string expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+                             "Host: localhost:8080\r\n"
                              "User-Agent: aria2\r\n"
                              "Accept: */*\r\n"
-                             "Host: localhost:8080\r\n"
+                             "Range: bytes=0-1023\r\n"
                              "Pragma: no-cache\r\n"
                              "Cache-Control: no-cache\r\n"
-                             "Range: bytes=0-1023\r\n"
                              "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -164,12 +164,12 @@ void HttpRequestTest::testCreateRequest()
   request->setPipeliningHint(false);
 
   expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+                 "Host: localhost:8080\r\n"
                  "User-Agent: aria2\r\n"
                  "Accept: */*\r\n"
-                 "Host: localhost:8080\r\n"
+                 "Connection: close\r\n"
                  "Pragma: no-cache\r\n"
                  "Cache-Control: no-cache\r\n"
-                 "Connection: close\r\n"
                  "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -179,13 +179,13 @@ void HttpRequestTest::testCreateRequest()
   httpRequest.setSegment(segment);
 
   expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+                 "Host: localhost:8080\r\n"
                  "User-Agent: aria2\r\n"
                  "Accept: */*\r\n"
-                 "Host: localhost:8080\r\n"
-                 "Pragma: no-cache\r\n"
-                 "Cache-Control: no-cache\r\n"
                  "Connection: close\r\n"
                  "Range: bytes=1048576-\r\n"
+                 "Pragma: no-cache\r\n"
+                 "Cache-Control: no-cache\r\n"
                  "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -193,12 +193,12 @@ void HttpRequestTest::testCreateRequest()
   request->setPipeliningHint(true);
 
   expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+                 "Host: localhost:8080\r\n"
                  "User-Agent: aria2\r\n"
                  "Accept: */*\r\n"
-                 "Host: localhost:8080\r\n"
+                 "Range: bytes=1048576-2097151\r\n"
                  "Pragma: no-cache\r\n"
                  "Cache-Control: no-cache\r\n"
-                 "Range: bytes=1048576-2097151\r\n"
                  "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -208,12 +208,12 @@ void HttpRequestTest::testCreateRequest()
       "http://localhost:8080/archives/download/aria2-1.0.0.tar.bz2");
 
   expectedText = "GET /archives/download/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+                 "Host: localhost:8080\r\n"
                  "User-Agent: aria2\r\n"
                  "Accept: */*\r\n"
-                 "Host: localhost:8080\r\n"
+                 "Range: bytes=1048576-2097151\r\n"
                  "Pragma: no-cache\r\n"
                  "Cache-Control: no-cache\r\n"
-                 "Range: bytes=1048576-2097151\r\n"
                  "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -225,12 +225,12 @@ void HttpRequestTest::testCreateRequest()
   request->setKeepAliveHint(true);
 
   expectedText = "GET /archives/download/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+                 "Host: localhost:8080\r\n"
                  "User-Agent: aria2\r\n"
                  "Accept: */*\r\n"
-                 "Host: localhost:8080\r\n"
+                 "Range: bytes=1048576-\r\n"
                  "Pragma: no-cache\r\n"
                  "Cache-Control: no-cache\r\n"
-                 "Range: bytes=1048576-\r\n"
                  "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -251,13 +251,13 @@ void HttpRequestTest::testCreateRequest()
                                                        option_.get()));
 
   expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+                 "Host: localhost:8080\r\n"
                  "User-Agent: aria2\r\n"
                  "Accept: */*\r\n"
-                 "Host: localhost:8080\r\n"
-                 "Pragma: no-cache\r\n"
-                 "Cache-Control: no-cache\r\n"
                  "Connection: close\r\n"
                  "Authorization: Basic YXJpYTJ1c2VyOmFyaWEycGFzc3dk\r\n"
+                 "Pragma: no-cache\r\n"
+                 "Cache-Control: no-cache\r\n"
                  "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -270,15 +270,15 @@ void HttpRequestTest::testCreateRequest()
 
   expectedText =
       "GET http://localhost:8080/archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+      "Host: localhost:8080\r\n"
       "User-Agent: aria2\r\n"
       "Accept: */*\r\n"
-      "Host: localhost:8080\r\n"
-      "Pragma: no-cache\r\n"
-      "Cache-Control: no-cache\r\n"
       "Connection: close\r\n"
+      "Authorization: Basic YXJpYTJ1c2VyOmFyaWEycGFzc3dk\r\n"
       "Proxy-Authorization: Basic "
       "YXJpYTJwcm94eXVzZXI6YXJpYTJwcm94eXBhc3N3ZA==\r\n"
-      "Authorization: Basic YXJpYTJ1c2VyOmFyaWEycGFzc3dk\r\n"
+      "Pragma: no-cache\r\n"
+      "Cache-Control: no-cache\r\n"
       "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -287,16 +287,16 @@ void HttpRequestTest::testCreateRequest()
 
   expectedText =
       "GET http://localhost:8080/archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+      "Host: localhost:8080\r\n"
       "User-Agent: aria2\r\n"
       "Accept: */*\r\n"
-      "Host: localhost:8080\r\n"
-      "Pragma: no-cache\r\n"
-      "Cache-Control: no-cache\r\n"
-      "Range: bytes=0-1048575\r\n"
       "Connection: Keep-Alive\r\n"
+      "Range: bytes=0-1048575\r\n"
+      "Authorization: Basic YXJpYTJ1c2VyOmFyaWEycGFzc3dk\r\n"
       "Proxy-Authorization: Basic "
       "YXJpYTJwcm94eXVzZXI6YXJpYTJwcm94eXBhc3N3ZA==\r\n"
-      "Authorization: Basic YXJpYTJ1c2VyOmFyaWEycGFzc3dk\r\n"
+      "Pragma: no-cache\r\n"
+      "Cache-Control: no-cache\r\n"
       "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -308,13 +308,13 @@ void HttpRequestTest::testCreateRequest()
 
   expectedText =
       "GET http://localhost:8080/archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+      "Host: localhost:8080\r\n"
       "User-Agent: aria2\r\n"
       "Accept: */*\r\n"
-      "Host: localhost:8080\r\n"
-      "Pragma: no-cache\r\n"
-      "Cache-Control: no-cache\r\n"
       "Connection: close\r\n"
       "Authorization: Basic YXJpYTJ1c2VyOmFyaWEycGFzc3dk\r\n"
+      "Pragma: no-cache\r\n"
+      "Cache-Control: no-cache\r\n"
       "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -348,13 +348,13 @@ void HttpRequestTest::testCreateRequest_ftp()
   std::string expectedText =
       "GET ftp://aria2user@localhost:8080/archives/aria2-1.0.0.tar.bz2"
       " HTTP/1.1\r\n"
+      "Host: localhost:8080\r\n"
       "User-Agent: aria2\r\n"
       "Accept: */*\r\n"
-      "Host: localhost:8080\r\n"
-      "Pragma: no-cache\r\n"
-      "Cache-Control: no-cache\r\n"
       "Connection: close\r\n"
       "Authorization: Basic YXJpYTJ1c2VyOmFyaWEycGFzc3dk\r\n"
+      "Pragma: no-cache\r\n"
+      "Cache-Control: no-cache\r\n"
       "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -366,15 +366,15 @@ void HttpRequestTest::testCreateRequest_ftp()
   expectedText =
       "GET ftp://aria2user@localhost:8080/archives/aria2-1.0.0.tar.bz2"
       " HTTP/1.1\r\n"
+      "Host: localhost:8080\r\n"
       "User-Agent: aria2\r\n"
       "Accept: */*\r\n"
-      "Host: localhost:8080\r\n"
-      "Pragma: no-cache\r\n"
-      "Cache-Control: no-cache\r\n"
       "Connection: close\r\n"
+      "Authorization: Basic YXJpYTJ1c2VyOmFyaWEycGFzc3dk\r\n"
       "Proxy-Authorization: Basic "
       "YXJpYTJwcm94eXVzZXI6YXJpYTJwcm94eXBhc3N3ZA==\r\n"
-      "Authorization: Basic YXJpYTJ1c2VyOmFyaWEycGFzc3dk\r\n"
+      "Pragma: no-cache\r\n"
+      "Cache-Control: no-cache\r\n"
       "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -423,13 +423,13 @@ void HttpRequestTest::testCreateRequest_with_cookie()
   httpRequest.setNoWantDigest(true);
 
   std::string expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+                             "Host: localhost\r\n"
                              "User-Agent: aria2\r\n"
                              "Accept: */*\r\n"
-                             "Host: localhost\r\n"
-                             "Pragma: no-cache\r\n"
-                             "Cache-Control: no-cache\r\n"
                              "Connection: close\r\n"
                              "Cookie: name1=value1;\r\n"
+                             "Pragma: no-cache\r\n"
+                             "Cache-Control: no-cache\r\n"
                              "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -437,13 +437,13 @@ void HttpRequestTest::testCreateRequest_with_cookie()
   request->setUri("http://localhost/archives/download/aria2-1.0.0.tar.bz2");
 
   expectedText = "GET /archives/download/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+                 "Host: localhost\r\n"
                  "User-Agent: aria2\r\n"
                  "Accept: */*\r\n"
-                 "Host: localhost\r\n"
-                 "Pragma: no-cache\r\n"
-                 "Cache-Control: no-cache\r\n"
                  "Connection: close\r\n"
                  "Cookie: name2=value2;name1=value1;\r\n"
+                 "Pragma: no-cache\r\n"
+                 "Cache-Control: no-cache\r\n"
                  "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -451,13 +451,13 @@ void HttpRequestTest::testCreateRequest_with_cookie()
   request->setUri("http://www.aria2.org/archives/download/aria2-1.0.0.tar.bz2");
 
   expectedText = "GET /archives/download/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+                 "Host: www.aria2.org\r\n"
                  "User-Agent: aria2\r\n"
                  "Accept: */*\r\n"
-                 "Host: www.aria2.org\r\n"
-                 "Pragma: no-cache\r\n"
-                 "Cache-Control: no-cache\r\n"
                  "Connection: close\r\n"
                  "Cookie: name3=value3;\r\n"
+                 "Pragma: no-cache\r\n"
+                 "Cache-Control: no-cache\r\n"
                  "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -466,13 +466,13 @@ void HttpRequestTest::testCreateRequest_with_cookie()
                   "aria2-1.0.0.tar.bz2");
 
   expectedText = "GET /archives/download/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+                 "Host: www.aria2.org\r\n"
                  "User-Agent: aria2\r\n"
                  "Accept: */*\r\n"
-                 "Host: www.aria2.org\r\n"
-                 "Pragma: no-cache\r\n"
-                 "Cache-Control: no-cache\r\n"
                  "Connection: close\r\n"
                  "Cookie: name3=value3;name4=value4;\r\n"
+                 "Pragma: no-cache\r\n"
+                 "Cache-Control: no-cache\r\n"
                  "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -481,13 +481,13 @@ void HttpRequestTest::testCreateRequest_with_cookie()
   request->setUri("https://www.aria2.org/archives/aria2-1.0.0.tar.bz2");
 
   expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+                 "Host: www.aria2.org\r\n"
                  "User-Agent: aria2\r\n"
                  "Accept: */*\r\n"
-                 "Host: www.aria2.org\r\n"
-                 "Pragma: no-cache\r\n"
-                 "Cache-Control: no-cache\r\n"
                  "Connection: close\r\n"
                  "Cookie: name4=value4;\r\n"
+                 "Pragma: no-cache\r\n"
+                 "Cache-Control: no-cache\r\n"
                  "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -495,13 +495,13 @@ void HttpRequestTest::testCreateRequest_with_cookie()
   request->setUri("http://example.org/aria2-1.0.0.tar.bz2");
 
   expectedText = "GET /aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+                 "Host: example.org\r\n"
                  "User-Agent: aria2\r\n"
                  "Accept: */*\r\n"
-                 "Host: example.org\r\n"
-                 "Pragma: no-cache\r\n"
-                 "Cache-Control: no-cache\r\n"
                  "Connection: close\r\n"
                  "Cookie: name5=value5;\r\n"
+                 "Pragma: no-cache\r\n"
+                 "Cache-Control: no-cache\r\n"
                  "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -521,12 +521,12 @@ void HttpRequestTest::testCreateRequest_query()
 
   std::string expectedText =
       "GET /wiki?id=9ad5109a-b8a5-4edf-9373-56a1c34ae138 HTTP/1.1\r\n"
+      "Host: localhost\r\n"
       "User-Agent: aria2\r\n"
       "Accept: */*\r\n"
-      "Host: localhost\r\n"
+      "Connection: close\r\n"
       "Pragma: no-cache\r\n"
       "Cache-Control: no-cache\r\n"
-      "Connection: close\r\n"
       "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -568,13 +568,13 @@ void HttpRequestTest::testCreateRequest_endOffsetOverride()
   httpRequest.setFileEntry(fileEntry);
   // End byte is passed if it is not 0
   std::string expectedText = "GET /myfile HTTP/1.1\r\n"
+                             "Host: localhost\r\n"
                              "User-Agent: aria2\r\n"
                              "Accept: */*\r\n"
-                             "Host: localhost\r\n"
-                             "Pragma: no-cache\r\n"
-                             "Cache-Control: no-cache\r\n"
                              "Connection: close\r\n"
                              "Range: bytes=0-1073741823\r\n"
+                             "Pragma: no-cache\r\n"
+                             "Cache-Control: no-cache\r\n"
                              "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -582,13 +582,13 @@ void HttpRequestTest::testCreateRequest_endOffsetOverride()
   segment->updateWrittenLength(1);
 
   expectedText = "GET /myfile HTTP/1.1\r\n"
+                 "Host: localhost\r\n"
                  "User-Agent: aria2\r\n"
                  "Accept: */*\r\n"
-                 "Host: localhost\r\n"
-                 "Pragma: no-cache\r\n"
-                 "Cache-Control: no-cache\r\n"
                  "Connection: close\r\n"
                  "Range: bytes=1-1073741823\r\n"
+                 "Pragma: no-cache\r\n"
+                 "Cache-Control: no-cache\r\n"
                  "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -618,12 +618,12 @@ void HttpRequestTest::testCreateRequest_wantDigest()
   }
 
   std::string expectedText = "GET / HTTP/1.1\r\n"
+                             "Host: localhost\r\n"
                              "User-Agent: aria2\r\n"
                              "Accept: */*\r\n"
-                             "Host: localhost\r\n"
+                             "Connection: close\r\n"
                              "Pragma: no-cache\r\n"
                              "Cache-Control: no-cache\r\n"
-                             "Connection: close\r\n"
                              "Want-Digest: " +
                              wantDigest +
                              "\r\n"
@@ -651,8 +651,8 @@ void HttpRequestTest::testCreateProxyRequest()
   request->supportsPersistentConnection(true);
 
   std::string expectedText = "CONNECT localhost:80 HTTP/1.1\r\n"
-                             "User-Agent: aria2\r\n"
                              "Host: localhost:80\r\n"
+                             "User-Agent: aria2\r\n"
                              //"Proxy-Connection: close\r\n"
                              "\r\n";
 
@@ -662,8 +662,8 @@ void HttpRequestTest::testCreateProxyRequest()
   request->setKeepAliveHint(true);
 
   expectedText = "CONNECT localhost:80 HTTP/1.1\r\n"
-                 "User-Agent: aria2\r\n"
                  "Host: localhost:80\r\n"
+                 "User-Agent: aria2\r\n"
                  //"Proxy-Connection: Keep-Alive\r\n"
                  "\r\n";
 
@@ -674,8 +674,8 @@ void HttpRequestTest::testCreateProxyRequest()
   request->setPipeliningHint(true);
 
   expectedText = "CONNECT localhost:80 HTTP/1.1\r\n"
-                 "User-Agent: aria2\r\n"
                  "Host: localhost:80\r\n"
+                 "User-Agent: aria2\r\n"
                  //"Proxy-Connection: Keep-Alive\r\n"
                  "\r\n";
 
@@ -686,8 +686,8 @@ void HttpRequestTest::testCreateProxyRequest()
       "http://aria2proxyuser:aria2proxypasswd@localhost:9000"));
 
   expectedText = "CONNECT localhost:80 HTTP/1.1\r\n"
-                 "User-Agent: aria2\r\n"
                  "Host: localhost:80\r\n"
+                 "User-Agent: aria2\r\n"
                  //"Proxy-Connection: Keep-Alive\r\n"
                  "Proxy-Authorization: Basic "
                  "YXJpYTJwcm94eXVzZXI6YXJpYTJwcm94eXBhc3N3ZA==\r\n"
@@ -775,12 +775,12 @@ void HttpRequestTest::testUserAgent()
   httpRequest.setNoWantDigest(true);
 
   std::string expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+                             "Host: localhost:8080\r\n"
                              "User-Agent: aria2 (Linux)\r\n"
                              "Accept: */*\r\n"
-                             "Host: localhost:8080\r\n"
+                             "Connection: close\r\n"
                              "Pragma: no-cache\r\n"
                              "Cache-Control: no-cache\r\n"
-                             "Connection: close\r\n"
                              "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -791,8 +791,8 @@ void HttpRequestTest::testUserAgent()
   httpRequest.setProxyRequest(proxyRequest);
 
   std::string expectedTextForProxy = "CONNECT localhost:8080 HTTP/1.1\r\n"
-                                     "User-Agent: aria2 (Linux)\r\n"
                                      "Host: localhost:8080\r\n"
+                                     "User-Agent: aria2 (Linux)\r\n"
                                      //"Proxy-Connection: close\r\n"
                                      "\r\n";
 
@@ -813,14 +813,14 @@ void HttpRequestTest::testAddHeader()
   httpRequest.addHeader("Accept: text/html");
   httpRequest.setNoWantDigest(true);
   std::string expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
-                             "User-Agent: aria2\r\n"
                              "Host: localhost\r\n"
+                             "User-Agent: aria2\r\n"
+                             "Accept: text/html\r\n"
+                             "Connection: close\r\n"
                              "Pragma: no-cache\r\n"
                              "Cache-Control: no-cache\r\n"
-                             "Connection: close\r\n"
                              "X-ARIA2: v0.13\r\n"
                              "X-ARIA2-DISTRIBUTE: enabled\r\n"
-                             "Accept: text/html\r\n"
                              "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -841,12 +841,12 @@ void HttpRequestTest::testAcceptMetalink()
 
   std::string expectedText =
       "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+      "Host: localhost\r\n"
       "User-Agent: aria2\r\n"
       "Accept: */*,application/metalink4+xml,application/metalink+xml\r\n"
-      "Host: localhost\r\n"
+      "Connection: close\r\n"
       "Pragma: no-cache\r\n"
       "Cache-Control: no-cache\r\n"
-      "Connection: close\r\n"
       "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -868,14 +868,14 @@ void HttpRequestTest::testEnableAcceptEncoding()
   acceptEncodings += "deflate, gzip";
 #endif // HAVE_ZLIB
 
-  std::string expectedTextHead =
+  std::string expectedTextHead = 
       "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+      "Host: localhost\r\n"
       "User-Agent: aria2\r\n"
       "Accept: */*\r\n";
-  std::string expectedTextTail = "Host: localhost\r\n"
+  std::string expectedTextTail = "Connection: close\r\n"
                                  "Pragma: no-cache\r\n"
                                  "Cache-Control: no-cache\r\n"
-                                 "Connection: close\r\n"
                                  "\r\n";
 
   std::string expectedText = expectedTextHead;

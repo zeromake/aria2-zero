@@ -48,7 +48,9 @@ void TimegmTest::testTimegm()
   setTime(&tm, 2015, 10, 21, 10, 19, 30);
   CPPUNIT_ASSERT_EQUAL((time_t)1445422770, timegm(&tm));
   setTime(&tm, 1970, 13, 1, 0, 0, 0);
-  CPPUNIT_ASSERT_EQUAL((time_t)-1, timegm(&tm));
+  CPPUNIT_ASSERT_EQUAL((time_t)31536000, timegm(&tm));
+  setTime(&tm, 1971, 1, 1, 0, 0, 0);
+  CPPUNIT_ASSERT_EQUAL((time_t)31536000, timegm(&tm));
   setTime(&tm, 2039, 1, 1, 0, 0, 0);
   if (sizeof(time_t) == 4) {
     CPPUNIT_ASSERT_EQUAL((time_t)-1, timegm(&tm));

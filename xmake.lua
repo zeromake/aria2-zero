@@ -25,10 +25,20 @@ option("ssl_external")
     set_description("Use external ssl library")
 option_end()
 
+option("unit")
+    set_default(false)
+    set_showmenu(true)
+    set_description("Build unit test")
+option_end()
+
 local ssl_external = get_config("ssl_external") or is_plat("linux", "android")
 
 if get_config("uv") then
     add_requires("uv")
+end
+
+if get_config("unit") then
+    add_requires("cppunit")
 end
 
 set_languages("c++14")
@@ -190,6 +200,8 @@ configvar_check_cfuncs("HAVE_BASENAME", "basename", {includes = {"libgen.h"}})
 configvar_check_cfuncs("HAVE_GAI_STRERROR", "gai_strerror", {includes = network_include})
 configvar_check_cfuncs("HAVE_STRCASECMP", "strcasecmp", {includes = "strings.h"})
 configvar_check_cfuncs("HAVE_STRNCASECMP", "strncasecmp", {includes = "strings.h"})
+configvar_check_cfuncs("HAVE_FALLOCATE", "fallocate",{includes = "fcntl.h"})
+configvar_check_cfuncs("HAVE_POSIX_FALLOCATE", "posix_fallocate",{includes = "fcntl.h"})
 
 configvar_check_ctypes("HAVE___INT64", "__int64")
 configvar_check_ctypes("HAVE_LONG_LONG", "long long")
@@ -279,6 +291,9 @@ target("aria2")
         if target:has_cfuncs("X509_get_default_cert_file", {includes = {"openssl/x509.h"}}) then
             set_configvar("HAVE_X509_GET_DEFAULT_CERT_FILE", 1)
         end
+        if variables["HAVE_FALLOCATE"] or variables["HAVE_POSIX_FALLOCATE"] or target:is_plat("windows", "mingw", "macosx", "iphoneos") then
+            set_configvar("HAVE_SOME_FALLOCATE", 1)
+        end
     end)
     local skip = {}
     if is_plat("windows", "mingw") then
@@ -342,3 +357,41 @@ target("aria2c")
         local ext = is_plat("windows") and ".exe" or ""
         os.cp(target:targetfile(), format("dist/aria2c-%s-%s%s", target:plat(), target:arch(), ext))
     end)
+
+
+target("test")
+    set_default(false)
+    add_files("test/AllTest.cc", "test/TestUtil.cc")
+    add_files("test/*.cc|AllTest.cc|TestUtil.cc|CookieBoxTest.cc")
+    add_deps("aria2")
+    add_includedirs(
+        "include",
+        "compat",
+        "src/core",
+        "src/tls",
+        "src/parser",
+        "src/parser/json",
+        "src/crypto/common",
+        "src/crypto",
+        "src/poll",
+        "src/poll/select",
+        "src/stream",
+        "src/network",
+        "src/util",
+        "src/rpc",
+        "src/storage",
+        "src/protocol",
+        "src/protocol/lpd",
+        "src/protocol/bt",
+        "src/protocol/utm",
+        "src/protocol/peer",
+        "src/protocol/piece",
+        "src/protocol/metalink",
+        "src/protocol/announce"
+    )
+    add_packages("cppunit")
+    add_tests("default")
+    on_config(function (target) 
+        target:add("defines", vformat('A2_TEST_DIR="$(projectdir)/test"'), vformat('A2_TEST_OUT_DIR="$(buildir)/test_out"'))
+    end)
+    add_defines("HAVE_CONFIG_H=1")

@@ -59,13 +59,16 @@ time_t timegm(struct tm* tm)
   int days;
   int num_leap_year;
   int64_t t;
+  int tm_mon = tm->tm_mon;
+  int tm_year = tm->tm_year;
   if (tm->tm_mon > 11) {
-    return -1;
+    tm_year += tm_mon / 12;
+    tm_mon %= 12;
   }
-  num_leap_year = count_leap_year(tm->tm_year + 1900) - count_leap_year(1970);
-  days = (tm->tm_year - 70) * 365 + num_leap_year + daysum[tm->tm_mon] +
+  num_leap_year = count_leap_year(tm_year + 1900) - count_leap_year(1970);
+  days = (tm_year - 70) * 365 + num_leap_year + daysum[tm_mon] +
          tm->tm_mday - 1;
-  if (tm->tm_mon >= 2 && is_leap_year(tm->tm_year + 1900)) {
+  if (tm_mon >= 2 && is_leap_year(tm_year + 1900)) {
     ++days;
   }
   t = ((int64_t)days * 24 + tm->tm_hour) * 3600 + tm->tm_min * 60 + tm->tm_sec;

@@ -35,9 +35,9 @@ void ExceptionTest::testStackTrace()
 
   CPPUNIT_ASSERT_EQUAL(
       std::string(
-          "Exception: [ExceptionTest.cc:34] errorCode=2 exception thrown\n"
-          "  -> [ExceptionTest.cc:32] errorCode=2 cause2\n"
-          "  -> [ExceptionTest.cc:31] errorCode=2 cause1\n"),
+          "Exception: [test/ExceptionTest.cc:34] errorCode=2 exception thrown\n"
+          "  -> [test/ExceptionTest.cc:32] errorCode=2 cause2\n"
+          "  -> [test/ExceptionTest.cc:31] errorCode=2 cause1\n"),
       util::replace(e.stackTrace(), std::string(A2_TEST_DIR) + "/", ""));
 }
 

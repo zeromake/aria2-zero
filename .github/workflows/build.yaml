@@ -1,7 +1,7 @@
 on:
   push:
-    branches:
-      - master
+    tags:
+      - 'v*'
 jobs:
   build-windows:
     runs-on: windows-latest
