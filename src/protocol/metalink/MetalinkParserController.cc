@@ -56,7 +56,7 @@
 namespace aria2 {
 
 MetalinkParserController::MetalinkParserController()
-    : metalinker_{make_unique<Metalinker>()}
+    : metalinker_{aria2::make_unique<Metalinker>()}
 {
 }
 

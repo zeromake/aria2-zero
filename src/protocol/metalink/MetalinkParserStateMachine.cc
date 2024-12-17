@@ -106,7 +106,7 @@ MetalinkParserState* MetalinkParserStateMachine::metaurlStateV4_ =
     new MetaurlMetalinkParserStateV4();
 
 MetalinkParserStateMachine::MetalinkParserStateMachine()
-    : ctrl_{make_unique<MetalinkParserController>()}
+    : ctrl_{aria2::make_unique<MetalinkParserController>()}
 {
   stateStack_.push(initialState_);
 }

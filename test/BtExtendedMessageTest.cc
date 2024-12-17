@@ -72,7 +72,7 @@ void BtExtendedMessageTest::testCreateMessage()
 {
   std::string payload = "4:name3:foo";
   uint8_t extendedMessageID = 1;
-  BtExtendedMessage msg{make_unique<MockExtensionMessage>(
+  BtExtendedMessage msg{aria2::make_unique<MockExtensionMessage>(
       "charlie", extendedMessageID, payload, nullptr)};
   unsigned char data[17];
   bittorrent::createPeerMessageString(data, sizeof(data), 13, 20);
@@ -96,7 +96,7 @@ void BtExtendedMessageTest::testToString()
 {
   std::string payload = "4:name3:foo";
   uint8_t extendedMessageID = 1;
-  BtExtendedMessage msg{make_unique<MockExtensionMessage>(
+  BtExtendedMessage msg{aria2::make_unique<MockExtensionMessage>(
       "charlie", extendedMessageID, payload, nullptr)};
   CPPUNIT_ASSERT_EQUAL(std::string("extended charlie"), msg.toString());
 }

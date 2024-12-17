@@ -61,7 +61,7 @@ std::unique_ptr<ValueBase> ValueBaseStructParserStateMachine::noResult()
 }
 
 ValueBaseStructParserStateMachine::ValueBaseStructParserStateMachine()
-    : ctrl_{make_unique<rpc::XmlRpcRequestParserController>()}
+    : ctrl_{aria2::make_unique<rpc::XmlRpcRequestParserController>()}
 {
   stateStack_.push(valueState);
 }
