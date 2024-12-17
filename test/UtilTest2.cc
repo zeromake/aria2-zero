@@ -596,8 +596,8 @@ void UtilTest2::testJoinPath()
       std::string("dir/file"),
       util::joinPath(std::begin(dirdotfile), std::end(dirdotfile)));
 
-  const std::string empty[] = {};
-  CPPUNIT_ASSERT_EQUAL(std::string(""), util::joinPath(&empty[0], &empty[0]));
+  const std::string empty[] = {""};
+  CPPUNIT_ASSERT_EQUAL(std::string(""), util::joinPath(std::begin(empty), std::end(empty)));
 
   const std::string parentdot[] = {"..", "."};
   CPPUNIT_ASSERT_EQUAL(std::string(""), util::joinPath(std::begin(parentdot),
