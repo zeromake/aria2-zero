@@ -98,7 +98,7 @@ void FileTest::testRemove()
 
   std::string dir = A2_TEST_OUT_DIR "/aria2_FileTest_testRemove_testdir";
 #ifdef _WIN32
-  a2mkdir(util::utf8ToWChar(dir).c_str(), 0777);
+  a2mkdir(utf8ToWChar(dir).c_str(), 0777);
 #else
   a2mkdir(dir.c_str(), 0777);
 #endif // _WIN32
