@@ -294,6 +294,12 @@ target("aria2")
         if variables["HAVE_FALLOCATE"] or variables["HAVE_POSIX_FALLOCATE"] or target:is_plat("windows", "mingw", "macosx", "iphoneos") then
             set_configvar("HAVE_SOME_FALLOCATE", 1)
         end
+        if get_config("unit") then
+            local dir = path.absolute(os.projectdir(), '')
+            dir = dir:gsub("\\", "/")
+            set_configvar('A2_TEST_DIR', dir..'/test')
+            set_configvar('A2_TEST_OUT_DIR', dir..'/build/test_out')
+        end
     end)
     local skip = {}
     if is_plat("windows", "mingw") then
@@ -343,6 +349,7 @@ target("aria2")
     if is_plat("macosx", "iphoneos") then
         add_frameworks("Security")
     end
+target_end()
 
 target("aria2c")
     add_files("src/*.cc")
@@ -358,7 +365,7 @@ target("aria2c")
         os.cp(target:targetfile(), format("dist/aria2c-%s-%s%s", target:plat(), target:arch(), ext))
     end)
 
-
+if get_config("unit") then
 target("test")
     set_default(false)
     add_files("test/AllTest.cc", "test/TestUtil.cc")
@@ -391,7 +398,6 @@ target("test")
     )
     add_packages("cppunit")
     add_tests("default")
-    on_config(function (target) 
-        target:add("defines", vformat('A2_TEST_DIR="$(projectdir)/test"'), vformat('A2_TEST_OUT_DIR="$(buildir)/test_out"'))
-    end)
     add_defines("HAVE_CONFIG_H=1")
+target_end()
+end

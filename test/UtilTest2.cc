@@ -4,6 +4,7 @@
 #include <cstring>
 #include <string>
 #include <iostream>
+#include <vector>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -654,10 +655,11 @@ void UtilTest2::testGenerateRandomData()
 
   // Simple stddev/mean tests
   map<uint8_t, size_t> counts;
-  uint8_t bytes[1 << 20];
+  std::vector<uint8_t> bytes;
+  bytes.resize(1 << 20);
   for (auto i = 0; i < 10; ++i) {
-    util::generateRandomData(bytes, sizeof(bytes));
-    for (auto b : bytes) {
+    util::generateRandomData(bytes.data(), bytes.size());
+    for (auto &b : bytes) {
       counts[b]++;
     }
   }

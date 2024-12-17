@@ -92,6 +92,8 @@ ${define HAVE_FALLOCATE}
 ${define HAVE_POSIX_FALLOCATE}
 ${define HAVE_SOME_FALLOCATE}
 ${define HAVE_X509_GET_DEFAULT_CERT_FILE}
+${define A2_TEST_DIR}
+${define A2_TEST_OUT_DIR}
 
 ${define HAVE_LIBUV}
 ${define HAVE_EPOLL}
