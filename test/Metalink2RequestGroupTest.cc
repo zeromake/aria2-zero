@@ -208,7 +208,7 @@ void Metalink2RequestGroupTest::testGenerate_groupByMetaurl()
 
 void Metalink2RequestGroupTest::testGenerate_dosDirTraversal()
 {
-#ifdef __MINGW32__
+#ifdef _WIN32
 #  ifdef ENABLE_BITTORRENT
   std::vector<std::shared_ptr<RequestGroup>> groups;
   option_->put(PREF_DIR, "/tmp");
@@ -229,7 +229,7 @@ void Metalink2RequestGroupTest::testGenerate_dosDirTraversal()
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/..%5C..%5Cfile2.ext"),
                        file->getPath());
 #  endif // ENABLE_BITTORRENT
-#endif   // __MINGW32__
+#endif   // _WIN32
 }
 
 } // namespace aria2
