@@ -73,16 +73,18 @@ int File::fillStat(a2_struct_stat& fstat)
   return a2stat(utf8ToWChar(name_).c_str(), &fstat);
 }
 
+int File::access(int mode) {
+  return a2access(utf8ToWChar(name_).c_str(), mode);
+}
+
 bool File::exists()
 {
-  a2_struct_stat fstat;
-  return fillStat(fstat) == 0;
+  return this->access(0) == 0;
 }
 
 bool File::exists(std::string& err)
 {
-  a2_struct_stat fstat;
-  if (fillStat(fstat) != 0) {
+  if (this->access(0) != 0) {
     err = fmt("Could not get file status: %s", strerror(errno));
     return false;
   }

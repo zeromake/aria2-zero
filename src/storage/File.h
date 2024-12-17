@@ -55,6 +55,7 @@ private:
    * Returns the return value of stat(...)
    */
   int fillStat(a2_struct_stat& fstat);
+  int access(int mode);
 
 public:
   File(const std::string& name);

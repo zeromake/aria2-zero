@@ -162,6 +162,7 @@ int a2rmdir(const wchar_t* path);
 int a2open(const wchar_t* path, int flags, int mode);
 FILE* a2fopen(const wchar_t* path, const wchar_t* mode);
 int a2rename(const wchar_t* oldpath, const wchar_t* newpath);
+int a2access(const wchar_t* path, int mode);
 wchar_t* a2getcwd(wchar_t* buf, int size);
 HANDLE a2CreateFileW(const wchar_t* lpFileName, DWORD dwDesiredAccess,
                      DWORD dwShareMode,
@@ -257,6 +258,7 @@ int a2utime(const wchar_t* path, a2utimbuf* t);
 #  define a2fileno(fp) fileno(fp)
 #  define a2rename(oldpath, newpath) rename(oldpath, newpath)
 #  define a2getcwd(buf, size) getcwd(buf, size)
+#  define a2access(path, mode) access(path, mode)
 // Android NDK R8e does not provide ftruncate64 prototype, so let's
 // define it here.
 #  ifdef __cplusplus
@@ -291,6 +293,7 @@ extern int ftruncate64(int fd, off64_t length);
 #  define a2fileno(fp) fileno(fp)
 #  define a2rename(oldpath, newpath) rename(oldpath, newpath)
 #  define a2getcwd(buf, size) getcwd(buf, size)
+#  define a2access(path, mode) access(path, mode)
 #  define a2_off_t off_t
 #endif
 

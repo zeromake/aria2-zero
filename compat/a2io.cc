@@ -112,6 +112,10 @@ wchar_t* a2getcwd(wchar_t* buf, int size)
   return NULL;
 }
 
+int a2access(const wchar_t* path, int mode) {
+  return _waccess(toNamespacedPath(path).c_str(), mode);
+}
+
 HANDLE a2CreateFileW(const wchar_t* lpFileName, DWORD dwDesiredAccess,
                      DWORD dwShareMode,
                      LPSECURITY_ATTRIBUTES lpSecurityAttributes,
