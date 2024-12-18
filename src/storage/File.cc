@@ -74,7 +74,7 @@ int File::fillStat(a2_struct_stat& fstat)
 }
 
 int File::access(int mode) {
-  return a2access(utf8ToWChar(name_).c_str(), mode);
+  return ::a2access(utf8ToWChar(name_).c_str(), mode);
 }
 
 bool File::exists()

@@ -58,6 +58,10 @@ UriListParser::UriListParser(const std::string& filename)
     : fp_(aria2::make_unique<BufferedFile>(filename.c_str(), IOFile::READ))
 #endif
 {
+#ifdef A2_TEST_DIR
+  aria2::global::cout()->printf("\n-------------start line------------\n");
+  aria2::global::cout()->flush();
+#endif
 }
 
 UriListParser::~UriListParser() = default;
@@ -67,6 +71,10 @@ void UriListParser::parseNext(std::vector<std::string>& uris, Option& op)
   const std::shared_ptr<OptionParser>& optparser = OptionParser::getInstance();
   while (1) {
     if (!line_.empty() && line_[0] != '#') {
+#ifdef A2_TEST_DIR
+        aria2::global::cout()->printf("\n-------------line------------: %s\n", line_.c_str());
+        aria2::global::cout()->flush();
+#endif
       util::split(line_.begin(), line_.end(), std::back_inserter(uris), '\t',
                   true);
       // Read options
