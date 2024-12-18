@@ -1,18 +1,6 @@
 includes("@builtin/check")
 add_rules("mode.debug", "mode.release")
 
-add_repositories("zeromake https://github.com/zeromake/xrepo.git")
-
-add_requires(
-    "expat",
-    "zlib",
-    "sqlite3",
-    "c-ares",
-    "libressl",
-    "ssh2"
-)
-set_policy("package.install_only", true)
-
 option("uv")
     set_default(false)
     set_showmenu(true)
@@ -33,14 +21,7 @@ option_end()
 
 local ssl_external = get_config("ssl_external") or is_plat("linux", "android")
 
-if get_config("uv") then
-    add_requires("uv")
-end
-
-if get_config("unit") then
-    add_requires("cppunit")
-end
-
+includes("package.lua")
 set_languages("c++14")
 set_encodings("utf-8")
 set_rundir(".")
