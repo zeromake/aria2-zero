@@ -297,7 +297,7 @@ target("aria2")
         if get_config("unit") then
             local dir = path.absolute(os.projectdir(), '')
             dir = dir:gsub("\\", "/")
-            set_configvar('A2_TEST_DIR', dir..'/test')
+            set_configvar('A2_TEST_DIR', dir..'/test/data')
             set_configvar('A2_TEST_OUT_DIR', dir..'/build/test_out')
         end
     end)
