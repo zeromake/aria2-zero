@@ -400,4 +400,13 @@ const char* File::getPathSeparators()
 #endif // !_WIN32
 }
 
+const char File::getPathSeparator()
+{
+#ifdef _WIN32
+  return '\\';
+#else  // !_WIN32
+  return '/';
+#endif // _WIN32
+}
+
 } // namespace aria2

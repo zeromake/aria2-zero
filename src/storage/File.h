@@ -127,6 +127,8 @@ public:
   static std::string getCurrentDir();
   // Returns possible path separators for the underlying platform.
   static const char* getPathSeparators();
+  // Returns the path separator for the underlying platform.
+  static const char getPathSeparator();
 };
 
 } // namespace aria2
