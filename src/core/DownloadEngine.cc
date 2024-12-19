@@ -163,6 +163,7 @@ int DownloadEngine::run(bool oneshot)
       waitData();
     }
     noWait_ = false;
+    // auto now = aria2::Timer();
     global::wallclock().reset();
     calculateStatistics();
     if (lastRefresh_.difference(global::wallclock()) + A2_DELTA_MILLIS >=
@@ -175,6 +176,8 @@ int DownloadEngine::run(bool oneshot)
       executeCommand(commands_, Command::STATUS_ACTIVE);
     }
     executeCommand(routineCommands_, Command::STATUS_ALL);
+    // A2_LOG_NOTICE(fmt("executeCommand difference: %fms",
+    // ((double)now.difference(aria2::Timer()).count()) / 1000000.0));
     afterEachIteration();
     if (!noWait_ && oneshot) {
       return 1;

@@ -174,6 +174,7 @@ int a2utime(const wchar_t* path, a2utimbuf* t);
 #  endif
 #  define a2wstat(path, buf) a2stat(path, buf)
 #  define a2tell(handle) _telli64(handle)
+#  define a2isatty(fd) _isatty(fd)
 // For Windows, we share files for reading and writing.
 // # define a2ftruncate(fd, length): We don't use ftruncate in Mingw build
 #  ifdef HAVE_STDINT_H
@@ -227,15 +228,15 @@ int a2utime(const wchar_t* path, a2utimbuf* t);
 #  endif /* S_ISSOCK */
 
 #  ifndef STDIN_FILENO
-#    define STDIN_FILENO 0
+#    define STDIN_FILENO _fileno(stdin)
 #  endif /* STDIN_FILENO */
 
 #  ifndef STDOUT_FILENO
-#    define STDOUT_FILENO 1
+#    define STDOUT_FILENO _fileno(stdout)
 #  endif /* STDOUT_FILENO */
 
 #  ifndef STDERR_FILENO
-#    define STDERR_FILENO 2
+#    define STDERR_FILENO _fileno(stderr)
 #  endif /* STDERR_FILENO */
 
 #elif defined(__ANDROID__) || defined(ANDROID)
@@ -259,6 +260,7 @@ int a2utime(const wchar_t* path, a2utimbuf* t);
 #  define a2rename(oldpath, newpath) rename(oldpath, newpath)
 #  define a2getcwd(buf, size) getcwd(buf, size)
 #  define a2access(path, mode) access(path, mode)
+#  define a2isatty(fd) isatty(fd)
 // Android NDK R8e does not provide ftruncate64 prototype, so let's
 // define it here.
 #  ifdef __cplusplus
@@ -294,6 +296,7 @@ extern int ftruncate64(int fd, off64_t length);
 #  define a2rename(oldpath, newpath) rename(oldpath, newpath)
 #  define a2getcwd(buf, size) getcwd(buf, size)
 #  define a2access(path, mode) access(path, mode)
+#  define a2isatty(fd) isatty(fd)
 #  define a2_off_t off_t
 #endif
 
