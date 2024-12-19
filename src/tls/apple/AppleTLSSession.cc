@@ -103,10 +103,7 @@ static inline const char* protoToString(SSLProtocol proto)
   }
 }
 
-#define SUITE(s, n)                                                            \
-  {                                                                            \
-    n, #s                                                                      \
-  }
+#define SUITE(s, n) {n, #s}
 static struct {
   SSLCipherSuite suite;
   const char* name;

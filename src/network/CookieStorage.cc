@@ -219,7 +219,8 @@ bool DomainNode::getInLru() const { return inLru_; }
 
 void DomainNode::setInLru(bool f) { inLru_ = f; }
 
-CookieStorage::CookieStorage() : rootNode_{aria2::make_unique<DomainNode>("", nullptr)}
+CookieStorage::CookieStorage()
+    : rootNode_{aria2::make_unique<DomainNode>("", nullptr)}
 {
 }
 

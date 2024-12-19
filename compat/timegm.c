@@ -66,8 +66,8 @@ time_t timegm(struct tm* tm)
     tm_mon %= 12;
   }
   num_leap_year = count_leap_year(tm_year + 1900) - count_leap_year(1970);
-  days = (tm_year - 70) * 365 + num_leap_year + daysum[tm_mon] +
-         tm->tm_mday - 1;
+  days =
+      (tm_year - 70) * 365 + num_leap_year + daysum[tm_mon] + tm->tm_mday - 1;
   if (tm_mon >= 2 && is_leap_year(tm_year + 1900)) {
     ++days;
   }

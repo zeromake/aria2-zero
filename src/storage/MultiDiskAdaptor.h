@@ -89,7 +89,7 @@ public:
   bool needsDiskWriter() const { return needsDiskWriter_; }
 
   void needsDiskWriter(bool f) { needsDiskWriter_ = f; }
-  
+
   bool getSkip() const { return skip_; }
 
   void setSkip(bool f) { skip_ = f; }

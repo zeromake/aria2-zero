@@ -112,7 +112,8 @@ wchar_t* a2getcwd(wchar_t* buf, int size)
   return NULL;
 }
 
-int a2access(const wchar_t* path, int mode) {
+int a2access(const wchar_t* path, int mode)
+{
   return _waccess(toNamespacedPath(path).c_str(), mode);
 }
 
