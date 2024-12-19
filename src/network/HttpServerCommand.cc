@@ -204,7 +204,8 @@ bool HttpServerCommand::execute()
         httpServer_->feedResponse(
             401, "WWW-Authenticate: Basic realm=\"aria2\"\r\n");
         e_->addCommand(aria2::make_unique<HttpServerResponseCommand>(
-            getCuid(), httpServer_, e_, socket_));
+                           getCuid(), httpServer_, e_, socket_),
+                       this->getPriority());
         e_->setNoWait(true);
         return true;
       }
@@ -220,7 +221,8 @@ bool HttpServerCommand::execute()
               "websocket",
               fmt("Sec-WebSocket-Accept: %s\r\n", serverKey.c_str()));
           e_->addCommand(aria2::make_unique<rpc::WebSocketResponseCommand>(
-              getCuid(), httpServer_, e_, socket_));
+                             getCuid(), httpServer_, e_, socket_),
+                         this->getPriority());
         }
         else {
           if (status == 426) {
@@ -230,14 +232,16 @@ bool HttpServerCommand::execute()
             httpServer_->feedResponse(status);
           }
           e_->addCommand(aria2::make_unique<HttpServerResponseCommand>(
-              getCuid(), httpServer_, e_, socket_));
+                             getCuid(), httpServer_, e_, socket_),
+                         this->getPriority());
         }
         e_->setNoWait(true);
         return true;
 #else  // !ENABLE_WEBSOCKET
         httpServer_->feedResponse(400);
         e_->addCommand(aria2::make_unique<HttpServerResponseCommand>(
-            getCuid(), httpServer_, e_, socket_));
+                           getCuid(), httpServer_, e_, socket_),
+                       this->getPriority());
         e_->setNoWait(true);
         return true;
 #endif // !ENABLE_WEBSOCKET

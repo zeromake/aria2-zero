@@ -49,7 +49,7 @@ public:
   virtual void process() CXX11_OVERRIDE
   {
     auto e = getDownloadEngine();
-    e->addCommand(std::move(command_));
+    e->addCommand(std::move(command_), this->getPriority());
     if (noWait_) {
       e->setNoWait(true);
     }

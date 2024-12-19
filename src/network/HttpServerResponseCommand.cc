@@ -59,7 +59,8 @@ void HttpServerResponseCommand::afterSend(
   if (httpServer->supportsPersistentConnection()) {
     A2_LOG_INFO(fmt("CUID#%" PRId64 " - Persist connection.", getCuid()));
     e->addCommand(aria2::make_unique<HttpServerCommand>(
-        getCuid(), httpServer, e, httpServer->getSocket()));
+                      getCuid(), httpServer, e, httpServer->getSocket()),
+                  this->getPriority());
   }
 }
 

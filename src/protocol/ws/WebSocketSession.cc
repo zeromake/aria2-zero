@@ -286,8 +286,10 @@ void WebSocketSession::addTextMessage(const std::string& msg, bool delayed)
     auto cuid = command_->getCuid();
     auto c = aria2::make_unique<TextMessageCommand>(
         cuid, command_->getSession(), msg);
+    c->setPriority(command_->getPriority());
     e->addCommand(
-        aria2::make_unique<DelayedCommand>(cuid, e, 1_s, std::move(c), false));
+        aria2::make_unique<DelayedCommand>(cuid, e, 1_s, std::move(c), false),
+        command_->getPriority());
     return;
   }
 

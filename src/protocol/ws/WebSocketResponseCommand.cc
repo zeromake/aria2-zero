@@ -59,6 +59,7 @@ void WebSocketResponseCommand::afterSend(
                                                       getDownloadEngine());
   auto command = aria2::make_unique<WebSocketInteractionCommand>(
       getCuid(), wsSession, e, wsSession->getSocket());
+  command->setPriority(this->getPriority());
   wsSession->setCommand(command.get());
   e->addCommand(std::move(command));
 }
