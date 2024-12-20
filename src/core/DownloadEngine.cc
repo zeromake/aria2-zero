@@ -117,27 +117,10 @@ DownloadEngine::DownloadEngine(std::unique_ptr<EventPoll> eventPoll)
 DownloadEngine::~DownloadEngine() {}
 
 namespace {
-void executeCommand(std::deque<std::unique_ptr<Command>>& commands,
-                    std::deque<std::unique_ptr<Command>>& priorityCommands,
-                    Command::STATUS statusFilter);
-bool executePriorityCommand(std::deque<std::unique_ptr<Command>>& commands,
-                            Command::STATUS statusFilter,
-                            aria2::Timer& lastTime)
-{
-  if (lastTime.difference(aria2::Timer()) < 16_ms) {
-    return false;
-  }
-  executeCommand(commands, commands, statusFilter);
-  return true;
-}
 
-void executeCommand(std::deque<std::unique_ptr<Command>>& commands,
-                    std::deque<std::unique_ptr<Command>>& priorityCommands,
-                    Command::STATUS statusFilter)
+void executeCommand(std::deque<std::unique_ptr<Command>>& commands, Command::STATUS statusFilter)
 {
   size_t max = commands.size();
-  auto lastTime = aria2::Timer();
-  bool checkPriority = commands != priorityCommands;
   for (size_t i = 0; i < max; ++i) {
     auto com = std::move(commands.front());
     commands.pop_front();
@@ -170,11 +153,6 @@ void executeCommand(std::deque<std::unique_ptr<Command>>& commands,
 #endif
       com->clearIOEvents();
       com.release();
-    }
-    if (checkPriority) {
-      if (executePriorityCommand(priorityCommands, statusFilter, lastTime)) {
-        lastTime = aria2::Timer();
-      }
     }
   }
 }
@@ -215,15 +193,14 @@ int DownloadEngine::run(bool oneshot)
       refreshInterval_ = DEFAULT_REFRESH_INTERVAL;
       lastRefresh_ = global::wallclock();
 
-      executeCommand(priorityCommands_, priorityCommands_, Command::STATUS_ALL);
-      executeCommand(commands_, priorityCommands_, Command::STATUS_ALL);
+      executeCommand(priorityCommands_, Command::STATUS_ALL);
+      executeCommand(commands_, Command::STATUS_ALL);
     }
     else {
-      executeCommand(priorityCommands_, priorityCommands_,
-                     Command::STATUS_ACTIVE);
-      executeCommand(commands_, priorityCommands_, Command::STATUS_ACTIVE);
+      executeCommand(priorityCommands_, Command::STATUS_ACTIVE);
+      executeCommand(commands_, Command::STATUS_ACTIVE);
     }
-    executeCommand(routineCommands_, routineCommands_, Command::STATUS_ALL);
+    executeCommand(routineCommands_, Command::STATUS_ALL);
 #ifdef ENABLE_COMMONAD_DELTA_DEBUG
     auto difference = now.difference(aria2::Timer());
     if (difference > A2_LOOP_DELTA_MILLIS) {
@@ -656,6 +633,7 @@ void DownloadEngine::addCommand(std::unique_ptr<Command> command,
   if (command->getPriority() < priority)
     command->setPriority(priority);
   if (command->getPriority() == Command::PRIORITY_HIGH) {
+    // A2_LOG_NOTICE(fmt("Add priority command: %s", command->classname().c_str()));
     priorityCommands_.push_back(std::move(command));
   }
   else {
