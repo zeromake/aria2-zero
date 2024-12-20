@@ -40,6 +40,7 @@
 namespace aria2 {
 
 class EvictSocketPoolCommand : public TimeBasedCommand {
+  COMMAND_CLASSNAME(EvictSocketPoolCommand)
 public:
   EvictSocketPoolCommand(cuid_t cuid, DownloadEngine* e,
                          std::chrono::seconds interval);

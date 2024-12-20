@@ -42,6 +42,7 @@ namespace aria2 {
 class SocketCore;
 
 class HttpProxyRequestCommand : public AbstractProxyRequestCommand {
+  COMMAND_CLASSNAME(HttpProxyRequestCommand)
 public:
   HttpProxyRequestCommand(cuid_t cuid, const std::shared_ptr<Request>& req,
                           const std::shared_ptr<FileEntry>& fileEntry,

@@ -40,6 +40,7 @@
 namespace aria2 {
 
 class SaveSessionCommand : public TimeBasedCommand {
+  COMMAND_CLASSNAME(SaveSessionCommand)
 public:
   SaveSessionCommand(cuid_t cuid, DownloadEngine* e,
                      std::chrono::seconds interval);

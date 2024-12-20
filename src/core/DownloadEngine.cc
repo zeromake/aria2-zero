@@ -75,6 +75,7 @@
 #endif // ENABLE_WEBSOCKET
 #include "Option.h"
 #include "util_security.h"
+#include "nameof.hpp"
 
 namespace aria2 {
 
@@ -92,6 +93,8 @@ volatile sig_atomic_t globalHaltRequested = 0;
 
 namespace {
 constexpr auto DEFAULT_REFRESH_INTERVAL = 1_s;
+constexpr auto A2_LOOP_DELTA_MILLIS = 100_ms;
+constexpr auto A2_COMMONAD_DELTA_MILLIS = 10_ms;
 } // namespace
 
 DownloadEngine::DownloadEngine(std::unique_ptr<EventPoll> eventPoll)
@@ -144,11 +147,28 @@ void executeCommand(std::deque<std::unique_ptr<Command>>& commands,
       commands.push_back(std::move(com));
       continue;
     }
+#ifdef ENABLE_COMMONAD_DELTA_DEBUG
+    auto now = aria2::Timer();
+#endif
     com->transitStatus();
     if (com->execute()) {
+#ifdef ENABLE_COMMONAD_DELTA_DEBUG
+      auto difference = now.difference(aria2::Timer());
+      if (difference > A2_COMMONAD_DELTA_MILLIS) {
+        A2_LOG_NOTICE(fmt("%s::execute done difference: %fms", com->classname().c_str(),
+        ((double)now.difference(aria2::Timer()).count()) / 1000000.0));
+      }
+#endif
       com.reset();
     }
     else {
+#ifdef ENABLE_COMMONAD_DELTA_DEBUG
+      auto difference = now.difference(aria2::Timer());
+      if (difference > A2_COMMONAD_DELTA_MILLIS) {
+        A2_LOG_NOTICE(fmt("%s::execute release difference: %fms", com->classname().c_str(),
+        ((double)now.difference(aria2::Timer()).count()) / 1000000.0));
+      }
+#endif
       com->clearIOEvents();
       com.release();
     }
@@ -186,6 +206,9 @@ int DownloadEngine::run(bool oneshot)
       waitData();
     }
     noWait_ = false;
+#ifdef ENABLE_COMMONAD_DELTA_DEBUG
+    auto now = aria2::Timer();
+#endif
     global::wallclock().reset();
     calculateStatistics();
     if (lastRefresh_.difference(global::wallclock()) + A2_DELTA_MILLIS >=
@@ -202,6 +225,13 @@ int DownloadEngine::run(bool oneshot)
       executeCommand(commands_, priorityCommands_, Command::STATUS_ACTIVE);
     }
     executeCommand(routineCommands_, routineCommands_, Command::STATUS_ALL);
+#ifdef ENABLE_COMMONAD_DELTA_DEBUG
+    auto difference = now.difference(aria2::Timer());
+    if (difference > A2_LOOP_DELTA_MILLIS) {
+      A2_LOG_NOTICE(fmt("executeCommand difference: %fms",
+      ((double)now.difference(aria2::Timer()).count()) / 1000000.0));
+    }
+#endif
     afterEachIteration();
     if (!noWait_ && oneshot) {
       return 1;

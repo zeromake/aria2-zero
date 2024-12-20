@@ -50,6 +50,7 @@ class DHTConnection;
 class UDPTrackerClient;
 
 class DHTInteractionCommand : public Command {
+  COMMAND_CLASSNAME(DHTInteractionCommand)
 private:
   DownloadEngine* e_;
   DHTMessageDispatcher* dispatcher_;

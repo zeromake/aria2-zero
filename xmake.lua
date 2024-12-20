@@ -22,7 +22,7 @@ option_end()
 local ssl_external = get_config("ssl_external") or is_plat("linux", "android")
 
 includes("package.lua")
-set_languages("c++14")
+set_languages("c++17")
 set_encodings("utf-8")
 set_rundir(".")
 add_defines("CXX11_OVERRIDE=override")
@@ -138,6 +138,7 @@ set_configvar("HAVE_GZSETPARAMS", 1)
 set_configvar("ENABLE_WEBSOCKET", 1)
 set_configvar("ENABLE_ASYNC_DNS", 1)
 set_configvar("USE_INTERNAL_MD", 1)
+-- set_configvar("ENABLE_COMMONAD_DELTA_DEBUG", 1)
 
 if is_plat("windows", "mingw") then
     add_defines("_POSIX_C_SOURCE=1")

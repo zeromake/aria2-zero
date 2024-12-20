@@ -46,6 +46,7 @@ class SocketCore;
 class HttpConnection;
 
 class FtpNegotiationCommand : public AbstractCommand {
+  COMMAND_CLASSNAME(FtpNegotiationCommand)
 public:
   enum Seq {
     SEQ_RECV_GREETING,

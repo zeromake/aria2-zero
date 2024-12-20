@@ -47,6 +47,7 @@ class DownloadEngine;
 class SocketCore;
 
 class PeerListenCommand : public Command {
+  COMMAND_CLASSNAME(PeerListenCommand)
 private:
   DownloadEngine* e_;
   int family_;

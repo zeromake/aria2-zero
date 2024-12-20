@@ -50,6 +50,7 @@ class SocketCore;
 class HttpServer;
 
 class HttpServerBodyCommand : public Command {
+  COMMAND_CLASSNAME(HttpServerBodyCommand)
 private:
   DownloadEngine* e_;
   std::shared_ptr<SocketCore> socket_;

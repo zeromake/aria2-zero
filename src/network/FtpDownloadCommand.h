@@ -42,6 +42,7 @@ namespace aria2 {
 class FtpConnection;
 
 class FtpDownloadCommand : public DownloadCommand {
+  COMMAND_CLASSNAME(FtpDownloadCommand)
 private:
   std::shared_ptr<FtpConnection> ftpConnection_;
 

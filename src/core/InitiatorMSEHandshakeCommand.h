@@ -47,6 +47,7 @@ class MSEHandshake;
 class Option;
 
 class InitiatorMSEHandshakeCommand : public PeerAbstractCommand {
+  COMMAND_CLASSNAME(InitiatorMSEHandshakeCommand)
 public:
   enum Seq {
     INITIATOR_SEND_KEY,

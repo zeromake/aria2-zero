@@ -44,6 +44,7 @@ class HttpResponse;
 class StreamFilter;
 
 class HttpSkipResponseCommand : public AbstractCommand {
+  COMMAND_CLASSNAME(HttpSkipResponseCommand)
 private:
   // hole from AbstractCommand (5 bytes on x86_64)
 

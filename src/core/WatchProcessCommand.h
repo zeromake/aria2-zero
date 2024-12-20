@@ -42,6 +42,7 @@ namespace aria2 {
 class DownloadEngine;
 
 class WatchProcessCommand : public TimeBasedCommand {
+  COMMAND_CLASSNAME(WatchProcessCommand)
 public:
   WatchProcessCommand(cuid_t cuid, DownloadEngine* e, unsigned int pid,
                       bool forceHalt = false);

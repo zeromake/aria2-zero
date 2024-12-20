@@ -272,11 +272,7 @@ ConsoleStatCalc::ConsoleStatCalc(std::chrono::seconds summaryInterval,
     : summaryInterval_(std::move(summaryInterval)),
       readoutVisibility_(true),
       truncate_(true),
-#ifdef _WIN32
-      isTTY_(true),
-#else  // !_WIN32
-      isTTY_(isatty(STDOUT_FILENO) == 1),
-#endif // !_WIN32
+      isTTY_(a2isatty(STDOUT_FILENO) != 0),
       colorOutput_(colorOutput)
 {
   if (humanReadable) {

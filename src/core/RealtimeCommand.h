@@ -44,6 +44,7 @@ class DownloadEngine;
 class Exception;
 
 class RealtimeCommand : public Command {
+  COMMAND_CLASSNAME(RealtimeCommand)
 private:
   RequestGroup* requestGroup_;
   DownloadEngine* e_;

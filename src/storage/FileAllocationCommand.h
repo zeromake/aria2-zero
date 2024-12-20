@@ -46,6 +46,7 @@ namespace aria2 {
 class FileAllocationEntry;
 
 class FileAllocationCommand : public RealtimeCommand {
+  COMMAND_CLASSNAME(FileAllocationCommand)
 private:
   FileAllocationEntry* fileAllocationEntry_;
   Timer timer_;

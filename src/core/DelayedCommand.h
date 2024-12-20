@@ -41,6 +41,7 @@
 namespace aria2 {
 
 class DelayedCommand : public TimeBasedCommand {
+  COMMAND_CLASSNAME(DelayedCommand)
 private:
   std::unique_ptr<Command> command_;
   bool noWait_;

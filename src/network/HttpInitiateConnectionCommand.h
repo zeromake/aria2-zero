@@ -67,6 +67,7 @@ namespace aria2 {
 // resolution is in progress. After address resolution completed,
 // calling execute() returns true.
 class HttpInitiateConnectionCommand : public InitiateConnectionCommand {
+  COMMAND_CLASSNAME(HttpInitiateConnectionCommand)
 protected:
   virtual std::unique_ptr<Command> createNextCommand(
       const std::string& hostname, const std::string& addr, uint16_t port,

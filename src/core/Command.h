@@ -36,6 +36,15 @@
 #define D_COMMAND_H
 
 #include "common.h"
+#include <string>
+
+#ifdef ENABLE_COMMONAD_DELTA_DEBUG
+#define COMMAND_CLASSNAME(name) \
+  public: \
+  const std::string classname() const override { return #name; }
+#else
+#define COMMAND_CLASSNAME(name)
+#endif
 
 namespace aria2 {
 
@@ -81,6 +90,10 @@ public:
   virtual ~Command() = default;
 
   virtual bool execute() = 0;
+
+#ifdef ENABLE_COMMONAD_DELTA_DEBUG
+  virtual const std::string classname() const = 0;
+#endif
 
   cuid_t getCuid() const { return cuid_; }
 

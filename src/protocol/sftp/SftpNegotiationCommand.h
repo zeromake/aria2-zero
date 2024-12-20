@@ -43,6 +43,7 @@ class SocketCore;
 class AuthConfig;
 
 class SftpNegotiationCommand : public AbstractCommand {
+  COMMAND_CLASSNAME(SftpNegotiationCommand)
 public:
   enum Seq {
     SEQ_HANDSHAKE,

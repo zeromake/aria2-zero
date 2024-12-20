@@ -58,6 +58,7 @@ class Checksum;
 // returns true. Handling errors such as 404 or redirect is handled in
 // HttpSkipResponseCommand.
 class HttpResponseCommand : public AbstractCommand {
+  COMMAND_CLASSNAME(HttpResponseCommand)
 private:
   std::shared_ptr<HttpConnection> httpConnection_;
 

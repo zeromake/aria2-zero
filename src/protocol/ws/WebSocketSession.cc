@@ -261,6 +261,7 @@ int WebSocketSession::onWriteEvent()
 
 namespace {
 class TextMessageCommand : public Command {
+  COMMAND_CLASSNAME(TextMessageCommand)
 private:
   std::shared_ptr<WebSocketSession> session_;
   const std::string msg_;

@@ -46,6 +46,7 @@ class BtRuntime;
 class PeerStorage;
 
 class PeerChokeCommand : public Command {
+  COMMAND_CLASSNAME(PeerChokeCommand)
 private:
   DownloadEngine* e_;
 

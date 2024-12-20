@@ -55,6 +55,7 @@ class AsyncNameResolverMan;
 #endif // ENABLE_ASYNC_DNS
 
 class DHTEntryPointNameResolveCommand : public Command {
+  COMMAND_CLASSNAME(DHTEntryPointNameResolveCommand)
 private:
   DownloadEngine* e_;
 

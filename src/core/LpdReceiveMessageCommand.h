@@ -46,6 +46,7 @@ class DownloadEngine;
 class SocketCore;
 
 class LpdReceiveMessageCommand : public Command {
+  COMMAND_CLASSNAME(LpdReceiveMessageCommand)
 private:
   std::shared_ptr<LpdMessageReceiver> receiver_;
   DownloadEngine* e_;

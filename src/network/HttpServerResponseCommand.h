@@ -40,6 +40,7 @@
 namespace aria2 {
 
 class HttpServerResponseCommand : public AbstractHttpServerResponseCommand {
+  COMMAND_CLASSNAME(HttpServerResponseCommand)
 protected:
   virtual void afterSend(const std::shared_ptr<HttpServer>& httpServer,
                          DownloadEngine* e) CXX11_OVERRIDE;

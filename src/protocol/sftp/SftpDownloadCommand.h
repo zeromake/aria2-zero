@@ -42,6 +42,7 @@ namespace aria2 {
 class AuthConfig;
 
 class SftpDownloadCommand : public DownloadCommand {
+  COMMAND_CLASSNAME(SftpDownloadCommand)
 private:
   std::unique_ptr<AuthConfig> authConfig_;
 

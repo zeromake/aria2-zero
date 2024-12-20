@@ -44,6 +44,7 @@ class CheckIntegrityEntry;
 
 class CheckIntegrityDispatcherCommand
     : public SequentialDispatcherCommand<CheckIntegrityEntry> {
+  COMMAND_CLASSNAME(CheckIntegrityDispatcherCommand)
 public:
   CheckIntegrityDispatcherCommand(cuid_t cuid, CheckIntegrityMan* checkMan,
                                   DownloadEngine* e);

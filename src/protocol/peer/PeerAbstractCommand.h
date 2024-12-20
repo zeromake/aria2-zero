@@ -49,6 +49,7 @@ class Peer;
 class SocketCore;
 
 class PeerAbstractCommand : public Command {
+  COMMAND_CLASSNAME(PeerAbstractCommand)
 private:
   Timer checkPoint_;
   std::chrono::seconds timeout_;

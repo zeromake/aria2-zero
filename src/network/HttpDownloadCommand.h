@@ -43,6 +43,7 @@ class HttpResponse;
 class HttpConnection;
 
 class HttpDownloadCommand : public DownloadCommand {
+  COMMAND_CLASSNAME(HttpDownloadCommand)
 private:
   std::unique_ptr<HttpResponse> httpResponse_;
   std::shared_ptr<HttpConnection> httpConnection_;

@@ -51,6 +51,7 @@ class AsyncNameResolverMan;
 struct UDPTrackerRequest;
 
 class NameResolveCommand : public Command {
+  COMMAND_CLASSNAME(NameResolveCommand)
 private:
   DownloadEngine* e_;
 

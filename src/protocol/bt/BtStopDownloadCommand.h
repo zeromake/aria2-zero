@@ -48,6 +48,7 @@ class BtRuntime;
 // Stop downloading torrent if in consecutive timeout_ seconds,
 // download speed is zero and the number of seeder is 0.
 class BtStopDownloadCommand : public TimeBasedCommand {
+  COMMAND_CLASSNAME(BtStopDownloadCommand)
 private:
   RequestGroup* requestGroup_;
 
