@@ -75,7 +75,6 @@
 #endif // ENABLE_WEBSOCKET
 #include "Option.h"
 #include "util_security.h"
-#include "nameof.hpp"
 
 namespace aria2 {
 
