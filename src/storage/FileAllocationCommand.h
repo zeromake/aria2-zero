@@ -37,6 +37,7 @@
 
 #include "RealtimeCommand.h"
 
+#include <vector>
 #include <memory>
 #include <future>
 #include <tuple>
