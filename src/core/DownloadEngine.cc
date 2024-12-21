@@ -107,7 +107,8 @@ DownloadEngine::DownloadEngine(std::unique_ptr<EventPoll> eventPoll)
       btRegistry_(aria2::make_unique<BtRegistry>()),
 #endif // ENABLE_BITTORRENT
       dnsCache_(aria2::make_unique<DNSCache>()),
-      option_(nullptr)
+      option_(nullptr),
+      threadPool_(aria2::make_unique<ThreadPool>(4))
 {
   unsigned char sessionId[20];
   util::generateRandomKey(sessionId);

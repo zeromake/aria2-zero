@@ -50,6 +50,7 @@
 #include "FileAllocationMan.h"
 #include "CheckIntegrityMan.h"
 #include "DNSCache.h"
+#include "ThreadPool.h"
 #ifdef ENABLE_ASYNC_DNS
 #  include "AsyncNameResolver.h"
 #endif // ENABLE_ASYNC_DNS
@@ -168,6 +169,7 @@ private:
   std::deque<std::unique_ptr<Command>> routineCommands_;
   std::deque<std::unique_ptr<Command>> commands_;
   std::deque<std::unique_ptr<Command>> priorityCommands_;
+  std::unique_ptr<ThreadPool> threadPool_;
 
   std::unique_ptr<util::security::HMAC> tokenHMAC_;
   std::unique_ptr<util::security::HMACResult> tokenExpected_;
@@ -335,6 +337,7 @@ public:
 #endif // ENABLE_WEBSOCKET
 
   bool validateToken(const std::string& token);
+  std::unique_ptr<ThreadPool>& getThreadPool() { return threadPool_; }
 };
 
 } // namespace aria2

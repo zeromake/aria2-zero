@@ -55,7 +55,7 @@ TimeBasedAsyncCommand::~TimeBasedAsyncCommand() = default;
 bool TimeBasedAsyncCommand::execute() {
   bool result = false;
   if (future_ == nullptr) {
-    auto f = std::async(std::launch::async, &TimeBasedAsyncCommand::executeInternal, this);
+    auto f = e_->getThreadPool()->enqueue(&TimeBasedAsyncCommand::executeInternal, this);
     future_ = aria2::make_unique<std::future<bool>>(std::move(f));
   }
   if (future_->wait_for(100_ns) == std::future_status::ready) {

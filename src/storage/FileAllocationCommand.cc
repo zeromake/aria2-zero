@@ -68,7 +68,7 @@ FileAllocationCommand::~FileAllocationCommand()
 bool FileAllocationCommand::executeInternal() {
   bool result = false;
   if (future_ == nullptr) {
-    auto f = std::async(std::launch::async, &FileAllocationCommand::executeInternalImpl, this);
+    auto f = getDownloadEngine()->getThreadPool()->enqueue(&FileAllocationCommand::executeInternalImpl, this);
     future_ = aria2::make_unique<std::future<FileAllocationCommand::ExecuteResult>>(std::move(f));
   }
   if (future_->wait_for(100_ns) == std::future_status::ready) {
