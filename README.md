@@ -19,7 +19,7 @@ You must use this program at your own risk.
 - 支持默认跳过 bt 种子里的 `_____padding_file_` 文件，不会创建，也不会写入磁盘（但是依旧会下载，这个 bt 里是用来填充另一个文件的，不能不下载）
 - 应用了 [#2209](https://github.com/aria2/aria2/pull/2209) 补丁，未认证时没有正确回收 socket
 - 把两个明显的执行时间过长的命令使用 `ThreadPool` 改为异步执行：`AutoSaveCommand`, `FileAllocationCommand` （不能保证改修改正确，线程里的调用确实在访问 `DownloadEngine` 的数据）[#2059](https://github.com/aria2/aria2/issues/2059), [#2134](https://github.com/aria2/aria2/issues/2134)
-- 下载列表文件支持 utf8 的 bom `"\xEF\xBB\xBF"` 开头跳过
+- 下载列表文件支持 utf8 的 bom `"\xEF\xBB\xBF"` 开头跳过 [2021](https://github.com/aria2/aria2/issues/2021)
 
 ## ChangeLog
 
@@ -50,7 +50,7 @@ You must use this program at your own risk.
     + [ ] [下载 bt 选择了文件也会预创建没有选择的文件](https://github.com/aria2/aria2/issues/2032)
     + [ ] [看上去像是 url 太多或者是下载列表太大一次性分配的内存太多](https://github.com/aria2/aria2/issues/2025)
     + [ ] [sftp 支持端口设置](https://github.com/aria2/aria2/issues/2022)
-    + [ ] [兼容文件列表读取支持 UTF-8 BOM](https://github.com/aria2/aria2/issues/2021)
+    + [x] [兼容文件列表读取支持 UTF-8 BOM](https://github.com/aria2/aria2/issues/2021)
     + [ ] [支持自定义 http range 分片大小](https://github.com/aria2/aria2/issues/2017)
     + [ ] [排布任务好像有问题](https://github.com/aria2/aria2/issues/2012)
     + [ ] [强制重新开始而不是继续](https://github.com/aria2/aria2/issues/2010)
