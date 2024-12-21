@@ -53,6 +53,8 @@ private:
 
   std::string line_;
 
+  bool skipBom_ = false;
+
 public:
   UriListParser(const std::string& filename);
 

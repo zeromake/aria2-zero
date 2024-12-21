@@ -26,6 +26,7 @@ class MetalinkProcessorTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(MetalinkProcessorTest);
   CPPUNIT_TEST(testParseFileV4);
+  CPPUNIT_TEST(testParseFileV4Bom);
   CPPUNIT_TEST(testParseFileV4_attrs);
   CPPUNIT_TEST(testParseFile);
   CPPUNIT_TEST(testParseFile_dirtraversal);
@@ -50,6 +51,7 @@ class MetalinkProcessorTest : public CppUnit::TestFixture {
 private:
 public:
   void testParseFileV4();
+  void testParseFileV4Bom();
   void testParseFileV4_attrs();
   void testParseFile();
   void testParseFile_dirtraversal();
@@ -76,6 +78,78 @@ CPPUNIT_TEST_SUITE_REGISTRATION(MetalinkProcessorTest);
 void MetalinkProcessorTest::testParseFileV4()
 {
   auto m = metalink::parseFile(A2_TEST_DIR "/metalink4.xml");
+  CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
+  auto& e = m->getEntries()[0];
+  CPPUNIT_ASSERT_EQUAL(std::string("example.ext"), e->getPath());
+  CPPUNIT_ASSERT_EQUAL((int64_t)786430LL, e->getLength());
+  CPPUNIT_ASSERT_EQUAL(-1, e->maxConnections);
+  CPPUNIT_ASSERT_EQUAL(std::string("0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33"),
+                       util::toHex(e->checksum->getDigest()));
+  CPPUNIT_ASSERT(e->checksum);
+  CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), e->checksum->getHashType());
+  CPPUNIT_ASSERT(e->chunkChecksum);
+  if (MessageDigest::supports("sha-256")) {
+    CPPUNIT_ASSERT_EQUAL(std::string("sha-256"),
+                         e->chunkChecksum->getHashType());
+    CPPUNIT_ASSERT_EQUAL(262144, e->chunkChecksum->getPieceLength());
+    CPPUNIT_ASSERT_EQUAL((size_t)3, e->chunkChecksum->countPieceHash());
+    CPPUNIT_ASSERT_EQUAL(
+        std::string(
+            "0245178074fd042e19b7c3885b360fc21064b30e73f5626c7e3b005d048069c5"),
+        util::toHex(e->chunkChecksum->getPieceHash(0)));
+    CPPUNIT_ASSERT_EQUAL(
+        std::string(
+            "487ba2299be7f759d7c7bf6a4ac3a32cee81f1bb9332fc485947e32918864fb2"),
+        util::toHex(e->chunkChecksum->getPieceHash(1)));
+    CPPUNIT_ASSERT_EQUAL(
+        std::string(
+            "37290d74ac4d186e3a8e5785d259d2ec04fac91ae28092e7620ec8bc99e830aa"),
+        util::toHex(e->chunkChecksum->getPieceHash(2)));
+  }
+  else {
+    CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), e->chunkChecksum->getHashType());
+    CPPUNIT_ASSERT_EQUAL(262144, e->chunkChecksum->getPieceLength());
+    CPPUNIT_ASSERT_EQUAL((size_t)3, e->chunkChecksum->countPieceHash());
+    CPPUNIT_ASSERT_EQUAL(
+        std::string("5bd9f7248df0f3a6a86ab6c95f48787d546efa14"),
+        util::toHex(e->chunkChecksum->getPieceHash(0)));
+    CPPUNIT_ASSERT_EQUAL(
+        std::string("9413ee70957a09d55704123687478e07f18c7b29"),
+        util::toHex(e->chunkChecksum->getPieceHash(1)));
+    CPPUNIT_ASSERT_EQUAL(
+        std::string("44213f9f4d59b557314fadcd233232eebcac8012"),
+        util::toHex(e->chunkChecksum->getPieceHash(2)));
+  }
+  CPPUNIT_ASSERT(e->getSignature());
+  CPPUNIT_ASSERT_EQUAL(std::string("application/pgp-signature"),
+                       e->getSignature()->getType());
+  CPPUNIT_ASSERT_EQUAL(std::string("a signature"),
+                       e->getSignature()->getBody());
+
+  CPPUNIT_ASSERT_EQUAL((size_t)2, e->resources.size());
+  auto& r = e->resources[0];
+  CPPUNIT_ASSERT_EQUAL(std::string("ftp://ftp.example.com/example.ext"),
+                       r->url);
+  CPPUNIT_ASSERT_EQUAL(std::string("de"), r->location);
+  CPPUNIT_ASSERT_EQUAL(1, r->priority);
+  CPPUNIT_ASSERT_EQUAL(std::string("ftp"),
+                       MetalinkResource::getTypeString(r->type));
+  CPPUNIT_ASSERT_EQUAL(-1, r->maxConnections);
+#ifdef ENABLE_BITTORRENT
+  CPPUNIT_ASSERT_EQUAL((size_t)1, e->metaurls.size());
+  auto& mu = e->metaurls[0];
+  CPPUNIT_ASSERT_EQUAL(std::string("http://example.com/example.ext.torrent"),
+                       mu->url);
+  CPPUNIT_ASSERT_EQUAL(2, mu->priority);
+  CPPUNIT_ASSERT_EQUAL(std::string("torrent"), mu->mediatype);
+#else  // !ENABLE_BITTORRENT
+  CPPUNIT_ASSERT_EQUAL((size_t)0, e->metaurls.size());
+#endif // !ENABLE_BITTORRENT
+}
+
+void MetalinkProcessorTest::testParseFileV4Bom()
+{
+  auto m = metalink::parseFile(A2_TEST_DIR "/metalink5.xml");
   CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
   auto& e = m->getEntries()[0];
   CPPUNIT_ASSERT_EQUAL(std::string("example.ext"), e->getPath());
