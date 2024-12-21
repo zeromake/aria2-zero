@@ -44,6 +44,7 @@ class DownloadEngine;
 // This object does nothing but it is added to DownloadEngine command
 // queue (not routine one), and keeps event polling work.
 class KeepRunningCommand : public Command {
+  COMMAND_CLASSNAME(KeepRunningCommand)
 public:
   KeepRunningCommand(cuid_t cuid, DownloadEngine* e);
   virtual ~KeepRunningCommand();

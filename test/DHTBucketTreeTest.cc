@@ -53,8 +53,8 @@ void DHTBucketTreeTest::testDig()
     CPPUNIT_ASSERT(!b.dig(localNode->getID()));
   }
   {
-    DHTBucketTreeNode b(make_unique<DHTBucketTreeNode>(bucket3),
-                        make_unique<DHTBucketTreeNode>(bucket1));
+    DHTBucketTreeNode b(aria2::make_unique<DHTBucketTreeNode>(bucket3),
+                        aria2::make_unique<DHTBucketTreeNode>(bucket1));
     CPPUNIT_ASSERT(b.dig(localNode->getID()) == b.getRight());
   }
 }
@@ -91,15 +91,15 @@ void DHTBucketTreeTest::testFindBucketFor()
     //          1010         1011
     //           |
     //    localNode is here
-    auto b1 = make_unique<DHTBucketTreeNode>(bucket1);
-    auto b2 = make_unique<DHTBucketTreeNode>(bucket2);
-    auto b3 = make_unique<DHTBucketTreeNode>(bucket3);
-    auto b4 = make_unique<DHTBucketTreeNode>(bucket4);
-    auto b5 = make_unique<DHTBucketTreeNode>(bucket5);
+    auto b1 = aria2::make_unique<DHTBucketTreeNode>(bucket1);
+    auto b2 = aria2::make_unique<DHTBucketTreeNode>(bucket2);
+    auto b3 = aria2::make_unique<DHTBucketTreeNode>(bucket3);
+    auto b4 = aria2::make_unique<DHTBucketTreeNode>(bucket4);
+    auto b5 = aria2::make_unique<DHTBucketTreeNode>(bucket5);
 
-    auto bp1 = make_unique<DHTBucketTreeNode>(std::move(b5), std::move(b3));
-    auto bp2 = make_unique<DHTBucketTreeNode>(std::move(b4), std::move(bp1));
-    auto bp3 = make_unique<DHTBucketTreeNode>(std::move(bp2), std::move(b1));
+    auto bp1 = aria2::make_unique<DHTBucketTreeNode>(std::move(b5), std::move(b3));
+    auto bp2 = aria2::make_unique<DHTBucketTreeNode>(std::move(b4), std::move(bp1));
+    auto bp3 = aria2::make_unique<DHTBucketTreeNode>(std::move(bp2), std::move(b1));
     DHTBucketTreeNode bp4(std::move(b2), std::move(bp3));
 
     CPPUNIT_ASSERT(*bucket5 == *dht::findBucketFor(&bp4, localNode->getID()));
@@ -121,15 +121,15 @@ void DHTBucketTreeTest::testFindClosestKNodes()
 
   unsigned char id[DHT_ID_LENGTH];
   {
-    auto b1 = make_unique<DHTBucketTreeNode>(bucket1);
-    auto b2 = make_unique<DHTBucketTreeNode>(bucket2);
-    auto b3 = make_unique<DHTBucketTreeNode>(bucket3);
-    auto b4 = make_unique<DHTBucketTreeNode>(bucket4);
-    auto b5 = make_unique<DHTBucketTreeNode>(bucket5);
+    auto b1 = aria2::make_unique<DHTBucketTreeNode>(bucket1);
+    auto b2 = aria2::make_unique<DHTBucketTreeNode>(bucket2);
+    auto b3 = aria2::make_unique<DHTBucketTreeNode>(bucket3);
+    auto b4 = aria2::make_unique<DHTBucketTreeNode>(bucket4);
+    auto b5 = aria2::make_unique<DHTBucketTreeNode>(bucket5);
 
-    auto bp1 = make_unique<DHTBucketTreeNode>(std::move(b5), std::move(b3));
-    auto bp2 = make_unique<DHTBucketTreeNode>(std::move(b4), std::move(bp1));
-    auto bp3 = make_unique<DHTBucketTreeNode>(std::move(bp2), std::move(b1));
+    auto bp1 = aria2::make_unique<DHTBucketTreeNode>(std::move(b5), std::move(b3));
+    auto bp2 = aria2::make_unique<DHTBucketTreeNode>(std::move(b4), std::move(bp1));
+    auto bp3 = aria2::make_unique<DHTBucketTreeNode>(std::move(bp2), std::move(b1));
     DHTBucketTreeNode bp4(std::move(b2), std::move(bp3));
 
     for (size_t i = 0; i < 2; ++i) {
@@ -212,15 +212,15 @@ void DHTBucketTreeTest::testEnumerateBucket()
     CPPUNIT_ASSERT(*bucket1 == *buckets[0]);
   }
   {
-    auto b1 = make_unique<DHTBucketTreeNode>(bucket1);
-    auto b2 = make_unique<DHTBucketTreeNode>(bucket2);
-    auto b3 = make_unique<DHTBucketTreeNode>(bucket3);
-    auto b4 = make_unique<DHTBucketTreeNode>(bucket4);
-    auto b5 = make_unique<DHTBucketTreeNode>(bucket5);
+    auto b1 = aria2::make_unique<DHTBucketTreeNode>(bucket1);
+    auto b2 = aria2::make_unique<DHTBucketTreeNode>(bucket2);
+    auto b3 = aria2::make_unique<DHTBucketTreeNode>(bucket3);
+    auto b4 = aria2::make_unique<DHTBucketTreeNode>(bucket4);
+    auto b5 = aria2::make_unique<DHTBucketTreeNode>(bucket5);
 
-    auto bp1 = make_unique<DHTBucketTreeNode>(std::move(b5), std::move(b3));
-    auto bp2 = make_unique<DHTBucketTreeNode>(std::move(b4), std::move(bp1));
-    auto bp3 = make_unique<DHTBucketTreeNode>(std::move(bp2), std::move(b1));
+    auto bp1 = aria2::make_unique<DHTBucketTreeNode>(std::move(b5), std::move(b3));
+    auto bp2 = aria2::make_unique<DHTBucketTreeNode>(std::move(b4), std::move(bp1));
+    auto bp3 = aria2::make_unique<DHTBucketTreeNode>(std::move(bp2), std::move(b1));
     DHTBucketTreeNode bp4(std::move(b2), std::move(bp3));
 
     std::vector<std::shared_ptr<DHTBucket>> buckets;

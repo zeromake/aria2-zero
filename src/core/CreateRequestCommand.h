@@ -46,6 +46,7 @@ namespace aria2 {
 // creates Command based on the protocol of selected URI.  If there is
 // no URI available, then throws exceptions.
 class CreateRequestCommand : public AbstractCommand {
+  COMMAND_CLASSNAME(CreateRequestCommand)
 public:
   CreateRequestCommand(cuid_t cuid, RequestGroup* requestGroup,
                        DownloadEngine* e);

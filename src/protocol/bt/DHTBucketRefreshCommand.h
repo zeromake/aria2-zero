@@ -46,6 +46,7 @@ class DHTTaskQueue;
 class DHTTaskFactory;
 
 class DHTBucketRefreshCommand : public TimeBasedCommand {
+  COMMAND_CLASSNAME(DHTBucketRefreshCommand)
 private:
   DHTRoutingTable* routingTable_;
 

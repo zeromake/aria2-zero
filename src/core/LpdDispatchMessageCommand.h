@@ -46,6 +46,7 @@ class DownloadEngine;
 class BtRuntime;
 
 class LpdDispatchMessageCommand : public Command {
+  COMMAND_CLASSNAME(LpdDispatchMessageCommand)
 private:
   std::shared_ptr<LpdMessageDispatcher> dispatcher_;
   DownloadEngine* e_;

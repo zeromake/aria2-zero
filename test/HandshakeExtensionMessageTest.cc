@@ -96,7 +96,7 @@ void HandshakeExtensionMessageTest::testDoReceivedAction()
   RequestGroup rg(GroupId::create(), op);
   rg.setDownloadContext(dctx);
 
-  dctx->setAttribute(CTX_ATTR_BT, make_unique<TorrentAttribute>());
+  dctx->setAttribute(CTX_ATTR_BT, aria2::make_unique<TorrentAttribute>());
   dctx->markTotalLengthIsUnknown();
 
   auto peer = std::make_shared<Peer>("192.168.0.1", 0);

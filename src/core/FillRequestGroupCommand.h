@@ -45,6 +45,7 @@ class RequestGroup;
 class DownloadEngine;
 
 class FillRequestGroupCommand : public Command {
+  COMMAND_CLASSNAME(FillRequestGroupCommand)
 private:
   DownloadEngine* e_;
   Timer lastExecTime;

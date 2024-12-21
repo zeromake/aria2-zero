@@ -44,6 +44,7 @@ namespace aria2 {
 class DHTTokenTracker;
 
 class DHTTokenUpdateCommand : public TimeBasedCommand {
+  COMMAND_CLASSNAME(DHTTokenUpdateCommand)
 private:
   DHTTokenTracker* tokenTracker_;
 

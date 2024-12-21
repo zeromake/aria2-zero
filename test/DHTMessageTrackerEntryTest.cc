@@ -36,9 +36,9 @@ void DHTMessageTrackerEntryTest::testMatch()
   auto localNode = std::make_shared<DHTNode>();
   try {
     auto node1 = std::make_shared<DHTNode>();
-    auto msg1 = make_unique<MockDHTMessage>(localNode, node1);
+    auto msg1 = aria2::make_unique<MockDHTMessage>(localNode, node1);
     auto node2 = std::make_shared<DHTNode>();
-    auto msg2 = make_unique<MockDHTMessage>(localNode, node2);
+    auto msg2 = aria2::make_unique<MockDHTMessage>(localNode, node2);
 
     DHTMessageTrackerEntry entry(msg1->getRemoteNode(),
                                  msg1->getTransactionID(),

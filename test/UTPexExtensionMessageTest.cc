@@ -37,7 +37,7 @@ private:
 public:
   void setUp()
   {
-    peerStorage_ = make_unique<MockPeerStorage>();
+    peerStorage_ = aria2::make_unique<MockPeerStorage>();
     global::wallclock().reset();
   }
 

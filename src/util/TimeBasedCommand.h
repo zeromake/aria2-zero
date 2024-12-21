@@ -43,6 +43,7 @@ namespace aria2 {
 class DownloadEngine;
 
 class TimeBasedCommand : public Command {
+  COMMAND_CLASSNAME(TimeBasedCommand)
 private:
   DownloadEngine* e_;
 

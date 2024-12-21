@@ -68,14 +68,14 @@ void UTMetadataDataExtensionMessageTest::testDoReceivedAction()
   auto diskAdaptor = std::make_shared<DirectDiskAdaptor>();
   ByteArrayDiskWriter* diskWriter;
   {
-    auto dw = make_unique<ByteArrayDiskWriter>();
+    auto dw = aria2::make_unique<ByteArrayDiskWriter>();
     diskWriter = dw.get();
     diskAdaptor->setDiskWriter(std::move(dw));
   }
-  auto pieceStorage = make_unique<MockPieceStorage>();
+  auto pieceStorage = aria2::make_unique<MockPieceStorage>();
   pieceStorage->setDiskAdaptor(diskAdaptor);
-  auto tracker = make_unique<UTMetadataRequestTracker>();
-  auto dctx = make_unique<DownloadContext>();
+  auto tracker = aria2::make_unique<UTMetadataRequestTracker>();
+  auto dctx = aria2::make_unique<DownloadContext>();
 
   std::string piece0 = std::string(METADATA_PIECE_SIZE, '0');
   std::string piece1 = std::string(METADATA_PIECE_SIZE, '1');
@@ -86,7 +86,7 @@ void UTMetadataDataExtensionMessageTest::testDoReceivedAction()
                          MessageDigest::sha1().get(), metadata.data(),
                          metadata.size());
   {
-    auto attrs = make_unique<TorrentAttribute>();
+    auto attrs = aria2::make_unique<TorrentAttribute>();
     attrs->infoHash = std::string(&infoHash[0], &infoHash[20]);
     dctx->setAttribute(CTX_ATTR_BT, std::move(attrs));
   }

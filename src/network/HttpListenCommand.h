@@ -45,6 +45,7 @@ class DownloadEngine;
 class SocketCore;
 
 class HttpListenCommand : public Command {
+  COMMAND_CLASSNAME(HttpListenCommand)
 private:
   DownloadEngine* e_;
   int family_;

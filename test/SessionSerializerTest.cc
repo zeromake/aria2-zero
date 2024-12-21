@@ -75,7 +75,7 @@ void SessionSerializerTest::testSave()
     rgman.addDownloadResult(drs[i]);
   }
 
-  DownloadEngine e(make_unique<SelectEventPoll>());
+  DownloadEngine e(aria2::make_unique<SelectEventPoll>());
   e.setOption(option.get());
   rgman.fillRequestGroupFromReserver(&e);
   CPPUNIT_ASSERT_EQUAL((size_t)1, rgman.getRequestGroups().size());

@@ -53,7 +53,7 @@ void UTMetadataPostDownloadHandlerTest::testCanHandle()
 
   CPPUNIT_ASSERT(!handler.canHandle(requestGroup_.get()));
 
-  dctx_->setAttribute(CTX_ATTR_BT, make_unique<TorrentAttribute>());
+  dctx_->setAttribute(CTX_ATTR_BT, aria2::make_unique<TorrentAttribute>());
 
   CPPUNIT_ASSERT(handler.canHandle(requestGroup_.get()));
 
@@ -85,7 +85,7 @@ void UTMetadataPostDownloadHandlerTest::testGetNextRequestGroups()
   announceTier.push_back("http://tracker");
   announceList.push_back(announceTier);
   {
-    auto attrs = make_unique<TorrentAttribute>();
+    auto attrs = aria2::make_unique<TorrentAttribute>();
     attrs->infoHash = std::string(&infoHash[0], &infoHash[20]);
     attrs->announceList = announceList;
     dctx_->setAttribute(CTX_ATTR_BT, std::move(attrs));

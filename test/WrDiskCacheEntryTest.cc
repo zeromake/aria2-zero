@@ -25,7 +25,7 @@ public:
   void setUp()
   {
     adaptor_ = std::make_shared<DirectDiskAdaptor>();
-    auto dw = make_unique<ByteArrayDiskWriter>();
+    auto dw = aria2::make_unique<ByteArrayDiskWriter>();
     writer_ = dw.get();
     adaptor_->setDiskWriter(std::move(dw));
   }

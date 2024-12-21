@@ -63,6 +63,7 @@ struct BackupConnectInfo {
 // Make backup connection to IPv4 address. This is a simplest RFC 6555
 // "Happy Eyeballs" implementation.
 class BackupIPv4ConnectCommand : public Command {
+  COMMAND_CLASSNAME(BackupIPv4ConnectCommand)
 public:
   BackupIPv4ConnectCommand(cuid_t cuid, const std::string& ipaddr,
                            uint16_t port,

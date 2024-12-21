@@ -97,11 +97,11 @@ void FileTest::testRemove()
   CPPUNIT_ASSERT(!f.remove());
 
   std::string dir = A2_TEST_OUT_DIR "/aria2_FileTest_testRemove_testdir";
-#ifdef __MINGW32__
-  mkdir(dir.c_str());
+#ifdef _WIN32
+  a2mkdir(utf8ToWChar(dir).c_str(), 0777);
 #else
-  mkdir(dir.c_str(), 0777);
-#endif // __MINGW32__
+  a2mkdir(dir.c_str(), 0777);
+#endif // _WIN32
   File d(dir);
   CPPUNIT_ASSERT(d.exists());
   CPPUNIT_ASSERT(d.remove());
@@ -183,12 +183,12 @@ void FileTest::testGetDirname()
     File f("");
     CPPUNIT_ASSERT_EQUAL(std::string(""), f.getDirname());
   }
-#ifdef __MINGW32__
+#ifdef _WIN32
   {
     File f("c:\\foo\\bar");
     CPPUNIT_ASSERT_EQUAL(std::string("c:\\foo"), f.getDirname());
   }
-#endif // __MINGW32__
+#endif // _WIN32
 }
 
 void FileTest::testGetBasename()
@@ -221,7 +221,7 @@ void FileTest::testGetBasename()
     File f("");
     CPPUNIT_ASSERT_EQUAL(std::string(""), f.getBasename());
   }
-#ifdef __MINGW32__
+#ifdef _WIN32
   {
     File f("c:\\foo\\bar");
     CPPUNIT_ASSERT_EQUAL(std::string("bar"), f.getBasename());
@@ -230,7 +230,7 @@ void FileTest::testGetBasename()
     File f("c:\\foo\\");
     CPPUNIT_ASSERT_EQUAL(std::string(""), f.getBasename());
   }
-#endif // __MINGW32__
+#endif // _WIN32
 }
 
 void FileTest::testRenameTo()

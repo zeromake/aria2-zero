@@ -31,7 +31,7 @@ std::unique_ptr<HttpServer> performHttpRequest(SocketCore& server,
 
   auto inbound = server.acceptConnection();
   inbound->setBlockingMode();
-  auto rv = make_unique<HttpServer>(inbound);
+  auto rv = aria2::make_unique<HttpServer>(inbound);
 
   client.writeData(request);
   while (!rv->receiveRequest()) {

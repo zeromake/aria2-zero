@@ -182,7 +182,7 @@ void BtDependencyTest::testResolve_metadata()
 
   auto diskAdaptor = std::make_shared<DirectDiskAdaptor>();
   {
-    auto diskWriter = make_unique<ByteArrayDiskWriter>();
+    auto diskWriter = aria2::make_unique<ByteArrayDiskWriter>();
     diskWriter->setString(
         "d4:name19:aria2-0.8.2.tar.bz26:lengthi384e12:piece lengthi128e"
         "6:pieces60:"
@@ -195,7 +195,7 @@ void BtDependencyTest::testResolve_metadata()
   pieceStorage->setDownloadFinished(true);
   dependee->setPieceStorage(pieceStorage);
   dependee->getDownloadContext()->setAttribute(CTX_ATTR_BT,
-                                               make_unique<TorrentAttribute>());
+                                               aria2::make_unique<TorrentAttribute>());
   BtDependency dep(dependant.get(), dependee);
   CPPUNIT_ASSERT(dep.resolve());
 

@@ -38,7 +38,7 @@ void DirectDiskAdaptorTest::testCutTrailingGarbage()
   createFile(entry->getPath(), entry->getLength() + 100);
   auto fileEntries = std::vector<std::shared_ptr<FileEntry>>{entry};
   DirectDiskAdaptor adaptor;
-  adaptor.setDiskWriter(make_unique<DefaultDiskWriter>(entry->getPath()));
+  adaptor.setDiskWriter(aria2::make_unique<DefaultDiskWriter>(entry->getPath()));
   adaptor.setTotalLength(entry->getLength());
   adaptor.setFileEntries(fileEntries.begin(), fileEntries.end());
   adaptor.openFile();
@@ -54,7 +54,7 @@ void DirectDiskAdaptorTest::testWriteCache()
   auto adaptor = std::make_shared<DirectDiskAdaptor>();
   ByteArrayDiskWriter* dw;
   {
-    auto sdw = make_unique<ByteArrayDiskWriter>();
+    auto sdw = aria2::make_unique<ByteArrayDiskWriter>();
     dw = sdw.get();
     adaptor->setDiskWriter(std::move(sdw));
   }

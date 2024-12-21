@@ -10,7 +10,7 @@ public:
   virtual std::unique_ptr<BtExtendedMessage> createBtExtendedMessage(
       std::unique_ptr<ExtensionMessage> extmsg) CXX11_OVERRIDE
   {
-    return make_unique<BtExtendedMessage>(std::move(extmsg));
+    return aria2::make_unique<BtExtendedMessage>(std::move(extmsg));
   }
 };
 

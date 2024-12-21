@@ -35,7 +35,7 @@ public:
     unsigned char infoHash[20];
     memset(infoHash, 0, sizeof(infoHash));
     {
-      auto torrentAttrs = make_unique<TorrentAttribute>();
+      auto torrentAttrs = aria2::make_unique<TorrentAttribute>();
       torrentAttrs->infoHash.assign(std::begin(infoHash), std::end(infoHash));
       dctx_->setAttribute(CTX_ATTR_BT, std::move(torrentAttrs));
     }

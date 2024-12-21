@@ -33,11 +33,14 @@ void ExceptionTest::testStackTrace()
   DownloadFailureException e =
       DOWNLOAD_FAILURE_EXCEPTION2("exception thrown", c2);
 
+  std::string expected = "Exception: [test/ExceptionTest.cc:34] errorCode=2 exception thrown\n"
+    "  -> [test/ExceptionTest.cc:32] errorCode=2 cause2\n"
+    "  -> [test/ExceptionTest.cc:31] errorCode=2 cause1\n";
+#ifdef _WIN32
+  expected = util::replace(expected, "[test/", "[test\\");
+#endif
   CPPUNIT_ASSERT_EQUAL(
-      std::string(
-          "Exception: [ExceptionTest.cc:34] errorCode=2 exception thrown\n"
-          "  -> [ExceptionTest.cc:32] errorCode=2 cause2\n"
-          "  -> [ExceptionTest.cc:31] errorCode=2 cause1\n"),
+      expected,
       util::replace(e.stackTrace(), std::string(A2_TEST_DIR) + "/", ""));
 }
 

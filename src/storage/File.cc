@@ -73,16 +73,16 @@ int File::fillStat(a2_struct_stat& fstat)
   return a2stat(utf8ToWChar(name_).c_str(), &fstat);
 }
 
-bool File::exists()
+int File::access(int mode)
 {
-  a2_struct_stat fstat;
-  return fillStat(fstat) == 0;
+  return ::a2access(utf8ToWChar(name_).c_str(), mode);
 }
+
+bool File::exists() { return this->access(0) == 0; }
 
 bool File::exists(std::string& err)
 {
-  a2_struct_stat fstat;
-  if (fillStat(fstat) != 0) {
+  if (this->access(0) != 0) {
     err = fmt("Could not get file status: %s", strerror(errno));
     return false;
   }
@@ -396,6 +396,15 @@ const char* File::getPathSeparators()
 #else  // !_WIN32
   return "/";
 #endif // !_WIN32
+}
+
+const char File::getPathSeparator()
+{
+#ifdef _WIN32
+  return '\\';
+#else  // !_WIN32
+  return '/';
+#endif // _WIN32
 }
 
 } // namespace aria2

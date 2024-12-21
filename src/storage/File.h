@@ -55,6 +55,7 @@ private:
    * Returns the return value of stat(...)
    */
   int fillStat(a2_struct_stat& fstat);
+  int access(int mode);
 
 public:
   File(const std::string& name);
@@ -126,6 +127,8 @@ public:
   static std::string getCurrentDir();
   // Returns possible path separators for the underlying platform.
   static const char* getPathSeparators();
+  // Returns the path separator for the underlying platform.
+  static const char getPathSeparator();
 };
 
 } // namespace aria2

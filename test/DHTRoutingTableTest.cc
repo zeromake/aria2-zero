@@ -37,9 +37,9 @@ void DHTRoutingTableTest::testAddNode()
 {
   auto localNode = std::make_shared<DHTNode>();
   DHTRoutingTable table(localNode);
-  auto taskFactory = make_unique<MockDHTTaskFactory>();
+  auto taskFactory = aria2::make_unique<MockDHTTaskFactory>();
   table.setTaskFactory(taskFactory.get());
-  auto taskQueue = make_unique<MockDHTTaskQueue>();
+  auto taskQueue = aria2::make_unique<MockDHTTaskQueue>();
   table.setTaskQueue(taskQueue.get());
   uint32_t count = 0;
   for (int i = 0; i < 100; ++i) {
@@ -54,9 +54,9 @@ void DHTRoutingTableTest::testAddNode_localNode()
 {
   auto localNode = std::make_shared<DHTNode>();
   DHTRoutingTable table(localNode);
-  auto taskFactory = make_unique<MockDHTTaskFactory>();
+  auto taskFactory = aria2::make_unique<MockDHTTaskFactory>();
   table.setTaskFactory(taskFactory.get());
-  auto taskQueue = make_unique<MockDHTTaskQueue>();
+  auto taskQueue = aria2::make_unique<MockDHTTaskQueue>();
   table.setTaskQueue(taskQueue.get());
 
   auto newNode = std::make_shared<DHTNode>(localNode->getID());

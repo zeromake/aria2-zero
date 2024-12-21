@@ -204,6 +204,11 @@ constexpr std::chrono::milliseconds operator"" _ms(unsigned long long ms)
   return std::chrono::milliseconds(ms);
 }
 
+constexpr std::chrono::nanoseconds operator"" _ns(unsigned long long ns)
+{
+  return std::chrono::nanoseconds(ns);
+}
+
 } // namespace aria2
 
 #endif // D_A2_FUNCTIONAL_H

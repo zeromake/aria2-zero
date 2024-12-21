@@ -57,18 +57,18 @@ public:
   void setUp()
   {
     localNode = std::make_shared<DHTNode>();
-    factory = make_unique<DHTMessageFactoryImpl>(AF_INET);
+    factory = aria2::make_unique<DHTMessageFactoryImpl>(AF_INET);
     factory->setLocalNode(localNode);
     memset(transactionID, 0xff, DHT_TRANSACTION_ID_LENGTH);
     memset(remoteNodeID, 0x0f, DHT_ID_LENGTH);
-    routingTable = make_unique<DHTRoutingTable>(localNode);
+    routingTable = aria2::make_unique<DHTRoutingTable>(localNode);
     factory->setRoutingTable(routingTable.get());
 
-    remoteNode_ = make_unique<DHTNode>(remoteNodeID);
+    remoteNode_ = aria2::make_unique<DHTNode>(remoteNodeID);
     remoteNode_->setIPAddress("192.168.0.1");
     remoteNode_->setPort(6881);
 
-    remoteNode6_ = make_unique<DHTNode>(remoteNodeID);
+    remoteNode6_ = aria2::make_unique<DHTNode>(remoteNodeID);
     remoteNode6_->setIPAddress("2001::2001");
     remoteNode6_->setPort(6881);
   }
@@ -198,7 +198,7 @@ void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage()
 
 void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage6()
 {
-  factory = make_unique<DHTMessageFactoryImpl>(AF_INET6);
+  factory = aria2::make_unique<DHTMessageFactoryImpl>(AF_INET6);
   factory->setLocalNode(localNode);
   factory->setRoutingTable(routingTable.get());
   try {
@@ -335,7 +335,7 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage()
 
 void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage6()
 {
-  factory = make_unique<DHTMessageFactoryImpl>(AF_INET6);
+  factory = aria2::make_unique<DHTMessageFactoryImpl>(AF_INET6);
   factory->setLocalNode(localNode);
   factory->setRoutingTable(routingTable.get());
   try {

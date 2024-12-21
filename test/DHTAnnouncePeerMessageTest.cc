@@ -41,7 +41,7 @@ public:
                                    const std::string& transactionID)
         CXX11_OVERRIDE
     {
-      return make_unique<DHTAnnouncePeerReplyMessage>(localNode_, remoteNode,
+      return aria2::make_unique<DHTAnnouncePeerReplyMessage>(localNode_, remoteNode,
                                                       transactionID);
     }
   };

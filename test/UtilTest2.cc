@@ -4,6 +4,7 @@
 #include <cstring>
 #include <string>
 #include <iostream>
+#include <vector>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -596,8 +597,8 @@ void UtilTest2::testJoinPath()
       std::string("dir/file"),
       util::joinPath(std::begin(dirdotfile), std::end(dirdotfile)));
 
-  const std::string empty[] = {};
-  CPPUNIT_ASSERT_EQUAL(std::string(""), util::joinPath(&empty[0], &empty[0]));
+  const std::string empty[] = {""};
+  CPPUNIT_ASSERT_EQUAL(std::string(""), util::joinPath(std::begin(empty), std::end(empty)));
 
   const std::string parentdot[] = {"..", "."};
   CPPUNIT_ASSERT_EQUAL(std::string(""), util::joinPath(std::begin(parentdot),
@@ -654,10 +655,11 @@ void UtilTest2::testGenerateRandomData()
 
   // Simple stddev/mean tests
   map<uint8_t, size_t> counts;
-  uint8_t bytes[1 << 20];
+  std::vector<uint8_t> bytes;
+  bytes.resize(1 << 20);
   for (auto i = 0; i < 10; ++i) {
-    util::generateRandomData(bytes, sizeof(bytes));
-    for (auto b : bytes) {
+    util::generateRandomData(bytes.data(), bytes.size());
+    for (auto &b : bytes) {
       counts[b]++;
     }
   }
@@ -789,11 +791,11 @@ void UtilTest2::testApplyDir()
 void UtilTest2::testFixTaintedBasename()
 {
   CPPUNIT_ASSERT_EQUAL(std::string("a%2Fb"), util::fixTaintedBasename("a/b"));
-#ifdef __MINGW32__
+#ifdef _WIN32
   CPPUNIT_ASSERT_EQUAL(std::string("a%5Cb"), util::fixTaintedBasename("a\\b"));
-#else  // !__MINGW32__
+#else  // !_WIN32
   CPPUNIT_ASSERT_EQUAL(std::string("a\\b"), util::fixTaintedBasename("a\\b"));
-#endif // !__MINGW32__
+#endif // _WIN32
 }
 
 void UtilTest2::testIsNumericHost()
@@ -827,11 +829,11 @@ void UtilTest2::testEscapePath()
                        util::escapePath(std::string("foo") + (char)0x00 +
                                         std::string("bar") + (char)0x00 +
                                         (char)0x01));
-#ifdef __MINGW32__
+#ifdef _WIN32
   CPPUNIT_ASSERT_EQUAL(std::string("foo%5Cbar"), util::escapePath("foo\\bar"));
-#else  // !__MINGW32__
+#else  // !_WIN32
   CPPUNIT_ASSERT_EQUAL(std::string("foo\\bar"), util::escapePath("foo\\bar"));
-#endif // !__MINGW32__
+#endif // _WIN32
 }
 
 void UtilTest2::testInSameCidrBlock()

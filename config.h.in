@@ -88,7 +88,13 @@ ${define HAVE_MMAP}
 ${define HAVE_GAI_STRERROR}
 ${define HAVE_STRCASECMP}
 ${define HAVE_STRNCASECMP}
+${define HAVE_FALLOCATE}
+${define HAVE_POSIX_FALLOCATE}
+${define HAVE_SOME_FALLOCATE}
 ${define HAVE_X509_GET_DEFAULT_CERT_FILE}
+${define A2_TEST_DIR}
+${define A2_TEST_SRC_DIR}
+${define A2_TEST_OUT_DIR}
 
 ${define HAVE_LIBUV}
 ${define HAVE_EPOLL}
@@ -103,6 +109,7 @@ ${define SECURITY_WIN32}
 ${define ENABLE_WEBSOCKET}
 ${define ENABLE_ASYNC_DNS}
 ${define ENABLE_TLS_CHECK_DEFAULT_CERT}
+${define ENABLE_COMMONAD_DELTA_DEBUG}
 
 ${define ENABLE_PTHREAD}
 
@@ -148,7 +155,7 @@ ${define HAVE_GZSETPARAMS}
 #endif
 
 #ifdef HAVE_WINDOWS_H
-#ifdef _MSC_VER 
+#ifdef _MSC_VER
 #define NOMINMAX
 #if (!defined(HAVE_SSIZE_T) && !defined(ssize_t))
 #define HAVE_SSIZE_T 1

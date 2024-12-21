@@ -51,7 +51,7 @@ public:
         std::vector<std::shared_ptr<Peer>> peers, const std::string& token,
         const std::string& transactionID) CXX11_OVERRIDE
     {
-      auto m = make_unique<DHTGetPeersReplyMessage>(
+      auto m = aria2::make_unique<DHTGetPeersReplyMessage>(
           AF_INET, localNode_, remoteNode, token, transactionID);
       m->setClosestKNodes(closestKNodes);
       m->setValues(peers);
@@ -124,7 +124,7 @@ void DHTGetPeersMessageTest::testDoReceivedAction()
   BtRegistry btReg;
   btReg.put(
       gid->getNumericId(),
-      make_unique<BtObject>(dctx, nullptr, nullptr, nullptr, nullptr, nullptr));
+      aria2::make_unique<BtObject>(dctx, nullptr, nullptr, nullptr, nullptr, nullptr));
   btReg.setTcpPort(6890);
 
   DHTGetPeersMessage msg(localNode_, remoteNode_, infoHash, transactionID);

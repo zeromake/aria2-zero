@@ -26,8 +26,8 @@ void SequentialPickerTest::testPick()
   CPPUNIT_ASSERT(!picker.hasNext());
   CPPUNIT_ASSERT_EQUAL((size_t)0, picker.countEntryInQueue());
 
-  picker.pushEntry(make_unique<int>(1));
-  picker.pushEntry(make_unique<int>(2));
+  picker.pushEntry(aria2::make_unique<int>(1));
+  picker.pushEntry(aria2::make_unique<int>(2));
 
   CPPUNIT_ASSERT(picker.hasNext());
   CPPUNIT_ASSERT_EQUAL((size_t)2, picker.countEntryInQueue());

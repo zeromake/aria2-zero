@@ -53,6 +53,7 @@ class BtRuntime;
 class PeerStorage;
 
 class DHTGetPeersCommand : public Command {
+  COMMAND_CLASSNAME(DHTGetPeersCommand)
 private:
   RequestGroup* requestGroup_;
 

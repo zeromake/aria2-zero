@@ -42,6 +42,7 @@ namespace aria2 {
 namespace rpc {
 
 class WebSocketResponseCommand : public AbstractHttpServerResponseCommand {
+  COMMAND_CLASSNAME(WebSocketResponseCommand)
 protected:
   virtual void afterSend(const std::shared_ptr<HttpServer>& httpServer,
                          DownloadEngine* e) CXX11_OVERRIDE;

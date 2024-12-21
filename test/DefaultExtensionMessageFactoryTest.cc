@@ -51,21 +51,21 @@ private:
 public:
   void setUp()
   {
-    peerStorage_ = make_unique<MockPeerStorage>();
+    peerStorage_ = aria2::make_unique<MockPeerStorage>();
 
     peer_ = std::make_shared<Peer>("192.168.0.1", 6969);
     peer_->allocateSessionResource(1_k, 1_m);
     peer_->setExtension(ExtensionMessageRegistry::UT_PEX, 1);
 
-    registry_ = make_unique<ExtensionMessageRegistry>();
-    dispatcher_ = make_unique<MockBtMessageDispatcher>();
-    messageFactory_ = make_unique<MockBtMessageFactory>();
+    registry_ = aria2::make_unique<ExtensionMessageRegistry>();
+    dispatcher_ = aria2::make_unique<MockBtMessageDispatcher>();
+    messageFactory_ = aria2::make_unique<MockBtMessageFactory>();
     dctx_ = std::make_shared<DownloadContext>();
     auto option = std::make_shared<Option>();
-    requestGroup_ = make_unique<RequestGroup>(GroupId::create(), option);
+    requestGroup_ = aria2::make_unique<RequestGroup>(GroupId::create(), option);
     requestGroup_->setDownloadContext(dctx_);
 
-    factory_ = make_unique<DefaultExtensionMessageFactory>();
+    factory_ = aria2::make_unique<DefaultExtensionMessageFactory>();
     factory_->setPeerStorage(peerStorage_.get());
     factory_->setPeer(peer_);
     factory_->setExtensionMessageRegistry(registry_.get());

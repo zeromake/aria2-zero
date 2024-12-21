@@ -53,7 +53,7 @@ std::unique_ptr<Cookie> createCookie(const std::string& name,
                                      const std::string& domain, bool hostOnly,
                                      const std::string& path, bool secure)
 {
-  return make_unique<Cookie>(name, value, 0, false, domain, hostOnly, path,
+  return aria2::make_unique<Cookie>(name, value, 0, false, domain, hostOnly, path,
                              secure, false, 0);
 }
 
@@ -63,7 +63,7 @@ std::unique_ptr<Cookie> createCookie(const std::string& name,
                                      const std::string& domain, bool hostOnly,
                                      const std::string& path, bool secure)
 {
-  return make_unique<Cookie>(name, value, expiryTime, true, domain, hostOnly,
+  return aria2::make_unique<Cookie>(name, value, expiryTime, true, domain, hostOnly,
                              path, secure, false, 0);
 }
 

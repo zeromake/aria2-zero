@@ -139,7 +139,8 @@ void DownloadContext::setFileFilter(SegList<int> sgl)
 
   if (!sgl.hasNext() || fileEntries_.size() == 1) {
     std::for_each(fileEntries_.begin(), fileEntries_.end(), [](auto& e) {
-      if (!e->isPaddingFile()) e->setRequested(true);
+      if (!e->isPaddingFile())
+        e->setRequested(true);
     });
     return;
   }

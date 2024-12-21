@@ -62,7 +62,7 @@ DHTEntryPointNameResolveCommand::DHTEntryPointNameResolveCommand(
     : Command{cuid},
       e_{e},
 #ifdef ENABLE_ASYNC_DNS
-      asyncNameResolverMan_{make_unique<AsyncNameResolverMan>()},
+      asyncNameResolverMan_{aria2::make_unique<AsyncNameResolverMan>()},
 #endif // ENABLE_ASYNC_DNS
       taskQueue_{nullptr},
       taskFactory_{nullptr},

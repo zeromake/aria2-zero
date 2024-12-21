@@ -356,7 +356,7 @@ void MultiDiskAdaptor::writeData(const unsigned char* data, size_t len,
         throwOnDiskWriterNotOpened((*i).get(), offset + (len - rem));
       }
       (*i)->getDiskWriter()->writeData(data + (len - rem), writeLength,
-                                      fileOffset);
+                                       fileOffset);
     }
     rem -= writeLength;
     fileOffset = 0;
@@ -400,7 +400,8 @@ ssize_t MultiDiskAdaptor::readData(unsigned char* data, size_t len,
       if (!skip) {
         nread = (*i)->getDiskWriter()->readData(data + (len - rem), readLength,
                                                 fileOffset);
-      } else {
+      }
+      else {
         // Skip padding reading fill is zero
         nread = readLength;
         memset(data + (len - rem), 0, readLength);

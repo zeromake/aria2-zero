@@ -59,7 +59,7 @@ public:
     createRequestMessage(const std::shared_ptr<Piece>& piece,
                          size_t blockIndex) CXX11_OVERRIDE
     {
-      return make_unique<BtRequestMessage>(piece->getIndex(), 0, 0, blockIndex);
+      return aria2::make_unique<BtRequestMessage>(piece->getIndex(), 0, 0, blockIndex);
     }
   };
 
@@ -85,11 +85,11 @@ public:
 
   void setUp()
   {
-    pieceStorage_ = make_unique<MockPieceStorage>();
+    pieceStorage_ = aria2::make_unique<MockPieceStorage>();
     peer_ = std::make_shared<Peer>("host", 6969);
-    messageFactory_ = make_unique<MockBtMessageFactory2>();
-    dispatcher_ = make_unique<MockBtMessageDispatcher>();
-    requestFactory_ = make_unique<DefaultBtRequestFactory>();
+    messageFactory_ = aria2::make_unique<MockBtMessageFactory2>();
+    dispatcher_ = aria2::make_unique<MockBtMessageDispatcher>();
+    requestFactory_ = aria2::make_unique<DefaultBtRequestFactory>();
     requestFactory_->setPieceStorage(pieceStorage_.get());
     requestFactory_->setPeer(peer_);
     requestFactory_->setBtMessageDispatcher(dispatcher_.get());
@@ -158,7 +158,7 @@ void DefaultBtRequestFactoryTest::testCreateRequestMessages()
 
 void DefaultBtRequestFactoryTest::testCreateRequestMessages_onEndGame()
 {
-  auto dispatcher = make_unique<MockBtMessageDispatcher2>();
+  auto dispatcher = aria2::make_unique<MockBtMessageDispatcher2>();
 
   requestFactory_->setBtMessageDispatcher(dispatcher.get());
 

@@ -107,7 +107,7 @@ void BtCancelMessageTest::testDoReceivedAction()
   msg.setBegin(32_k);
   msg.setLength(16_k);
   msg.setPeer(peer);
-  auto dispatcher = make_unique<MockBtMessageDispatcher2>();
+  auto dispatcher = aria2::make_unique<MockBtMessageDispatcher2>();
   msg.setBtMessageDispatcher(dispatcher.get());
 
   msg.doReceivedAction();

@@ -44,6 +44,7 @@ class FileAllocationEntry;
 
 class FileAllocationDispatcherCommand
     : public SequentialDispatcherCommand<FileAllocationEntry> {
+  COMMAND_CLASSNAME(FileAllocationDispatcherCommand)
 public:
   FileAllocationDispatcherCommand(cuid_t cuid, FileAllocationMan* fileAllocMan,
                                   DownloadEngine* e);

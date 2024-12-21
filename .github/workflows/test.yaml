@@ -1,0 +1,34 @@
+on:
+  push:
+    branches:
+      - master
+      - dev
+jobs:
+  test-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: xmake
+        uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
+      - name: test
+        run: xmake f -c -y --unit=y && xmake b test && xmake r test
+  test-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: xmake
+        uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
+      - name: test
+        run: xmake f -c -y --unit=y && xmake b test && xmake r test
+  test-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: xmake
+        run: brew install xmake && xmake --version
+      - name: test
+        run: xmake f -c -y --unit=y && xmake b test && xmake r test

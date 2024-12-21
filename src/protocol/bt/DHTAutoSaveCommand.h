@@ -45,6 +45,7 @@ class DHTRoutingTable;
 class DHTNode;
 
 class DHTAutoSaveCommand : public TimeBasedCommand {
+  COMMAND_CLASSNAME(DHTAutoSaveCommand)
 private:
   int family_;
 

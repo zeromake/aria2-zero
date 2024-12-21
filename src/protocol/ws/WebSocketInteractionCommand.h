@@ -49,6 +49,7 @@ namespace rpc {
 class WebSocketSession;
 
 class WebSocketInteractionCommand : public Command {
+  COMMAND_CLASSNAME(WebSocketInteractionCommand)
 private:
   DownloadEngine* e_;
   std::shared_ptr<SocketCore> socket_;

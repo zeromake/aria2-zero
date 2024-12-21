@@ -43,10 +43,10 @@ void AuthConfigFactoryTest::testCreateAuthConfig_http()
   CPPUNIT_ASSERT(!factory.createAuthConfig(req, &option));
 
   // with Netrc
-  auto netrc = make_unique<Netrc>();
-  netrc->addAuthenticator(make_unique<Authenticator>(
+  auto netrc = aria2::make_unique<Netrc>();
+  netrc->addAuthenticator(aria2::make_unique<Authenticator>(
       "localhost", "localhostuser", "localhostpass", "localhostacct"));
-  netrc->addAuthenticator(make_unique<DefaultAuthenticator>(
+  netrc->addAuthenticator(aria2::make_unique<DefaultAuthenticator>(
       "default", "defaultpassword", "defaultaccount"));
   factory.setNetrc(std::move(netrc));
 
@@ -97,10 +97,10 @@ void AuthConfigFactoryTest::testCreateAuthConfig_httpNoChallenge()
   CPPUNIT_ASSERT(!factory.createAuthConfig(req, &option));
 
   // with Netrc
-  auto netrc = make_unique<Netrc>();
-  netrc->addAuthenticator(make_unique<Authenticator>(
+  auto netrc = aria2::make_unique<Netrc>();
+  netrc->addAuthenticator(aria2::make_unique<Authenticator>(
       "localhost", "localhostuser", "localhostpass", "localhostacct"));
-  netrc->addAuthenticator(make_unique<DefaultAuthenticator>(
+  netrc->addAuthenticator(aria2::make_unique<DefaultAuthenticator>(
       "default", "defaultpassword", "defaultaccount"));
   factory.setNetrc(std::move(netrc));
 
@@ -142,8 +142,8 @@ void AuthConfigFactoryTest::testCreateAuthConfig_ftp()
                        factory.createAuthConfig(req, &option)->getAuthText());
 
   // with Netrc
-  auto netrc = make_unique<Netrc>();
-  netrc->addAuthenticator(make_unique<DefaultAuthenticator>(
+  auto netrc = aria2::make_unique<Netrc>();
+  netrc->addAuthenticator(aria2::make_unique<DefaultAuthenticator>(
       "default", "defaultpassword", "defaultaccount"));
   factory.setNetrc(std::move(netrc));
   CPPUNIT_ASSERT_EQUAL(std::string("default:defaultpassword"),
@@ -175,7 +175,7 @@ void AuthConfigFactoryTest::testCreateAuthConfig_ftp()
 
   // Recreate netrc with entry for user aria2user
   netrc.reset(new Netrc());
-  netrc->addAuthenticator(make_unique<Authenticator>("localhost", "aria2user",
+  netrc->addAuthenticator(aria2::make_unique<Authenticator>("localhost", "aria2user",
                                                      "netrcpass", "netrcacct"));
   factory.setNetrc(std::move(netrc));
   // This time, we can find same username "aria2user" in netrc, so the
@@ -194,7 +194,7 @@ createBasicCred(const std::string& user, const std::string& password,
                 const std::string& host, uint16_t port, const std::string& path,
                 bool activated = false)
 {
-  return make_unique<BasicCred>(user, password, host, port, path, activated);
+  return aria2::make_unique<BasicCred>(user, password, host, port, path, activated);
 }
 } // namespace
 
