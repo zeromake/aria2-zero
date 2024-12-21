@@ -65,10 +65,33 @@ FileAllocationCommand::~FileAllocationCommand()
   getDownloadEngine()->getFileAllocationMan()->dropPickedEntry();
 }
 
-bool FileAllocationCommand::executeInternal()
+bool FileAllocationCommand::executeInternal() {
+  bool result = false;
+  if (future_ == nullptr) {
+    auto f = std::async(std::launch::async, &FileAllocationCommand::executeInternalImpl, this);
+    future_ = aria2::make_unique<std::future<FileAllocationCommand::ExecuteResult>>(std::move(f));
+  }
+  if (future_->wait_for(100_ns) == std::future_status::ready) {
+    auto execResult = future_->get();
+    future_ = nullptr;
+    result = std::get<1>(execResult);
+    auto commands = std::move(std::get<0>(execResult));
+    if (result && commands != nullptr) {
+      getDownloadEngine()->addCommand(std::move(*commands));
+      commands.release();
+      getDownloadEngine()->setNoWait(true);
+    }
+  }
+  if (!result) {
+    getDownloadEngine()->addCommand(std::unique_ptr<Command>(this));
+  }
+  return result;
+}
+
+FileAllocationCommand::ExecuteResult FileAllocationCommand::executeInternalImpl()
 {
   if (getRequestGroup()->isHaltRequested()) {
-    return true;
+    return {nullptr, true};
   }
   fileAllocationEntry_->allocateChunk();
   if (fileAllocationEntry_->finished()) {
@@ -78,15 +101,12 @@ bool FileAllocationCommand::executeInternal()
                                   timer_.difference(global::wallclock()))
                                   .count()),
         getRequestGroup()->getTotalLength()));
-    std::vector<std::unique_ptr<Command>> commands;
-    fileAllocationEntry_->prepareForNextAction(commands, getDownloadEngine());
-    getDownloadEngine()->addCommand(std::move(commands));
-    getDownloadEngine()->setNoWait(true);
-    return true;
+    auto commands = aria2::make_unique<std::vector<std::unique_ptr<Command>>>();
+    fileAllocationEntry_->prepareForNextAction(*commands, getDownloadEngine());
+    return {std::move(commands), true};
   }
   else {
-    getDownloadEngine()->addCommand(std::unique_ptr<Command>(this));
-    return false;
+    return {nullptr, false};
   }
 }
 

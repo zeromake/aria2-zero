@@ -38,6 +38,8 @@
 #include "RealtimeCommand.h"
 
 #include <memory>
+#include <future>
+#include <tuple>
 
 #include "TimerA2.h"
 
@@ -47,10 +49,13 @@ class FileAllocationEntry;
 
 class FileAllocationCommand : public RealtimeCommand {
   COMMAND_CLASSNAME(FileAllocationCommand)
+  using ExecuteResult = std::tuple<std::unique_ptr<std::vector<std::unique_ptr<Command>>>, bool>;
 private:
   FileAllocationEntry* fileAllocationEntry_;
   Timer timer_;
+  std::unique_ptr<std::future<ExecuteResult>> future_ = nullptr;
 
+  ExecuteResult executeInternalImpl();
 public:
   FileAllocationCommand(cuid_t cuid, RequestGroup* requestGroup,
                         DownloadEngine* e,

@@ -32,31 +32,74 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "AutoSaveCommand.h"
-#include "DownloadEngine.h"
-#include "RequestGroupMan.h"
+#ifndef D_TIME_BASED_ASYNC_COMMAND_H
+#define D_TIME_BASED_ASYNC_COMMAND_H
+
+#include "Command.h"
+#include "TimerA2.h"
+#include <future>
 
 namespace aria2 {
 
-AutoSaveCommand::AutoSaveCommand(cuid_t cuid, DownloadEngine* e,
-                                 std::chrono::seconds interval)
-    : TimeBasedAsyncCommand(cuid, e, std::move(interval), true)
-{
-}
+class DownloadEngine;
 
-AutoSaveCommand::~AutoSaveCommand() = default;
+class TimeBasedAsyncCommand : public Command {
+  COMMAND_CLASSNAME(TimeBasedAsyncCommand)
+private:
+  DownloadEngine* e_;
 
-void AutoSaveCommand::preProcess()
-{
-  if (getDownloadEngine()->getRequestGroupMan()->downloadFinished() ||
-      getDownloadEngine()->isHaltRequested()) {
-    enableExit();
-  }
-}
+  Timer checkPoint_;
 
-void AutoSaveCommand::process()
-{
-  getDownloadEngine()->getRequestGroupMan()->save();
-}
+  std::chrono::seconds interval_;
+
+  /**
+   * setting exit_ to true if this command's job has finished and you want to
+   * delete this command.
+   * The exit_ variable is evaluated  after preProcess(), process(),
+   * postProcess(), and terminate processing immediately and execute() returns
+   * true.
+   */
+  bool exit_;
+
+  bool routineCommand_;
+
+  std::unique_ptr<std::future<bool>> future_ = nullptr;
+  bool executeInternal();
+
+protected:
+  DownloadEngine* getDownloadEngine() const { return e_; }
+
+  void enableExit() { exit_ = true; }
+
+  const std::chrono::seconds& getInterval() const { return interval_; }
+
+public:
+  /**
+   * preProcess() is called each time when execute() is called.
+   */
+  virtual void preProcess() {};
+
+  /**
+   * process() is called only when execute() is called and specified time has
+   * elapsed.
+   */
+  virtual void process() = 0;
+
+  /**
+   * postProcess() is called each time when execute() is called.
+   */
+  virtual void postProcess() {};
+
+public:
+  TimeBasedAsyncCommand(cuid_t cuid, DownloadEngine* e,
+                   std::chrono::seconds interval, bool routineCommand = false);
+
+  virtual ~TimeBasedAsyncCommand();
+
+
+  virtual bool execute() CXX11_OVERRIDE;
+};
 
 } // namespace aria2
+
+#endif // D_TIME_BASED_COMMAND_H

@@ -138,7 +138,7 @@ void executeCommand(std::deque<std::unique_ptr<Command>>& commands, Command::STA
       auto difference = now.difference(aria2::Timer());
       if (difference > A2_COMMONAD_DELTA_MILLIS) {
         A2_LOG_NOTICE(fmt("%s::execute done difference: %fms", com->classname().c_str(),
-        ((double)now.difference(aria2::Timer()).count()) / 1000000.0));
+        ((double)difference.count()) / 1000000.0));
       }
 #endif
       com.reset();
@@ -148,7 +148,7 @@ void executeCommand(std::deque<std::unique_ptr<Command>>& commands, Command::STA
       auto difference = now.difference(aria2::Timer());
       if (difference > A2_COMMONAD_DELTA_MILLIS) {
         A2_LOG_NOTICE(fmt("%s::execute release difference: %fms", com->classname().c_str(),
-        ((double)now.difference(aria2::Timer()).count()) / 1000000.0));
+        ((double)difference.count()) / 1000000.0));
       }
 #endif
       com->clearIOEvents();
@@ -177,9 +177,8 @@ private:
 int DownloadEngine::run(bool oneshot)
 {
   GlobalHaltRequestedFinalizer ghrf(oneshot);
-  while (!commands_.empty() || !routineCommands_.empty() ||
-         !priorityCommands_.empty()) {
-    if (!commands_.empty() || !priorityCommands_.empty()) {
+  while (!commands_.empty() || !routineCommands_.empty()) {
+    if (!commands_.empty()) {
       waitData();
     }
     noWait_ = false;
@@ -192,11 +191,9 @@ int DownloadEngine::run(bool oneshot)
         refreshInterval_) {
       refreshInterval_ = DEFAULT_REFRESH_INTERVAL;
       lastRefresh_ = global::wallclock();
-      executeCommand(priorityCommands_, Command::STATUS_ALL);
       executeCommand(commands_, Command::STATUS_ALL);
     }
     else {
-      executeCommand(priorityCommands_, Command::STATUS_ACTIVE);
       executeCommand(commands_, Command::STATUS_ACTIVE);
     }
     executeCommand(routineCommands_, Command::STATUS_ALL);
@@ -204,7 +201,7 @@ int DownloadEngine::run(bool oneshot)
     auto difference = now.difference(aria2::Timer());
     if (difference > A2_LOOP_DELTA_MILLIS) {
       A2_LOG_NOTICE(fmt("executeCommand difference: %fms",
-      ((double)now.difference(aria2::Timer()).count()) / 1000000.0));
+      ((double)difference.count()) / 1000000.0));
     }
 #endif
     afterEachIteration();
@@ -610,34 +607,34 @@ void DownloadEngine::setRefreshInterval(std::chrono::milliseconds interval)
 void DownloadEngine::addCommand(std::vector<std::unique_ptr<Command>> commands,
                                 Command::PRIORITY priority)
 {
-  for (auto& command : commands) {
-    if (command->getPriority() < priority)
-      command->setPriority(priority);
-  }
-  if (priority == Command::PRIORITY_HIGH) {
-    priorityCommands_.insert(priorityCommands_.end(),
-                             std::make_move_iterator(std::begin(commands)),
-                             std::make_move_iterator(std::end(commands)));
-  }
-  else {
+  // for (auto& command : commands) {
+  //   if (command->getPriority() < priority)
+  //     command->setPriority(priority);
+  // }
+  // if (priority == Command::PRIORITY_HIGH) {
+  //   priorityCommands_.insert(priorityCommands_.end(),
+  //                            std::make_move_iterator(std::begin(commands)),
+  //                            std::make_move_iterator(std::end(commands)));
+  // }
+  // else {
     commands_.insert(commands_.end(),
                      std::make_move_iterator(std::begin(commands)),
                      std::make_move_iterator(std::end(commands)));
-  }
+  // }
 }
 
 void DownloadEngine::addCommand(std::unique_ptr<Command> command,
                                 Command::PRIORITY priority)
 {
-  if (command->getPriority() < priority)
-    command->setPriority(priority);
-  if (command->getPriority() == Command::PRIORITY_HIGH) {
-    // A2_LOG_NOTICE(fmt("Add priority command: %s", command->classname().c_str()));
-    priorityCommands_.push_back(std::move(command));
-  }
-  else {
+  // if (command->getPriority() < priority)
+  //   command->setPriority(priority);
+  // if (command->getPriority() == Command::PRIORITY_HIGH) {
+  //   // A2_LOG_NOTICE(fmt("Add priority command: %s", command->classname().c_str()));
+  //   priorityCommands_.push_back(std::move(command));
+  // }
+  // else {
     commands_.push_back(std::move(command));
-  }
+  // }
 }
 
 void DownloadEngine::setRequestGroupMan(std::unique_ptr<RequestGroupMan> rgman)

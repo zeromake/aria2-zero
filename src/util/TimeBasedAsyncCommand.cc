@@ -32,31 +32,65 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "AutoSaveCommand.h"
+#include "TimeBasedAsyncCommand.h"
 #include "DownloadEngine.h"
-#include "RequestGroupMan.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
-AutoSaveCommand::AutoSaveCommand(cuid_t cuid, DownloadEngine* e,
-                                 std::chrono::seconds interval)
-    : TimeBasedAsyncCommand(cuid, e, std::move(interval), true)
+TimeBasedAsyncCommand::TimeBasedAsyncCommand(cuid_t cuid, DownloadEngine* e,
+                                   std::chrono::seconds interval,
+                                   bool routineCommand)
+    : Command(cuid),
+      e_(e),
+      checkPoint_(global::wallclock()),
+      interval_(std::move(interval)),
+      exit_(false),
+      routineCommand_(routineCommand)
 {
 }
 
-AutoSaveCommand::~AutoSaveCommand() = default;
+TimeBasedAsyncCommand::~TimeBasedAsyncCommand() = default;
 
-void AutoSaveCommand::preProcess()
-{
-  if (getDownloadEngine()->getRequestGroupMan()->downloadFinished() ||
-      getDownloadEngine()->isHaltRequested()) {
-    enableExit();
+bool TimeBasedAsyncCommand::execute() {
+  bool result = false;
+  if (future_ == nullptr) {
+    auto f = std::async(std::launch::async, &TimeBasedAsyncCommand::executeInternal, this);
+    future_ = aria2::make_unique<std::future<bool>>(std::move(f));
   }
+  if (future_->wait_for(100_ns) == std::future_status::ready) {
+    result = future_->get();
+    future_ = nullptr;
+  }
+  if (!result) {
+    if (routineCommand_) {
+      e_->addRoutineCommand(std::unique_ptr<Command>(this));
+    }
+    else {
+      e_->addCommand(std::unique_ptr<Command>(this));
+    }
+  }
+  return result;
 }
 
-void AutoSaveCommand::process()
+bool TimeBasedAsyncCommand::executeInternal()
 {
-  getDownloadEngine()->getRequestGroupMan()->save();
+  preProcess();
+  if (exit_) {
+    return true;
+  }
+  if (checkPoint_.difference(global::wallclock()) >= interval_) {
+    checkPoint_ = global::wallclock();
+    process();
+    if (exit_) {
+      return true;
+    }
+  }
+  postProcess();
+  if (exit_) {
+    return true;
+  }
+  return false;
 }
 
 } // namespace aria2
