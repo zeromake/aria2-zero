@@ -17,6 +17,7 @@ You must use this program at your own risk.
 - 支持新版的 Metalink v3 命名空间
 - 支持默认跳过 bt 种子里的 `_____padding_file_` 文件，不会创建，也不会写入磁盘（但是依旧会下载，这个 bt 里是用来填充另一个文件的，不能不下载）
 - 应用了 [#2209](https://github.com/aria2/aria2/pull/2209) 补丁，未认证时没有正确回收 socket
+- 把两个明显的执行时间过长的命令使用 `std::async` 改为异步执行：`AutoSaveCommand`, `FileAllocationCommand` （不能保证改修改正确，线程里的调用确实在访问 `DownloadEngine` 的数据）[#2059](https://github.com/aria2/aria2/issues/2059), [#2134](https://github.com/aria2/aria2/issues/2134)
 
 ## ChangeLog
 
