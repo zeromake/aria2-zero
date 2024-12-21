@@ -98,6 +98,13 @@ void UriListParser::parseNext(std::vector<std::string>& uris, Option& op)
       return;
     }
     line_ = fp_->getLine();
+    if (!skipBom_ && util::startsWith(line_, UTF8_BOM)) {
+      // Skip UTF-8 BOM
+      line_ = line_.substr(3);
+    }
+    if (!skipBom_) {
+      skipBom_ = true;
+    }
     if (line_.empty()) {
       if (fp_->eof()) {
         return;

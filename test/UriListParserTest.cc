@@ -18,6 +18,7 @@ class UriListParserTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(UriListParserTest);
   CPPUNIT_TEST(testHasNext);
+  CPPUNIT_TEST(testHasNextBom);
   CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -27,6 +28,7 @@ public:
   void setUp() {}
 
   void testHasNext();
+  void testHasNextBom();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(UriListParserTest);
@@ -42,6 +44,44 @@ std::string UriListParserTest::list2String(const std::vector<std::string>& src)
 void UriListParserTest::testHasNext()
 {
   std::string filename = A2_TEST_DIR "/filelist1.txt";
+
+  UriListParser flp(filename);
+
+  std::vector<std::string> uris;
+  Option reqOp;
+
+  CPPUNIT_ASSERT(flp.hasNext());
+
+  flp.parseNext(uris, reqOp);
+  CPPUNIT_ASSERT_EQUAL(
+      std::string("http://localhost/index.html http://localhost2/index.html"),
+      list2String(uris));
+
+  uris.clear();
+  reqOp.clear();
+
+  CPPUNIT_ASSERT(flp.hasNext());
+
+  flp.parseNext(uris, reqOp);
+  CPPUNIT_ASSERT_EQUAL(std::string("ftp://localhost/aria2.tar.bz2"),
+                       list2String(uris));
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), reqOp.get(PREF_DIR));
+  CPPUNIT_ASSERT_EQUAL(std::string("chunky_chocolate"), reqOp.get(PREF_OUT));
+
+  uris.clear();
+  reqOp.clear();
+
+  CPPUNIT_ASSERT(!flp.hasNext());
+
+  flp.parseNext(uris, reqOp);
+  CPPUNIT_ASSERT_EQUAL(std::string(""), list2String(uris));
+
+  CPPUNIT_ASSERT(!flp.hasNext());
+}
+
+void UriListParserTest::testHasNextBom()
+{
+  std::string filename = A2_TEST_DIR "/filelist3.txt";
 
   UriListParser flp(filename);
 

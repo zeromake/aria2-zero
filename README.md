@@ -1,5 +1,6 @@
 # aria2-zero - The ultra fast download utility
 
+> [origin repo](https://github.com/aria2/aria2)
 
 ## Disclaimer
 
@@ -17,7 +18,8 @@ You must use this program at your own risk.
 - 支持新版的 Metalink v3 命名空间
 - 支持默认跳过 bt 种子里的 `_____padding_file_` 文件，不会创建，也不会写入磁盘（但是依旧会下载，这个 bt 里是用来填充另一个文件的，不能不下载）
 - 应用了 [#2209](https://github.com/aria2/aria2/pull/2209) 补丁，未认证时没有正确回收 socket
-- 把两个明显的执行时间过长的命令使用 `std::async` 改为异步执行：`AutoSaveCommand`, `FileAllocationCommand` （不能保证改修改正确，线程里的调用确实在访问 `DownloadEngine` 的数据）[#2059](https://github.com/aria2/aria2/issues/2059), [#2134](https://github.com/aria2/aria2/issues/2134)
+- 把两个明显的执行时间过长的命令使用 `ThreadPool` 改为异步执行：`AutoSaveCommand`, `FileAllocationCommand` （不能保证改修改正确，线程里的调用确实在访问 `DownloadEngine` 的数据）[#2059](https://github.com/aria2/aria2/issues/2059), [#2134](https://github.com/aria2/aria2/issues/2134)
+- 下载列表文件支持 utf8 的 bom `"\xEF\xBB\xBF"` 开头跳过
 
 ## ChangeLog
 
@@ -55,7 +57,7 @@ You must use this program at your own risk.
     + [ ] [高精度超时](https://github.com/aria2/aria2/issues/2002)
     + [x] windows 下支持超过 255 字节的路径，额外支持超大路径 [1](https://github.com/aria2/aria2/issues/1997),[2](https://github.com/aria2/aria2/issues/1981),[3](https://github.com/aria2/aria2/issues/1070), [4](https://github.com/imfile-io/imfile-desktop/issues/56)
     + [ ] Range 拼接错误 [1](https://github.com/aria2/aria2/issues/1971), [2](https://github.com/aria2/aria2/issues/1344#issuecomment-1570701152), [3](https://github.com/aria2/aria2/pull/1587), [4]()
-    + [ ] [进度](https://github.com/aria2/aria2/issues?page=8&q=is%3Aissue+is%3Aopen),(#1971)[https://github.com/aria2/aria2/issues/1971]
+    + [ ] [进度](https://github.com/aria2/aria2/issues?page=8&q=is%3Aissue+is%3Aopen),[#1971](https://github.com/aria2/aria2/issues/1971)
 - [ ] 标记一些有报告，但是没有问题的 issues
     - [无法使用 ip 直连下载内网文件](https://github.com/aria2/aria2/issues/2049)
 - [ ] 检查其它 fork 是否有好的修改

@@ -42,6 +42,8 @@
 
 namespace aria2 {
 
+static const char UTF8_BOM[] = "\xEF\xBB\xBF";
+
 // This is a wrapper base class intended to provide
 // fopen/fclose/fread/fwrite/fgets functionality.
 class IOFile : public OutputFile {
