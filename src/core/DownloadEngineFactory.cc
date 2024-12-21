@@ -196,7 +196,7 @@ std::unique_ptr<DownloadEngine> DownloadEngineFactory::newDownloadEngine(
       auto httpListenCommand = aria2::make_unique<HttpListenCommand>(
           e->newCUID(), e.get(), families[i], secure);
       if (httpListenCommand->bindPort(op->getAsInt(PREF_RPC_LISTEN_PORT))) {
-        e->addCommand(std::move(httpListenCommand));
+        e->addCommand(std::move(httpListenCommand), Command::PRIORITY_HIGH);
         ok = true;
       }
     }

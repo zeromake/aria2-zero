@@ -100,6 +100,7 @@ private:
 };
 
 class TrackerWatcherCommand : public Command {
+  COMMAND_CLASSNAME(TrackerWatcherCommand)
 private:
   RequestGroup* requestGroup_;
 

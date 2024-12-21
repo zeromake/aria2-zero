@@ -44,6 +44,7 @@ class SocketCore;
 class Peer;
 
 class ReceiverMSEHandshakeCommand : public PeerAbstractCommand {
+  COMMAND_CLASSNAME(ReceiverMSEHandshakeCommand)
 public:
   enum Seq {
     RECEIVER_IDENTIFY_HANDSHAKE,

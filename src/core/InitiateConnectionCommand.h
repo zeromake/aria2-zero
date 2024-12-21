@@ -43,6 +43,7 @@ struct BackupConnectInfo;
 class ConnectCommand;
 
 class InitiateConnectionCommand : public AbstractCommand {
+  COMMAND_CLASSNAME(InitiateConnectionCommand)
 protected:
   /**
    * Connect to the server.

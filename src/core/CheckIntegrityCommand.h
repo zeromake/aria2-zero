@@ -44,6 +44,7 @@ namespace aria2 {
 class CheckIntegrityEntry;
 
 class CheckIntegrityCommand : public RealtimeCommand {
+  COMMAND_CLASSNAME(CheckIntegrityCommand)
 private:
   CheckIntegrityEntry* entry_;
 

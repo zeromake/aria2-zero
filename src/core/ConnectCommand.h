@@ -43,6 +43,7 @@ namespace aria2 {
 struct BackupConnectInfo;
 
 class ConnectCommand : public AbstractCommand {
+  COMMAND_CLASSNAME(ConnectCommand)
 public:
   ConnectCommand(cuid_t cuid, const std::shared_ptr<Request>& req,
                  const std::shared_ptr<Request>& proxyRequest,

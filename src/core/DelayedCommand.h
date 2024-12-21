@@ -41,6 +41,7 @@
 namespace aria2 {
 
 class DelayedCommand : public TimeBasedCommand {
+  COMMAND_CLASSNAME(DelayedCommand)
 private:
   std::unique_ptr<Command> command_;
   bool noWait_;
@@ -49,7 +50,7 @@ public:
   virtual void process() CXX11_OVERRIDE
   {
     auto e = getDownloadEngine();
-    e->addCommand(std::move(command_));
+    e->addCommand(std::move(command_), this->getPriority());
     if (noWait_) {
       e->setNoWait(true);
     }

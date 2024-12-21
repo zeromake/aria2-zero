@@ -52,6 +52,7 @@ class PeerStorage;
 class BtAnnounce;
 
 class ActivePeerConnectionCommand : public Command {
+  COMMAND_CLASSNAME(ActivePeerConnectionCommand)
 private:
   RequestGroup* requestGroup_;
   std::shared_ptr<BtRuntime> btRuntime_;

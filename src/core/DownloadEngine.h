@@ -167,6 +167,7 @@ private:
   // deleted.
   std::deque<std::unique_ptr<Command>> routineCommands_;
   std::deque<std::unique_ptr<Command>> commands_;
+  std::deque<std::unique_ptr<Command>> priorityCommands_;
 
   std::unique_ptr<util::security::HMAC> tokenHMAC_;
   std::unique_ptr<util::security::HMACResult> tokenExpected_;
@@ -200,9 +201,11 @@ public:
                           Command* command);
 #endif // ENABLE_ASYNC_DNS
 
-  void addCommand(std::vector<std::unique_ptr<Command>> commands);
+  void addCommand(std::vector<std::unique_ptr<Command>> commands,
+                  Command::PRIORITY priority = Command::PRIORITY_NORMAL);
 
-  void addCommand(std::unique_ptr<Command> command);
+  void addCommand(std::unique_ptr<Command> command,
+                  Command::PRIORITY priority = Command::PRIORITY_NORMAL);
 
   const std::unique_ptr<RequestGroupMan>& getRequestGroupMan() const
   {

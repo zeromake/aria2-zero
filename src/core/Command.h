@@ -36,6 +36,15 @@
 #define D_COMMAND_H
 
 #include "common.h"
+#include <string>
+
+#ifdef ENABLE_COMMONAD_DELTA_DEBUG
+#define COMMAND_CLASSNAME(name) \
+  public: \
+  const std::string classname() const override { return #name; }
+#else
+#define COMMAND_CLASSNAME(name)
+#endif
 
 namespace aria2 {
 
@@ -50,6 +59,10 @@ public:
     STATUS_REALTIME,
     STATUS_ONESHOT_REALTIME
   };
+  enum PRIORITY : int {
+    PRIORITY_NORMAL = 0,
+    PRIORITY_HIGH = 1,
+  };
 
 private:
   cuid_t cuid_;
@@ -60,6 +73,7 @@ private:
   bool writeEvent_;
   bool errorEvent_;
   bool hupEvent_;
+  PRIORITY priority_ = PRIORITY::PRIORITY_NORMAL;
 
 protected:
   bool readEventEnabled() const { return readEvent_; }
@@ -76,6 +90,10 @@ public:
   virtual ~Command() = default;
 
   virtual bool execute() = 0;
+
+#ifdef ENABLE_COMMONAD_DELTA_DEBUG
+  virtual const std::string classname() const = 0;
+#endif
 
   cuid_t getCuid() const { return cuid_; }
 
@@ -103,6 +121,8 @@ public:
   void hupEventReceived();
 
   void clearIOEvents();
+  PRIORITY getPriority() { return priority_; }
+  void setPriority(PRIORITY priority) { priority_ = priority; }
 };
 
 } // namespace aria2

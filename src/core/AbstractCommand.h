@@ -63,6 +63,7 @@ class AsyncNameResolverMan;
 #endif // ENABLE_ASYNC_DNS
 
 class AbstractCommand : public Command {
+  COMMAND_CLASSNAME(AbstractCommand)
 private:
   std::shared_ptr<Request> req_;
   std::shared_ptr<FileEntry> fileEntry_;

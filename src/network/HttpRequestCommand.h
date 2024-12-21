@@ -49,6 +49,7 @@ class SocketCore;
 // execute() creates next Command object, HttpResponseCommand, and
 // returns true.
 class HttpRequestCommand : public AbstractCommand {
+  COMMAND_CLASSNAME(HttpRequestCommand)
 private:
   std::shared_ptr<Request> proxyRequest_;
 

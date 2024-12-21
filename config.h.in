@@ -109,6 +109,7 @@ ${define SECURITY_WIN32}
 ${define ENABLE_WEBSOCKET}
 ${define ENABLE_ASYNC_DNS}
 ${define ENABLE_TLS_CHECK_DEFAULT_CERT}
+${define ENABLE_COMMONAD_DELTA_DEBUG}
 
 ${define ENABLE_PTHREAD}
 
@@ -154,7 +155,7 @@ ${define HAVE_GZSETPARAMS}
 #endif
 
 #ifdef HAVE_WINDOWS_H
-#ifdef _MSC_VER 
+#ifdef _MSC_VER
 #define NOMINMAX
 #if (!defined(HAVE_SSIZE_T) && !defined(ssize_t))
 #define HAVE_SSIZE_T 1

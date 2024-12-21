@@ -43,6 +43,7 @@ class HttpConnection;
 class SocketCore;
 
 class AbstractProxyRequestCommand : public AbstractCommand {
+  COMMAND_CLASSNAME(AbstractProxyRequestCommand)
 private:
   std::shared_ptr<Request> proxyRequest_;
 

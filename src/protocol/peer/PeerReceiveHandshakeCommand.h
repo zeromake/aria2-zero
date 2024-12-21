@@ -44,6 +44,7 @@ class SocketCore;
 class Peer;
 
 class PeerReceiveHandshakeCommand : public PeerAbstractCommand {
+  COMMAND_CLASSNAME(PeerReceiveHandshakeCommand)
 private:
   std::unique_ptr<PeerConnection> peerConnection_;
 

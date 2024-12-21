@@ -40,6 +40,7 @@
 namespace aria2 {
 
 class SftpFinishDownloadCommand : public AbstractCommand {
+  COMMAND_CLASSNAME(SftpFinishDownloadCommand)
 protected:
   virtual bool execute() CXX11_OVERRIDE;
 

@@ -48,6 +48,7 @@ class BtRuntime;
 class PieceStorage;
 
 class SeedCheckCommand : public Command {
+  COMMAND_CLASSNAME(SeedCheckCommand)
 private:
   RequestGroup* requestGroup_;
   DownloadEngine* e_;

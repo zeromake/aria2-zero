@@ -151,11 +151,12 @@ void HttpServerBodyCommand::addHttpServerResponseCommand(bool delayed)
   if (delayed) {
     e_->deleteSocketForWriteCheck(socket_, resp.get());
     e_->addCommand(aria2::make_unique<DelayedCommand>(getCuid(), e_, 1_s,
-                                                      std::move(resp), true));
+                                                      std::move(resp), true),
+                   this->getPriority());
     return;
   }
 
-  e_->addCommand(std::move(resp));
+  e_->addCommand(std::move(resp), this->getPriority());
   e_->setNoWait(true);
 }
 

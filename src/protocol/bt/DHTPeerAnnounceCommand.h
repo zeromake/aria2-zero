@@ -44,6 +44,7 @@ namespace aria2 {
 class DHTPeerAnnounceStorage;
 
 class DHTPeerAnnounceCommand : public TimeBasedCommand {
+  COMMAND_CLASSNAME(DHTPeerAnnounceCommand)
 private:
   DHTPeerAnnounceStorage* peerAnnounceStorage_;
 

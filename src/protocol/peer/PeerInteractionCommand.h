@@ -48,6 +48,7 @@ class PieceStorage;
 class Option;
 
 class PeerInteractionCommand : public PeerAbstractCommand {
+  COMMAND_CLASSNAME(PeerInteractionCommand)
 public:
   enum Seq {
     INITIATOR_SEND_HANDSHAKE,

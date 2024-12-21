@@ -42,6 +42,7 @@ namespace aria2 {
 class SocketCore;
 
 class FtpTunnelResponseCommand : public AbstractProxyResponseCommand {
+  COMMAND_CLASSNAME(FtpTunnelResponseCommand)
 public:
   FtpTunnelResponseCommand(
       cuid_t cuid, const std::shared_ptr<Request>& req,

@@ -40,6 +40,7 @@
 namespace aria2 {
 
 class TimedHaltCommand : public TimeBasedCommand {
+  COMMAND_CLASSNAME(TimedHaltCommand)
 private:
   bool forceHalt_;
 

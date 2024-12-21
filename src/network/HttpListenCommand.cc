@@ -79,7 +79,8 @@ bool HttpListenCommand::execute()
 
       e_->setNoWait(true);
       e_->addCommand(aria2::make_unique<HttpServerCommand>(e_->newCUID(), e_,
-                                                           socket, secure_));
+                                                           socket, secure_),
+                     this->getPriority());
     }
   }
   catch (RecoverableException& e) {
