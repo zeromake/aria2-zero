@@ -39,8 +39,8 @@
 namespace aria2 {
 
 TimeBasedAsyncCommand::TimeBasedAsyncCommand(cuid_t cuid, DownloadEngine* e,
-                                   std::chrono::seconds interval,
-                                   bool routineCommand)
+                                             std::chrono::seconds interval,
+                                             bool routineCommand)
     : Command(cuid),
       e_(e),
       checkPoint_(global::wallclock()),
@@ -52,10 +52,12 @@ TimeBasedAsyncCommand::TimeBasedAsyncCommand(cuid_t cuid, DownloadEngine* e,
 
 TimeBasedAsyncCommand::~TimeBasedAsyncCommand() = default;
 
-bool TimeBasedAsyncCommand::execute() {
+bool TimeBasedAsyncCommand::execute()
+{
   bool result = false;
   if (future_ == nullptr) {
-    auto f = e_->getThreadPool()->enqueue(&TimeBasedAsyncCommand::executeInternal, this);
+    auto f = e_->getThreadPool()->enqueue(
+        &TimeBasedAsyncCommand::executeInternal, this);
     future_ = aria2::make_unique<std::future<bool>>(std::move(f));
   }
   if (future_->wait_for(100_ns) == std::future_status::ready) {

@@ -39,11 +39,11 @@
 #include <string>
 
 #ifdef ENABLE_COMMONAD_DELTA_DEBUG
-#define COMMAND_CLASSNAME(name) \
-  public: \
-  const std::string classname() const override { return #name; }
+#  define COMMAND_CLASSNAME(name)                                              \
+  public:                                                                      \
+    const std::string classname() const override { return #name; }
 #else
-#define COMMAND_CLASSNAME(name)
+#  define COMMAND_CLASSNAME(name)
 #endif
 
 namespace aria2 {

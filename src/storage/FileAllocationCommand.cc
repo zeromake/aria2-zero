@@ -65,11 +65,15 @@ FileAllocationCommand::~FileAllocationCommand()
   getDownloadEngine()->getFileAllocationMan()->dropPickedEntry();
 }
 
-bool FileAllocationCommand::executeInternal() {
+bool FileAllocationCommand::executeInternal()
+{
   bool result = false;
   if (future_ == nullptr) {
-    auto f = getDownloadEngine()->getThreadPool()->enqueue(&FileAllocationCommand::executeInternalImpl, this);
-    future_ = aria2::make_unique<std::future<FileAllocationCommand::ExecuteResult>>(std::move(f));
+    auto f = getDownloadEngine()->getThreadPool()->enqueue(
+        &FileAllocationCommand::executeInternalImpl, this);
+    future_ =
+        aria2::make_unique<std::future<FileAllocationCommand::ExecuteResult>>(
+            std::move(f));
   }
   if (future_->wait_for(100_ns) == std::future_status::ready) {
     auto execResult = future_->get();
@@ -88,7 +92,8 @@ bool FileAllocationCommand::executeInternal() {
   return result;
 }
 
-FileAllocationCommand::ExecuteResult FileAllocationCommand::executeInternalImpl()
+FileAllocationCommand::ExecuteResult
+FileAllocationCommand::executeInternalImpl()
 {
   if (getRequestGroup()->isHaltRequested()) {
     return {nullptr, true};

@@ -92,10 +92,10 @@ public:
 
 public:
   TimeBasedAsyncCommand(cuid_t cuid, DownloadEngine* e,
-                   std::chrono::seconds interval, bool routineCommand = false);
+                        std::chrono::seconds interval,
+                        bool routineCommand = false);
 
   virtual ~TimeBasedAsyncCommand();
-
 
   virtual bool execute() CXX11_OVERRIDE;
 };

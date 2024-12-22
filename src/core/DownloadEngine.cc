@@ -119,7 +119,8 @@ DownloadEngine::~DownloadEngine() {}
 
 namespace {
 
-void executeCommand(std::deque<std::unique_ptr<Command>>& commands, Command::STATUS statusFilter)
+void executeCommand(std::deque<std::unique_ptr<Command>>& commands,
+                    Command::STATUS statusFilter)
 {
   size_t max = commands.size();
   for (size_t i = 0; i < max; ++i) {
@@ -138,8 +139,9 @@ void executeCommand(std::deque<std::unique_ptr<Command>>& commands, Command::STA
 #ifdef ENABLE_COMMONAD_DELTA_DEBUG
       auto difference = now.difference(aria2::Timer());
       if (difference > A2_COMMONAD_DELTA_MILLIS) {
-        A2_LOG_NOTICE(fmt("%s::execute done difference: %fms", com->classname().c_str(),
-        ((double)difference.count()) / 1000000.0));
+        A2_LOG_NOTICE(fmt("%s::execute done difference: %fms",
+                          com->classname().c_str(),
+                          ((double)difference.count()) / 1000000.0));
       }
 #endif
       com.reset();
@@ -148,8 +150,9 @@ void executeCommand(std::deque<std::unique_ptr<Command>>& commands, Command::STA
 #ifdef ENABLE_COMMONAD_DELTA_DEBUG
       auto difference = now.difference(aria2::Timer());
       if (difference > A2_COMMONAD_DELTA_MILLIS) {
-        A2_LOG_NOTICE(fmt("%s::execute release difference: %fms", com->classname().c_str(),
-        ((double)difference.count()) / 1000000.0));
+        A2_LOG_NOTICE(fmt("%s::execute release difference: %fms",
+                          com->classname().c_str(),
+                          ((double)difference.count()) / 1000000.0));
       }
 #endif
       com->clearIOEvents();
@@ -202,7 +205,7 @@ int DownloadEngine::run(bool oneshot)
     auto difference = now.difference(aria2::Timer());
     if (difference > A2_LOOP_DELTA_MILLIS) {
       A2_LOG_NOTICE(fmt("executeCommand difference: %fms",
-      ((double)difference.count()) / 1000000.0));
+                        ((double)difference.count()) / 1000000.0));
     }
 #endif
     afterEachIteration();
@@ -618,9 +621,9 @@ void DownloadEngine::addCommand(std::vector<std::unique_ptr<Command>> commands,
   //                            std::make_move_iterator(std::end(commands)));
   // }
   // else {
-    commands_.insert(commands_.end(),
-                     std::make_move_iterator(std::begin(commands)),
-                     std::make_move_iterator(std::end(commands)));
+  commands_.insert(commands_.end(),
+                   std::make_move_iterator(std::begin(commands)),
+                   std::make_move_iterator(std::end(commands)));
   // }
 }
 
@@ -630,11 +633,12 @@ void DownloadEngine::addCommand(std::unique_ptr<Command> command,
   // if (command->getPriority() < priority)
   //   command->setPriority(priority);
   // if (command->getPriority() == Command::PRIORITY_HIGH) {
-  //   // A2_LOG_NOTICE(fmt("Add priority command: %s", command->classname().c_str()));
+  //   // A2_LOG_NOTICE(fmt("Add priority command: %s",
+  //   command->classname().c_str()));
   //   priorityCommands_.push_back(std::move(command));
   // }
   // else {
-    commands_.push_back(std::move(command));
+  commands_.push_back(std::move(command));
   // }
 }
 
