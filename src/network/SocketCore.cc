@@ -985,6 +985,7 @@ bool SocketCore::tlsHandshake(TLSContext* tlsctx, const std::string& hostname)
         tlsVersion = A2_V_TLS13;
         break;
       default:
+        A2_LOG_ERROR(fmt("Invalid TLS version: %d", ver));
         assert(0);
         abort();
       }

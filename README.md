@@ -56,8 +56,10 @@ You must use this program at your own risk.
     + [ ] [强制重新开始而不是继续](https://github.com/aria2/aria2/issues/2010)
     + [ ] [高精度超时](https://github.com/aria2/aria2/issues/2002)
     + [x] windows 下支持超过 255 字节的路径，额外支持超大路径 [1](https://github.com/aria2/aria2/issues/1997),[2](https://github.com/aria2/aria2/issues/1981),[3](https://github.com/aria2/aria2/issues/1070), [4](https://github.com/imfile-io/imfile-desktop/issues/56)
-    + [ ] Range 拼接错误 [1](https://github.com/aria2/aria2/issues/1971), [2](https://github.com/aria2/aria2/issues/1344#issuecomment-1570701152), [3](https://github.com/aria2/aria2/pull/1587), [4]()
-    + [ ] [进度](https://github.com/aria2/aria2/issues?page=8&q=is%3Aissue+is%3Aopen),[#1971](https://github.com/aria2/aria2/issues/1971)
+    + [ ] Range 拼接错误 [1](https://github.com/aria2/aria2/issues/1971), [2](https://github.com/aria2/aria2/issues/1344#issuecomment-1570701152), [3](https://github.com/aria2/aria2/pull/1587)
+    + [ ] [Socks5h 代理支持](https://github.com/aria2/aria2/issues/1830)
+    + [ ] [bitTorrent v2 支持](https://github.com/aria2/aria2/issues/1685)
+    + [ ] [进度](https://github.com/aria2/aria2/issues?page=17&q=is%3Aissue+is%3Aopen)
 - [ ] 标记一些有报告，但是没有问题的 issues
     - [无法使用 ip 直连下载内网文件](https://github.com/aria2/aria2/issues/2049)
 - [ ] 检查其它 fork 是否有好的修改

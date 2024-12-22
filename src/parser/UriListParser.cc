@@ -119,7 +119,7 @@ void UriListParser::parseNext(std::vector<std::string>& uris, Option& op)
 bool UriListParser::hasNext()
 {
   bool rv = !line_.empty() || (fp_ && *fp_ && !fp_->eof());
-  if (!rv) {
+  if (!rv && fp_ && *fp_) {
     fp_->close();
   }
   return rv;
