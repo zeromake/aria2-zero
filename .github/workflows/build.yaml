@@ -16,10 +16,16 @@ jobs:
         with:
           xmake-version: latest
       - name: build x86
+        env:
+          VERSION: ${{ github.ref_name }}
         run: xmake f -a x86 -c -y && xmake b
       - name: build x64
+        env:
+          VERSION: ${{ github.ref_name }}
         run: xmake f -a x64 -c -y && xmake b
       - name: build arm64
+        env:
+          VERSION: ${{ github.ref_name }}
         run: xmake f -a arm64 -c -y && xmake b
       - uses: actions/upload-artifact@v4
         with:
@@ -35,6 +41,8 @@ jobs:
         with:
           xmake-version: latest
       - name: build x64
+        env:
+          VERSION: ${{ github.ref_name }}
         run: xmake f -a x86_64 -c -y && xmake b
       - uses: actions/upload-artifact@v4
         with:
@@ -48,8 +56,12 @@ jobs:
       - name: xmake
         run: brew install xmake && xmake --version
       - name: build x64
+        env:
+          VERSION: ${{ github.ref_name }}
         run: xmake f -a x86_64 -c -y && xmake b
       - name: build arm64
+        env:
+          VERSION: ${{ github.ref_name }}
         run: xmake f -a arm64 -c -y && xmake b
       - name: build universal
         run: lipo -create -output dist/aria2c-macosx-universal dist/aria2c-macosx-x86_64 dist/aria2c-macosx-arm64
@@ -57,4 +69,29 @@ jobs:
         with:
           name: aria2c-macos-${{ github.run_id }}
           path: |
+            dist/*
+  update-release:
+    runs-on: ubuntu-latest
+    needs: [build-macos, build-windows, build-linux]
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: aria2c-windows-${{ github.run_id }}
+          path: dist
+      - uses: actions/download-artifact@v4
+        with:
+          name: aria2c-macos-${{ github.run_id }}
+          path: dist
+      - uses: actions/download-artifact@v4
+        with:
+          name: aria2c-linux-${{ github.run_id }}
+          path: dist
+      - name: list file
+        run: |
+          ls -R
+      - name: update
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/') && github.ref_name != 'v0.0.0'
+        with:
+          files: |
             dist/*
