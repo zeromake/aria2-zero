@@ -1983,6 +1983,17 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
 #endif // ENABLE_METALINK
+  {
+
+    OptionHandler* op(new CumulativeOptionHandler(PREF_CATEGORY_DIR, TEXT_CATEGORY_DIR,
+                                                  NO_DEFAULT_VALUE, ";"));
+    op->addTag(TAG_BASIC);
+    op->setInitialOption(true);
+    op->setCumulative(true);
+    op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
+    handlers.push_back(op);
+  }
   // Version Option
   {
     OptionHandler* op(new DefaultOptionHandler(PREF_VERSION, TEXT_VERSION,
