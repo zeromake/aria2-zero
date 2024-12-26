@@ -786,6 +786,11 @@ void UtilTest2::testApplyDir()
   CPPUNIT_ASSERT_EQUAL(std::string("/pred"), util::applyDir("/", "pred"));
   CPPUNIT_ASSERT_EQUAL(std::string("./pred"), util::applyDir(".", "pred"));
   CPPUNIT_ASSERT_EQUAL(std::string("/dl/pred"), util::applyDir("/dl", "pred"));
+  CPPUNIT_ASSERT_EQUAL(std::string("/pred"), util::applyDir("", "/pred"));
+  CPPUNIT_ASSERT_EQUAL(std::string("C:/pred"), util::applyDir("", "C:/pred"));
+#ifdef _WIN32
+  CPPUNIT_ASSERT_EQUAL(std::string("C:/pred"), util::applyDir("", "C:\\pred"));
+#endif // _WIN32
 }
 
 void UtilTest2::testFixTaintedBasename()

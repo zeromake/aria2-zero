@@ -730,7 +730,10 @@ bool saveAs(const std::string& filename, const std::string& data,
 // dir = "/dir", relPath = "foo" => "/dir/foo"
 // dir = "",     relPath = "foo" => "./foo"
 // dir = "/",    relPath = "foo" => "/foo"
+// dir = "", relPath = "/foo" => "/foo"
 std::string applyDir(const std::string& dir, const std::string& relPath);
+
+bool isAbsolute(const std::string& path);
 
 // In HTTP/FTP, file name is file component in URI. In HTTP, filename
 // may be a value of Content-Disposition header.  They are likely

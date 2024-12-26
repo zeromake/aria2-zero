@@ -2095,11 +2095,22 @@ bool saveAs(const std::string& filename, const std::string& data,
   return File(tempFilename).renameTo(filename);
 }
 
+#  define isWindowsDeviceRoot(b)                                               \
+    ((b >= 'A' && b <= 'Z') || (b >= 'a' && b <= 'z'))
+bool isAbsolute(const std::string& path)
+{
+  if (path.empty()) {
+    return false;
+  }
+  if (path[0] == '/') return true;
+  return path.size() > 2 && isWindowsDeviceRoot(path[0]) && path[1] == ':' && (path[2] == '/' || path[2] == '\\');
+}
+
 std::string applyDir(const std::string& dir, const std::string& relPath)
 {
   std::string s;
   if (dir.empty()) {
-    s = "./";
+    s = isAbsolute(relPath) ? A2STR::NIL : "./";
     s += relPath;
   }
   else {
