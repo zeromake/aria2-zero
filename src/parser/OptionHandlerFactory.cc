@@ -1985,8 +1985,8 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
 #endif // ENABLE_METALINK
   {
 
-    OptionHandler* op(new CumulativeOptionHandler(PREF_CATEGORY_DIR, TEXT_CATEGORY_DIR,
-                                                  NO_DEFAULT_VALUE, ";"));
+    OptionHandler* op(new CumulativeOptionHandler(
+        PREF_CATEGORY_DIR, TEXT_CATEGORY_DIR, NO_DEFAULT_VALUE, ";"));
     op->addTag(TAG_BASIC);
     op->setCumulative(true);
     op->setChangeGlobalOption(true);
