@@ -2102,7 +2102,7 @@ bool isAbsolute(const std::string& path)
   if (path.empty()) {
     return false;
   }
-  if (path[0] == '/') return true;
+  if (path[0] == '/' || path[0] == '\\') return true;
   return path.size() > 2 && isWindowsDeviceRoot(path[0]) && path[1] == ':' && (path[2] == '/' || path[2] == '\\');
 }
 
@@ -2603,6 +2603,96 @@ bool gainPrivilege(LPCTSTR privName)
   return false;
 }
 #endif // _WIN32
+
+std::string mathCatrgoryDir(
+  const std::string& catrgoryDirOptions,
+  const std::string& suffixPath
+) {
+  size_t start = 0;
+  size_t end = catrgoryDirOptions.size();
+  size_t cStart = 0;
+  size_t cEnd = 0;
+  size_t iStart = 0;
+  size_t iEnd = 0;
+  size_t sStart = 0;
+  size_t sEnd = 0;
+  while (start < end)
+  {
+    // skip ;;
+    if (catrgoryDirOptions[start] == ';') {
+      start++;
+      continue;
+    }
+    cStart = start;
+    cEnd = catrgoryDirOptions.find(':', cStart);
+    if (cEnd == std::string::npos) break;
+    iStart = cEnd + 1;
+    iEnd = catrgoryDirOptions.find(';', iStart);
+    if (iEnd == std::string::npos) iEnd = end;
+    sStart = iStart;
+    std::string catrgoryDir = catrgoryDirOptions.substr(cStart, cEnd - cStart);
+    while (sStart < iEnd)
+    {
+      sEnd = catrgoryDirOptions.find(',', sStart);
+      if (sEnd == std::string::npos) sEnd = iEnd;
+      if (catrgoryDirOptions[sStart] == '.') {
+        std::string catrgorySuffixPath = catrgoryDirOptions.substr(sStart, sEnd - sStart);
+        if (util::endsWith(suffixPath, catrgorySuffixPath)) {
+          return catrgoryDir;
+        }
+      }
+      sStart = sEnd + 1;
+    }
+    start += iEnd + 1;
+  }
+  return A2STR::NIL;
+}
+
+std::string generateRequestGroupPath(
+  const std::shared_ptr<Option>& opt,
+  const bool isRemoteSuffixPath
+) {
+  std::string prefixDir = opt->get(PREF_DIR);
+  std::string suffixPath = opt->get(PREF_OUT);
+  auto suffixPathIsAbsolute = util::isAbsolute(suffixPath);
+  if (!suffixPath.empty() && !opt->blank(PREF_CATEGORY_DIR) && !suffixPathIsAbsolute) {
+    std::string catrgoryDir = mathCatrgoryDir(opt->get(PREF_CATEGORY_DIR), suffixPath);
+    if (!catrgoryDir.empty() && !util::startsWith(suffixPath, catrgoryDir)) {
+      std::string catrgorySuffixPath = util::applyDir(catrgoryDir, suffixPath);
+      return util::applyDir(prefixDir, catrgorySuffixPath);
+    }
+  }
+  // user suffixPath is absolute path
+  if (!isRemoteSuffixPath && suffixPathIsAbsolute) {
+    return suffixPath;
+  }
+  return util::applyDir(prefixDir, suffixPath);
+}
+
+void commonFileEntrySetPath(
+  const std::shared_ptr<FileEntry>& fileEntry,
+  const std::shared_ptr<Option>& opt,
+  const std::string& suffixPath,
+  const bool isRemoteSuffixPath) {
+  auto suffixPathIsAbsolute = util::isAbsolute(suffixPath);
+  if (!suffixPath.empty() && !opt->blank(PREF_CATEGORY_DIR) && !suffixPathIsAbsolute) {
+    std::string catrgoryDir = mathCatrgoryDir(opt->get(PREF_CATEGORY_DIR), suffixPath);
+    if (!catrgoryDir.empty() && !util::startsWith(suffixPath, catrgoryDir)) {
+      std::string catrgorySuffixPath = util::applyDir(catrgoryDir, suffixPath);
+      fileEntry->setPath(util::applyDir(opt->get(PREF_DIR), catrgorySuffixPath));
+      fileEntry->setSuffixPath(catrgorySuffixPath);
+      return;
+    }
+  }
+  // user suffixPath is absolute path
+  if (!isRemoteSuffixPath && suffixPathIsAbsolute) {
+    fileEntry->setPath(suffixPath);
+    fileEntry->setSuffixPath(suffixPath);
+  }
+  fileEntry->setPath(util::applyDir(opt->get(PREF_DIR), suffixPath));
+  fileEntry->setSuffixPath(suffixPath);
+  return;
+}
 
 } // namespace util
 

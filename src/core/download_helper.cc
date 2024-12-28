@@ -137,7 +137,7 @@ createRequestGroup(const std::shared_ptr<Option>& optionTemplate,
   auto dctx = std::make_shared<DownloadContext>(
       option->getAsInt(PREF_PIECE_LENGTH), 0,
       useOutOption && !option->blank(PREF_OUT)
-          ? util::applyDir(option->get(PREF_DIR), option->get(PREF_OUT))
+          ? util::generateRequestGroupPath(option, false)
           : A2STR::NIL);
   dctx->getFirstFileEntry()->setUris(uris);
   dctx->getFirstFileEntry()->setMaxConnectionPerServer(

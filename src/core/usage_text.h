@@ -1134,6 +1134,6 @@
   _(" --category-dir=CATEGORY_DIR\n"\
     "                              Set the directory to save files based on category.\n" \
     "                              expmple download auto sub dir\n"\
-    "                              aria2c --category-dir=\"archive:.zip,.rar\" http://host/file.rar\n")
+    "                              aria2c --category-dir=\"archive:.zip,.rar;text:.txt,.md\" http://host/file.rar\n")
 
 // clang-format on

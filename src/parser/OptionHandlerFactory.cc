@@ -1988,7 +1988,6 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     OptionHandler* op(new CumulativeOptionHandler(PREF_CATEGORY_DIR, TEXT_CATEGORY_DIR,
                                                   NO_DEFAULT_VALUE, ";"));
     op->addTag(TAG_BASIC);
-    op->setInitialOption(true);
     op->setCumulative(true);
     op->setChangeGlobalOption(true);
     op->setChangeOptionForReserved(true);

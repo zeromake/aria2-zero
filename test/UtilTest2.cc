@@ -68,6 +68,7 @@ class UtilTest2 : public CppUnit::TestFixture {
   CPPUNIT_TEST(testSecfmt);
   CPPUNIT_TEST(testTlsHostnameMatch);
   CPPUNIT_TEST(testParseDoubleNoThrow);
+  CPPUNIT_TEST(testMathCatrgoryDir);
   CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -118,6 +119,7 @@ public:
   void testSecfmt();
   void testTlsHostnameMatch();
   void testParseDoubleNoThrow();
+  void testMathCatrgoryDir();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(UtilTest2);
@@ -1003,6 +1005,21 @@ void UtilTest2::testParseDoubleNoThrow()
 
   CPPUNIT_ASSERT(!util::parseDoubleNoThrow(n, ""));
   CPPUNIT_ASSERT(!util::parseDoubleNoThrow(n, "123x"));
+}
+
+void UtilTest2::testMathCatrgoryDir()
+{
+  const std::string catrgoryDir1 = "archive:.zip,.rar;text:.txt;";
+  CPPUNIT_ASSERT_EQUAL(std::string("archive"), util::mathCatrgoryDir(catrgoryDir1, "a.zip"));
+  CPPUNIT_ASSERT_EQUAL(std::string("archive"), util::mathCatrgoryDir(catrgoryDir1, "a.rar"));
+  CPPUNIT_ASSERT_EQUAL(std::string(""), util::mathCatrgoryDir(catrgoryDir1, "a.zipx"));
+  CPPUNIT_ASSERT_EQUAL(std::string("text"), util::mathCatrgoryDir(catrgoryDir1, "a.txt"));
+
+  const std::string catrgoryDir2 = "archive:.zip,.rar;;text:.txt;;";
+  CPPUNIT_ASSERT_EQUAL(std::string("archive"), util::mathCatrgoryDir(catrgoryDir2, "a.zip"));
+  CPPUNIT_ASSERT_EQUAL(std::string("archive"), util::mathCatrgoryDir(catrgoryDir2, "a.rar"));
+  CPPUNIT_ASSERT_EQUAL(std::string(""), util::mathCatrgoryDir(catrgoryDir2, "a.zipx"));
+  CPPUNIT_ASSERT_EQUAL(std::string("text"), util::mathCatrgoryDir(catrgoryDir2, "a.txt"));
 }
 
 } // namespace aria2

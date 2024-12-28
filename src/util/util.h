@@ -884,6 +884,15 @@ void make_fd_cloexec(int fd);
 #ifdef _WIN32
 bool gainPrivilege(LPCTSTR privName);
 #endif // _WIN32
+std::string mathCatrgoryDir(
+  const std::string& catrgoryDirOptions,
+  const std::string& suffixPath);
+std::string generateRequestGroupPath(const std::shared_ptr<Option>& opt, const bool isRemoteSuffixPath = false);
+void commonFileEntrySetPath(
+  const std::shared_ptr<FileEntry>& fileEntry,
+  const std::shared_ptr<Option>& opt,
+  const std::string& suffixPath,
+  const bool isRemoteSuffixPath = false);
 
 } // namespace util
 
