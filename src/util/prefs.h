@@ -542,6 +542,8 @@ extern PrefPtr PREF_METALINK_ENABLE_UNIQUE_PROTOCOL;
 // values: a string
 extern PrefPtr PREF_METALINK_BASE_URI;
 
+extern PrefPtr PREF_CATEGORY_DIR;
+
 } // namespace aria2
 
 #endif // D_PREFS_H

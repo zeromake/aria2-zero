@@ -730,7 +730,10 @@ bool saveAs(const std::string& filename, const std::string& data,
 // dir = "/dir", relPath = "foo" => "/dir/foo"
 // dir = "",     relPath = "foo" => "./foo"
 // dir = "/",    relPath = "foo" => "/foo"
+// dir = "", relPath = "/foo" => "/foo"
 std::string applyDir(const std::string& dir, const std::string& relPath);
+
+bool isAbsolute(const std::string& path);
 
 // In HTTP/FTP, file name is file component in URI. In HTTP, filename
 // may be a value of Content-Disposition header.  They are likely
@@ -881,6 +884,14 @@ void make_fd_cloexec(int fd);
 #ifdef _WIN32
 bool gainPrivilege(LPCTSTR privName);
 #endif // _WIN32
+std::string mathCatrgoryDir(const std::string& catrgoryDirOptions,
+                            const std::string& suffixPath);
+std::string generateRequestGroupPath(const std::shared_ptr<Option>& opt,
+                                     const bool isRemoteSuffixPath = false);
+void commonFileEntrySetPath(const std::shared_ptr<FileEntry>& fileEntry,
+                            const std::shared_ptr<Option>& opt,
+                            const std::string& suffixPath,
+                            const bool isRemoteSuffixPath = false);
 
 } // namespace util
 

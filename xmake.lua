@@ -351,6 +351,7 @@ if get_config("unit") then
 target("test")
     set_default(false)
     add_files("test/AllTest.cc", "test/TestUtil.cc")
+    -- add_files("test/UtilTest2.cc")
     add_files("test/*.cc|AllTest.cc|TestUtil.cc|CookieBoxTest.cc")
     add_deps("aria2")
     add_includedirs(

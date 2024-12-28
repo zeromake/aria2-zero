@@ -1,4 +1,5 @@
 #include "OptionParser.h"
+#include "OptionHandlerFactory.h"
 
 #include <cstring>
 #include <sstream>
@@ -28,6 +29,10 @@ class OptionParserTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testParseArg);
   CPPUNIT_TEST(testParse);
   CPPUNIT_TEST(testParseKeyVals);
+  CPPUNIT_TEST(testParseCatrgoryDir1);
+  CPPUNIT_TEST(testParseCatrgoryDir2);
+  CPPUNIT_TEST(testParseCatrgoryDir3);
+  CPPUNIT_TEST(testParseCatrgoryDir4);
   CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -76,6 +81,10 @@ public:
   void testParseArg();
   void testParse();
   void testParseKeyVals();
+  void testParseCatrgoryDir1();
+  void testParseCatrgoryDir2();
+  void testParseCatrgoryDir3();
+  void testParseCatrgoryDir4();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(OptionParserTest);
@@ -208,6 +217,50 @@ void OptionParserTest::testParseKeyVals()
   oparser_->parse(option, kv);
   CPPUNIT_ASSERT_EQUAL(std::string("Hello"), option.get(PREF_TIMEOUT));
   CPPUNIT_ASSERT_EQUAL(std::string("World"), option.get(PREF_DIR));
+}
+
+void OptionParserTest::testParseCatrgoryDir1()
+{
+  Option option;
+  oparser_->setOptionHandlers(
+        OptionHandlerFactory::createOptionHandlers());
+  std::istringstream in("category-dir=archive:.zip,.rar");
+  oparser_->parse(option, in);
+  CPPUNIT_ASSERT_EQUAL(std::string("archive:.zip,.rar;"), option.get(PREF_CATEGORY_DIR));
+}
+
+void OptionParserTest::testParseCatrgoryDir2()
+{
+  Option option;
+  oparser_->setOptionHandlers(
+        OptionHandlerFactory::createOptionHandlers());
+  std::istringstream in("category-dir=archive:.zip,.rar;text:.txt");
+  oparser_->parse(option, in);
+  CPPUNIT_ASSERT_EQUAL(std::string("archive:.zip,.rar;text:.txt;"), option.get(PREF_CATEGORY_DIR));
+}
+
+
+void OptionParserTest::testParseCatrgoryDir3()
+{
+  Option option;
+  oparser_->setOptionHandlers(
+        OptionHandlerFactory::createOptionHandlers());
+  std::istringstream in("category-dir=archive:.zip,.rar\n"
+  "category-dir=text:.txt");
+  oparser_->parse(option, in);
+  CPPUNIT_ASSERT_EQUAL(std::string("archive:.zip,.rar;text:.txt;"), option.get(PREF_CATEGORY_DIR));
+}
+
+
+void OptionParserTest::testParseCatrgoryDir4()
+{
+  Option option;
+  oparser_->setOptionHandlers(
+        OptionHandlerFactory::createOptionHandlers());
+  std::istringstream in("category-dir=archive:.zip,.rar;\n"
+  "category-dir=text:.txt;");
+  oparser_->parse(option, in);
+  CPPUNIT_ASSERT_EQUAL(std::string("archive:.zip,.rar;;text:.txt;;"), option.get(PREF_CATEGORY_DIR));
 }
 
 } // namespace aria2

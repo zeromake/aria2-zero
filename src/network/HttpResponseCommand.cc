@@ -193,8 +193,7 @@ bool HttpResponseCommand::executeInternal()
           getRequest()->getFile().empty()
               ? Request::DEFAULT_FILE
               : util::percentDecode(std::begin(file), std::end(file)));
-      fe->setPath(util::applyDir(getOption()->get(PREF_DIR), suffixPath));
-      fe->setSuffixPath(suffixPath);
+      util::commonFileEntrySetPath(fe, getOption(), suffixPath, true);
     }
 
     A2_LOG_NOTICE(fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
@@ -263,8 +262,7 @@ bool HttpResponseCommand::executeInternal()
     if (fe->getPath().empty()) {
       auto suffixPath = util::createSafePath(httpResponse->determineFilename(
           getOption()->getAsBool(PREF_CONTENT_DISPOSITION_DEFAULT_UTF8)));
-      fe->setPath(util::applyDir(getOption()->get(PREF_DIR), suffixPath));
-      fe->setSuffixPath(suffixPath);
+      util::commonFileEntrySetPath(fe, getOption(), suffixPath, true);
     }
     fe->setContentType(httpResponse->getContentType());
     grp->preDownloadProcessing();
