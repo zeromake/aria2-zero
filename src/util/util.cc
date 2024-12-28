@@ -2634,6 +2634,11 @@ std::string mathCatrgoryDir(const std::string& catrgoryDirOptions,
     sStart = iStart;
     std::string catrgoryDir = catrgoryDirOptions.substr(cStart, cEnd - cStart);
     while (sStart < iEnd) {
+      // skip ,,
+      if (catrgoryDirOptions[sStart] == ',') {
+        sStart++;
+        continue;
+      }
       sEnd = catrgoryDirOptions.find(',', sStart);
       if (sEnd == std::string::npos)
         sEnd = iEnd;

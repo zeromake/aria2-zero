@@ -1015,7 +1015,7 @@ void UtilTest2::testMathCatrgoryDir()
   CPPUNIT_ASSERT_EQUAL(std::string(""), util::mathCatrgoryDir(catrgoryDir1, "a.zipx"));
   CPPUNIT_ASSERT_EQUAL(std::string("text"), util::mathCatrgoryDir(catrgoryDir1, "a.txt"));
 
-  const std::string catrgoryDir2 = "archive:.zip,.rar;;text:.txt;;";
+  const std::string catrgoryDir2 = "archive:.zip,,.rar,;;text:.txt;;";
   CPPUNIT_ASSERT_EQUAL(std::string("archive"), util::mathCatrgoryDir(catrgoryDir2, "a.zip"));
   CPPUNIT_ASSERT_EQUAL(std::string("archive"), util::mathCatrgoryDir(catrgoryDir2, "a.rar"));
   CPPUNIT_ASSERT_EQUAL(std::string(""), util::mathCatrgoryDir(catrgoryDir2, "a.zipx"));
