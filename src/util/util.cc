@@ -2662,7 +2662,8 @@ std::string generateRequestGroupPath(const std::shared_ptr<Option>& opt,
   std::string prefixDir = opt->get(PREF_DIR);
   std::string suffixPath = opt->get(PREF_OUT);
   auto suffixPathIsAbsolute = util::isAbsolute(suffixPath);
-  if (!suffixPath.empty() && !opt->blank(PREF_CATEGORY_DIR) &&
+  auto scope = opt->getAsInt(PREF_CATEGORY_DIR_SCOPE);
+  if ((scope & 2) > 0 && !suffixPath.empty() && !opt->blank(PREF_CATEGORY_DIR) &&
       !suffixPathIsAbsolute) {
     std::string catrgoryDir =
         mathCatrgoryDir(opt->get(PREF_CATEGORY_DIR), suffixPath);
@@ -2672,9 +2673,9 @@ std::string generateRequestGroupPath(const std::shared_ptr<Option>& opt,
     }
   }
   // user suffixPath is absolute path
-  if (!isRemoteSuffixPath && suffixPathIsAbsolute) {
-    return suffixPath;
-  }
+  // if (!isRemoteSuffixPath && suffixPathIsAbsolute) {
+  //   return suffixPath;
+  // }
   return util::applyDir(prefixDir, suffixPath);
 }
 
@@ -2683,8 +2684,9 @@ void commonFileEntrySetPath(const std::shared_ptr<FileEntry>& fileEntry,
                             const std::string& suffixPath,
                             const bool isRemoteSuffixPath)
 {
+  auto scope = opt->getAsInt(PREF_CATEGORY_DIR_SCOPE);
   auto suffixPathIsAbsolute = util::isAbsolute(suffixPath);
-  if (!suffixPath.empty() && !opt->blank(PREF_CATEGORY_DIR) &&
+  if ((scope & 1) > 0 && !suffixPath.empty() && !opt->blank(PREF_CATEGORY_DIR) &&
       !suffixPathIsAbsolute) {
     std::string catrgoryDir =
         mathCatrgoryDir(opt->get(PREF_CATEGORY_DIR), suffixPath);
