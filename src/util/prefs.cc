@@ -593,5 +593,6 @@ PrefPtr PREF_METALINK_ENABLE_UNIQUE_PROTOCOL =
 PrefPtr PREF_METALINK_BASE_URI = makePref("metalink-base-uri");
 
 PrefPtr PREF_CATEGORY_DIR = makePref("category-dir");
+PrefPtr PREF_CATEGORY_DIR_SCOPE = makePref("category-dir-scope");
 
 } // namespace aria2

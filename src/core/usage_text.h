@@ -1136,4 +1136,11 @@
     "                              expmple download auto sub dir\n"\
     "                              aria2c --category-dir=\"archive:.zip,.rar;text:.txt,.md\" http://host/file.rar\n")
 
+
+#define TEXT_CATEGORY_DIR_SCOPE \
+  _(" --category-dir-scope=NUM\n"\
+    "                              Set category-dir scope of influence, use num bitwise, default is 1.\n" \
+    "                              1: auto suffixPath use\n" \
+    "                              2: --out flag use\n")
+
 // clang-format on
