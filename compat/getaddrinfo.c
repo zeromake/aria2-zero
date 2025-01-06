@@ -119,7 +119,7 @@
 #endif
 
 #ifdef ENABLE_NLS
-#  include <libintl.h>
+#include <boost/locale/libintl.h>
 #endif
 
 #ifndef HAVE_MEMCPY

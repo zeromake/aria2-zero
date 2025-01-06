@@ -111,10 +111,15 @@ bool Platform::setUp()
   global::initGmp();
 #endif // HAVE_LIBGMP
 #ifdef ENABLE_NLS
-  setlocale(LC_CTYPE, "");
-  setlocale(LC_MESSAGES, "");
-  bindtextdomain(PACKAGE, LOCALEDIR);
-  textdomain(PACKAGE);
+#ifdef LOCALEDIR
+  std::string localeDir = LOCALEDIR;
+#else
+  std::string localeDir = aria2::util::applyDir(aria2::util::getProgramLocation(), "../share/locale");
+#endif
+  boost_locale_add_domain(PACKAGE);
+  boost_locale_add_path(localeDir.c_str());
+  boost_locale_generate("");
+  // printf("locale id is:%s\n", textdomain_lid());
 #endif // ENABLE_NLS
 
 #ifdef HAVE_OPENSSL

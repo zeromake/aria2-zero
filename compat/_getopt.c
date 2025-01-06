@@ -73,8 +73,8 @@ contain conflicting prototypes for getopt.  */
 
 #ifndef _
 /* This is for other GNU distributions with internationalized messages.  */
-#  if (HAVE_LIBINTL_H && ENABLE_NLS) || defined _LIBC
-#    include <libintl.h>
+#  if ENABLE_NLS
+#    include <boost/locale/libintl.h>
 #    ifndef _
 #      define _(msgid) gettext(msgid)
 #    endif

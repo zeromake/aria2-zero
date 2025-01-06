@@ -48,6 +48,7 @@
 #include "Exception.h"
 #include "console.h"
 #include "LogFactory.h"
+#include "util.h"
 
 namespace aria2 {
 

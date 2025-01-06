@@ -139,6 +139,7 @@ set_configvar("ENABLE_WEBSOCKET", 1)
 set_configvar("ENABLE_ASYNC_DNS", 1)
 set_configvar("USE_INTERNAL_MD", 1)
 set_configvar("ENABLE_COMMONAD_DELTA_DEBUG", 1)
+set_configvar("ENABLE_NLS", 1)
 
 if is_plat("windows", "mingw") then
     add_defines("_POSIX_C_SOURCE=1")
@@ -324,6 +325,7 @@ target("aria2")
         "c-ares",
         "libressl",
         "ssh2",
+        "boost.intl",
         {public = true}
     )
     add_configfiles("config.h.in")

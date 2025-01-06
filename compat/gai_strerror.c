@@ -29,7 +29,7 @@
 #include "gai_strerror.h"
 
 #ifdef ENABLE_NLS
-#  include <libintl.h>
+#include <boost/locale/libintl.h>
 #endif
 
 #ifdef ENABLE_NLS

@@ -75,7 +75,7 @@
 // it is defined as non-function form, this causes compile error. User
 // reported gcc-4.2.2 has this problem. But gcc-4.4.5 does not suffer
 // from this problem.
-#  include <gettext.h>
+#include <boost/locale/libintl.h>
 #  define _(String) gettext(String)
 #else // ENABLE_NLS
 #  define _(String) String
