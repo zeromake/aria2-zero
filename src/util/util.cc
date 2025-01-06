@@ -2722,7 +2722,10 @@ std::string getProgramLocation() {
                      util::formatLastError(errNum).c_str()));
     return A2STR::NIL;
   }
-  return wCharToUtf8(out);
+  std::wstring o(out);
+  auto pos = o.find_last_of(L"/\\");
+  o = pos != std::wstring::npos ? o.substr(0, pos) : o;
+  return wCharToUtf8(o);
 #elif defined(__APPLE__)
   char out[PATH_MAX];
   uint32_t size = sizeof(out);

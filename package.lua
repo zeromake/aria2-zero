@@ -13,3 +13,6 @@ add_requires("boost.intl", {configs = {debug = true}})
 if get_config("unit") then
     add_requires("cppunit", {optional = true})
 end
+if is_plat("windows", "mingw") then
+    add_requires("gettext-tools", {optional = true})
+end

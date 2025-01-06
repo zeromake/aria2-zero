@@ -1,6 +1,7 @@
 #include "common.h"
 
 #include <iostream>
+#include <locale>
 
 #include <cppunit/CompilerOutputter.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
@@ -20,8 +21,10 @@ int main(int argc, char* argv[])
 
 #ifdef ENABLE_NLS
   // Set locale to C to prevent the messages to be localized.
-  setlocale(LC_CTYPE, "C");
-  setlocale(LC_MESSAGES, "C");
+  setlocale(LC_ALL, "C");
+#ifdef _WIN32
+  _wsetlocale(LC_ALL, L".65001");
+#endif
 #endif // ENABLE_NLS
 
   // By default, SocketCore uses AF_UNSPEC for getaddrinfo hints to

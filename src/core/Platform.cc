@@ -110,6 +110,10 @@ bool Platform::setUp()
 #ifdef HAVE_LIBGMP
   global::initGmp();
 #endif // HAVE_LIBGMP
+#ifdef _WIN32
+  setlocale(LC_ALL, ".65001");
+  _wsetlocale(LC_ALL, L".65001");
+#endif
 #ifdef ENABLE_NLS
 #ifdef LOCALEDIR
   std::string localeDir = LOCALEDIR;
@@ -118,8 +122,8 @@ bool Platform::setUp()
 #endif
   boost_locale_add_domain(PACKAGE);
   boost_locale_add_path(localeDir.c_str());
-  boost_locale_generate("");
-  // printf("locale id is:%s\n", textdomain_lid());
+  const char* lid = boost_locale_generate("");
+  // printf("locale dir is: %s -> %s\n", lid, localeDir.c_str());
 #endif // ENABLE_NLS
 
 #ifdef HAVE_OPENSSL
