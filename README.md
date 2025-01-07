@@ -20,6 +20,8 @@ You must use this program at your own risk.
 - 应用了 [#2209](https://github.com/aria2/aria2/pull/2209) 补丁，未认证时没有正确回收 socket
 - 把两个明显的执行时间过长的命令使用 `ThreadPool` 改为异步执行：`AutoSaveCommand`, `FileAllocationCommand` （不能保证改修改正确，线程里的调用确实在访问 `DownloadEngine` 的数据）[#2059](https://github.com/aria2/aria2/issues/2059), [#2134](https://github.com/aria2/aria2/issues/2134)
 - 下载列表文件支持 utf8 的 bom `"\xEF\xBB\xBF"` 开头跳过 [2021](https://github.com/aria2/aria2/issues/2021)
+- 添加 `--category-dir` 和 `--category-dir-scope` 选项支持简单的后缀匹配添加目录分类
+- 支持跨平台的 `mo` 翻译文件加载支持
 
 ## ChangeLog
 
@@ -31,7 +33,7 @@ You must use this program at your own risk.
     + [x] windows 的 x64,x86,arm64
     + [x] osx 的 x86_64,arm64,universal
     + [x] linux 的 x86_64
-- [ ] 支持 windows 下的 po 翻译文件加载
+- [x] 支持 windows 下的 po 翻译文件加载
 - [ ] 从上游拉一些值得修复的问题
     + [x] [findFirstDiskWriterEntry 可能越界](https://github.com/aria2/aria2/issues/2216)
     + [x] [Metalink v3 支持新命名空间](https://github.com/aria2/aria2/issues/2267)
