@@ -18,20 +18,20 @@ jobs:
       - name: build x86
         env:
           VERSION: ${{ github.ref_name }}
-        run: xmake f -a x86 -c -y && xmake b
+        run: xmake f -a x86 -c -y && xmake pack aria2
       - name: build x64
         env:
           VERSION: ${{ github.ref_name }}
-        run: xmake f -a x64 -c -y && xmake b
+        run: xmake f -a x64 -c -y && xmake pack aria2
       - name: build arm64
         env:
           VERSION: ${{ github.ref_name }}
-        run: xmake f -a arm64 -c -y && xmake b
+        run: xmake f -a arm64 -c -y && xmake pack aria2
       - uses: actions/upload-artifact@v4
         with:
           name: aria2c-windows-${{ github.run_id }}
           path: |
-            dist/*.exe
+            build/xpack/aria2/*.zip
   build-linux:
     runs-on: ubuntu-latest
     steps:
@@ -43,12 +43,12 @@ jobs:
       - name: build x64
         env:
           VERSION: ${{ github.ref_name }}
-        run: xmake f -a x86_64 -c -y && xmake b
+        run: xmake f -a x86_64 -c -y && xmake pack aria2
       - uses: actions/upload-artifact@v4
         with:
           name: aria2c-linux-${{ github.run_id }}
           path: |
-            dist/*
+            build/xpack/aria2/*.zip
   build-macos:
     runs-on: macos-latest
     steps:
@@ -58,18 +58,16 @@ jobs:
       - name: build x64
         env:
           VERSION: ${{ github.ref_name }}
-        run: xmake f -a x86_64 -c -y && xmake b
+        run: xmake f -a x86_64 -c -y && xmake pack aria2
       - name: build arm64
         env:
           VERSION: ${{ github.ref_name }}
-        run: xmake f -a arm64 -c -y && xmake b
-      - name: build universal
-        run: lipo -create -output dist/aria2c-macosx-universal dist/aria2c-macosx-x86_64 dist/aria2c-macosx-arm64
+        run: xmake f -a arm64 -c -y && xmake pack aria2
       - uses: actions/upload-artifact@v4
         with:
           name: aria2c-macos-${{ github.run_id }}
           path: |
-            dist/*
+            build/xpack/aria2/*.zip
   update-release:
     runs-on: ubuntu-latest
     permissions:
@@ -90,16 +88,10 @@ jobs:
           path: dist
       - name: list file
         run: |
-          ls -R
+          ls -R build/xpack/aria2
       - name: update
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/') && github.ref_name != 'v0.0.0'
         with:
           files: |
-            dist/aria2c-linux-x86_64
-            dist/aria2c-macosx-arm64
-            dist/aria2c-macosx-universal
-            dist/aria2c-macosx-x86_64
-            dist/aria2c-windows-arm64.exe
-            dist/aria2c-windows-x64.exe
-            dist/aria2c-windows-x86.exe
+            dist/*.zip
