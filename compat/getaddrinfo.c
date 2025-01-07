@@ -119,7 +119,7 @@
 #endif
 
 #ifdef ENABLE_NLS
-#  include <libintl.h>
+#include <boost/locale/libintl.h>
 #endif
 
 #ifndef HAVE_MEMCPY
@@ -143,15 +143,23 @@ extern int h_errno;
 
 #include "getaddrinfo.h"
 
+
 #ifdef ENABLE_NLS
-#  define _(string) gettext(string)
+#define __DIABLE_COMPATIBLE_GETTEXT 1
+#include <boost/locale/libintl.h>
+#endif
+
+#ifdef ENABLE_NLS
+#  define _(msgid) boost_locale_gettext(msgid)
 #  ifdef gettext_noop
 #    define N_(string) gettext_noop(string)
 #  else
 #    define N_(string) (string)
 #  endif
 #else
+#ifndef gettext
 #  define gettext(string) (string)
+#endif
 #  define _(string) (string)
 #  define N_(string) (string)
 #endif
@@ -230,7 +238,7 @@ int ecode;
   if (ecode < 0 || ecode > EAI_SYSTEM)
     return _("Unknown error");
 
-  return gettext(eai_errlist[ecode]);
+  return _(eai_errlist[ecode]);
 }
 
 /*

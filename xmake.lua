@@ -1,4 +1,5 @@
 includes("@builtin/check")
+includes("@builtin/xpack")
 add_rules("mode.debug", "mode.release")
 
 option("uv")
@@ -24,6 +25,7 @@ local ssl_external = get_config("ssl_external") or is_plat("linux", "android")
 includes("package.lua")
 set_languages("c++14")
 set_encodings("utf-8")
+set_license("GPL-2.0")
 set_rundir(".")
 add_defines("CXX11_OVERRIDE=override")
 set_configdir("$(buildir)/config")
@@ -139,6 +141,7 @@ set_configvar("ENABLE_WEBSOCKET", 1)
 set_configvar("ENABLE_ASYNC_DNS", 1)
 set_configvar("USE_INTERNAL_MD", 1)
 set_configvar("ENABLE_COMMONAD_DELTA_DEBUG", 1)
+set_configvar("ENABLE_NLS", 1)
 
 if is_plat("windows", "mingw") then
     add_defines("_POSIX_C_SOURCE=1")
@@ -317,6 +320,7 @@ target("aria2")
     end
 
     add_includedirs("include", "deps/wslay/lib/includes")
+    add_headerfiles("include/(aria2/*.h)")
     add_packages(
         "expat",
         "zlib",
@@ -324,6 +328,7 @@ target("aria2")
         "c-ares",
         "libressl",
         "ssh2",
+        "boost.intl",
         {public = true}
     )
     add_configfiles("config.h.in")
@@ -333,7 +338,26 @@ target("aria2")
     end
 target_end()
 
+rule("mo")
+    set_extensions(".po")
+    on_buildcmd_file(function (target, batchcmds, sourcefile, opt)
+        import("lib.detect.find_tool")
+        local msgfmt = assert(find_tool("msgfmt"), "msgfmt not found!")
+        local targetdir = path.join(string.vformat("$(buildir)/locale"), path.basename(sourcefile), "LC_MESSAGES")
+        batchcmds:mkdir(targetdir)
+        local mo = path.join(targetdir, "aria2-zero.mo")
+        batchcmds:show_progress(opt.progress, "${color.build.object}compiling %s", sourcefile)
+        batchcmds:vrunv(msgfmt.program, {"-o", mo, sourcefile})
+        batchcmds:add_depfiles(sourcefile, mo)
+    end)
+rule_end()
+
 target("aria2c")
+    if is_plat("windows", "mingw") then
+        add_packages("gettext-tools")
+    end
+    add_rules("mo")
+    add_files("po/*.po")
     add_files("src/*.cc")
     add_deps("aria2")
     add_includedirs("include", "compat", "src/core", "src/tls", "src/network", "src/util")
@@ -346,6 +370,18 @@ target("aria2c")
         local ext = is_plat("windows") and ".exe" or ""
         os.cp(target:targetfile(), format("dist/aria2c-%s-%s%s", target:plat(), target:arch(), ext))
     end)
+
+xpack("aria2")
+    set_title("aria2")
+    set_description("aria2 is a lightweight multi-protocol & multi-source command-line download utility.")
+    set_formats("zip")
+    set_version(PROJECT_VERSION)
+    set_homepage("https://github.com/zeromake/aria2-zero")
+    set_author("zeromake<a390720046@gmail.com>")
+    add_targets("aria2", "aria2c")
+    add_installfiles("build/(locale/*/LC_MESSAGES/aria2-zero.mo)", {prefixdir = "share"})
+    set_basename("aria2-$(plat)-$(arch)")
+xpack_end()
 
 if get_config("unit") then
 target("test")

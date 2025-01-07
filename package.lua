@@ -6,8 +6,13 @@ add_requires(
     "sqlite3",
     "c-ares",
     "libressl",
-    "ssh2"
+    "ssh2",
+    "nonstd.string-view"
 )
+add_requires("boost.intl", {configs = {debug = true}})
 if get_config("unit") then
     add_requires("cppunit", {optional = true})
+end
+if is_plat("windows", "mingw") then
+    add_requires("gettext-tools", {optional = true})
 end

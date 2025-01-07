@@ -85,10 +85,12 @@ WrDiskCacheEntry::DataCell* createDataCell(int64_t goff, const char* data,
   WrDiskCacheEntry::DataCell* cell = new WrDiskCacheEntry::DataCell();
   cell->goff = goff;
   size_t len = strlen(data);
+  assert(len >= offset);
   cell->data = new unsigned char[len];
   memcpy(cell->data, data, len);
   cell->offset = offset;
-  cell->len = cell->capacity = len - offset;
+  cell->len = len - offset;
+  cell->capacity = cell->len;
   return cell;
 }
 

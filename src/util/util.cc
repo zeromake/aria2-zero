@@ -2708,6 +2708,49 @@ void commonFileEntrySetPath(const std::shared_ptr<FileEntry>& fileEntry,
   return;
 }
 
+#if defined(__APPLE__)
+#include <mach-o/dyld.h>
+#include <sys/syslimits.h>
+#endif
+
+std::string getProgramLocation() {
+#ifdef _WIN32
+  wchar_t out[MAX_PATH];
+  if (GetModuleFileNameW(nullptr, out, MAX_PATH) == 0) {
+    auto errNum = GetLastError();
+    A2_LOG_ERROR(fmt("GetModuleFileNameW() failed. cause: %s",
+                     util::formatLastError(errNum).c_str()));
+    return A2STR::NIL;
+  }
+  std::wstring o(out);
+  auto pos = o.find_last_of(L"/\\");
+  o = pos != std::wstring::npos ? o.substr(0, pos) : o;
+  return wCharToUtf8(o);
+#elif defined(__APPLE__)
+  char out[PATH_MAX];
+  uint32_t size = sizeof(out);
+  if (_NSGetExecutablePath(out, &size) != 0) {
+    A2_LOG_ERROR("Failed to get executable path.");
+    return A2STR::NIL;
+  }
+  std::string o(out);
+  auto pos = o.find_last_of('/');
+  return pos != std::string::npos ? o.substr(0, pos) : o;
+#else
+  char out[PATH_MAX];
+  ssize_t len = readlink("/proc/self/exe", out, sizeof(out));
+  if (len == -1) {
+    auto errNum = errno;
+    A2_LOG_ERROR(fmt("readlink() failed. cause: %s",
+                     util::safeStrerror(errNum).c_str()));
+    return A2STR::NIL;
+  }
+  std::string o(out, len);
+  auto pos = o.find_last_of('/');
+  return pos != std::string::npos ? o.substr(0, pos) : o;
+#endif
+}
+
 } // namespace util
 
 } // namespace aria2

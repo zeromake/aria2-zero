@@ -893,6 +893,8 @@ void commonFileEntrySetPath(const std::shared_ptr<FileEntry>& fileEntry,
                             const std::string& suffixPath,
                             const bool isRemoteSuffixPath = false);
 
+std::string getProgramLocation();
+
 } // namespace util
 
 } // namespace aria2
