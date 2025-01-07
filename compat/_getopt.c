@@ -74,9 +74,10 @@ contain conflicting prototypes for getopt.  */
 #ifndef _
 /* This is for other GNU distributions with internationalized messages.  */
 #  if ENABLE_NLS
+#    define __DIABLE_COMPATIBLE_GETTEXT 1
 #    include <boost/locale/libintl.h>
 #    ifndef _
-#      define _(msgid) gettext(msgid)
+#      define _(msgid) boost_locale_gettext(msgid)
 #    endif
 #  else
 #    define _(msgid) (msgid)
