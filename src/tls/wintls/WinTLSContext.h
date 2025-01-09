@@ -41,6 +41,7 @@
 
 #include <string>
 
+#include <subauth.h>
 #include <windows.h>
 #include <security.h>
 #include <schnlsp.h>
@@ -88,9 +89,11 @@ public:
 
   CredHandle* getCredHandle();
 
+  static bool isTLS13Supported();
 private:
   TLSSessionSide side_;
-  SCHANNEL_CRED credentials_;
+  DWORD credentialsFlags_;
+  int enabled_protocols_;
   HCERTSTORE store_;
   wintls::CredPtr cred_;
 };

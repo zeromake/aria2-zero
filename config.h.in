@@ -156,6 +156,7 @@ ${define HAVE_GZSETPARAMS}
 #endif
 
 #ifdef HAVE_WINDOWS_H
+${define SCHANNEL_USE_BLACKLISTS}
 #ifdef _MSC_VER
 #define NOMINMAX
 #if (!defined(HAVE_SSIZE_T) && !defined(ssize_t))
