@@ -61,6 +61,7 @@ You must use this program at your own risk.
     + [ ] Range 拼接错误 [1](https://github.com/aria2/aria2/issues/1971), [2](https://github.com/aria2/aria2/issues/1344#issuecomment-1570701152), [3](https://github.com/aria2/aria2/pull/1587)
     + [ ] [Socks5h 代理支持](https://github.com/aria2/aria2/issues/1830)
     + [ ] [bitTorrent v2 支持](https://github.com/aria2/aria2/issues/1685)
+    + [ ] [Content-Disposition 正确的解析实现](https://github.com/aria2/aria2/issues/1118)
     + [ ] [进度](https://github.com/aria2/aria2/issues?page=17&q=is%3Aissue+is%3Aopen)
 - [ ] 标记一些有报告，但是没有问题的 issues
     - [无法使用 ip 直连下载内网文件](https://github.com/aria2/aria2/issues/2049)
