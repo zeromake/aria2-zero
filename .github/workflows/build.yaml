@@ -28,7 +28,7 @@ jobs:
           VERSION: ${{ github.ref_name }}
         run: xmake f -a arm64 -c -y -vD && xmake pack aria2
       - name: cp
-        run: cp build/xpack/aria2/*.zip dist/
+        run: mkdir -p dist && cp build/xpack/aria2/*.zip dist/
       - uses: actions/upload-artifact@v4
         with:
           name: aria2c-windows-${{ github.run_id }}
@@ -51,7 +51,7 @@ jobs:
           VERSION: ${{ github.ref_name }}
         run: xmake f -a x86_64 -c -y && xmake pack aria2
       - name: cp
-        run: cp build/xpack/aria2/*.zip dist/
+        run: mkdir -p dist && cp build/xpack/aria2/*.zip dist/
       - uses: actions/upload-artifact@v4
         with:
           name: aria2c-linux-${{ github.run_id }}
@@ -74,7 +74,7 @@ jobs:
       # - name: build universal
       #   run: lipo -create -output dist/aria2c-macosx-universal dist/aria2c-macosx-x86_64 dist/aria2c-macosx-arm64
       - name: cp
-        run: cp build/xpack/aria2/*.zip dist/
+        run: mkdir -p dist && cp build/xpack/aria2/*.zip dist/
       - uses: actions/upload-artifact@v4
         with:
           name: aria2c-macos-${{ github.run_id }}
