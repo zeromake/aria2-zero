@@ -12,7 +12,7 @@ jobs:
         with:
           xmake-version: latest
       - name: test
-        run: xmake f -c -y --unit=y -vD && xmake b test && xmake r test
+        run: xmake f -c -y --unit=y && xmake b test && xmake r test
   test-linux:
     runs-on: ubuntu-latest
     steps:
@@ -22,7 +22,7 @@ jobs:
         with:
           xmake-version: latest
       - name: test
-        run: xmake f -c -y --unit=y -vD && xmake b test && xmake r test
+        run: xmake f -c -y --unit=y && xmake b test && xmake r test
   test-macos:
     runs-on: macos-latest
     steps:
@@ -30,4 +30,4 @@ jobs:
       - name: xmake
         run: brew install xmake && xmake --version
       - name: test
-        run: xmake f -c -y --unit=y -vD && xmake b test && xmake r test
+        run: xmake f -c -y --unit=y && xmake b test && xmake r test
