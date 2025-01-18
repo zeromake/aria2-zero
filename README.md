@@ -22,6 +22,8 @@ You must use this program at your own risk.
 - 下载列表文件支持 utf8 的 bom `"\xEF\xBB\xBF"` 开头跳过 [2021](https://github.com/aria2/aria2/issues/2021)
 - 添加 `--category-dir` 和 `--category-dir-scope` 选项支持简单的后缀匹配添加目录分类
 - 支持跨平台的 `mo` 翻译文件加载支持
+- 为 windows 下的 tls1.3 添加支持，顺便修复 windows 下的 `tls` 调用 `recv` 返回为 0 直接关闭会导致一些情况下多次重试并失败。
+- 改为使用 openssl3 可以为 macosx 支持 tls1.3
 
 ## ChangeLog
 

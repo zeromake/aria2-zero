@@ -196,7 +196,7 @@ int WinTLSSession::closeConnection()
       SEC_CHAR* host = hostname_.empty()
                            ? nullptr
                            : const_cast<SEC_CHAR*>(hostname_.c_str());
-      status_ = ::InitializeSecurityContext(cred_, &handle_, host, kReqFlags, 0,
+      status_ = ::InitializeSecurityContextA(cred_, &handle_, host, kReqFlags, 0,
                                             0, nullptr, 0, &handle_, &desc,
                                             &flags, nullptr);
     }
@@ -494,9 +494,11 @@ ssize_t WinTLSSession::readData(void* data, size_t len)
       return TLS_ERR_ERROR;
     }
     if (read == 0) {
-      A2_LOG_DEBUG("WinTLS: Connection abruptly closed!");
-      // At least try to gracefully close our write end.
-      closeConnection();
+      // closeConnection 的话 DecryptMessage 就会无法解析，所以这里不关闭连接，等 DecryptMessage 后再关闭
+      A2_LOG_DEBUG(fmt("WinTLS: recv break buffered: %" PRIu64, (uint64_t)readBuf_.size()));
+      // A2_LOG_DEBUG("WinTLS: Connection abruptly closed!");
+      // // At least try to gracefully close our write end.
+      // closeConnection();
       break;
     }
     readBuf_.advance(read);
@@ -606,7 +608,7 @@ restart:
     TLSBufferDesc desc(&buf, 1);
     SEC_CHAR* host =
         hostname_.empty() ? nullptr : const_cast<SEC_CHAR*>(hostname_.c_str());
-    status_ = ::InitializeSecurityContext(cred_, nullptr, host, kReqFlags, 0, 0,
+    status_ = ::InitializeSecurityContextA(cred_, nullptr, host, kReqFlags, 0, 0,
                                           nullptr, 0, &handle_, &desc, &flags,
                                           nullptr);
     if (status_ != SEC_I_CONTINUE_NEEDED) {
@@ -710,13 +712,14 @@ restart:
     TLSBuffer outbufs[] = {
         TLSBuffer(SECBUFFER_TOKEN, 0, nullptr),
         TLSBuffer(SECBUFFER_ALERT, 0, nullptr),
+        TLSBuffer(SECBUFFER_EMPTY, 0, nullptr),
     };
-    TLSBufferDesc outdesc(outbufs, 2);
+    TLSBufferDesc outdesc(outbufs, 3);
     if (side_ == TLS_CLIENT) {
       SEC_CHAR* host = hostname_.empty()
                            ? nullptr
                            : const_cast<SEC_CHAR*>(hostname_.c_str());
-      status_ = ::InitializeSecurityContext(cred_, &handle_, host, kReqFlags, 0,
+      status_ = ::InitializeSecurityContextA(cred_, &handle_, host, kReqFlags, 0,
                                             0, &indesc, 0, nullptr, &outdesc,
                                             &flags, nullptr);
     }
@@ -787,14 +790,19 @@ restart:
     state_ = st_connected;
     A2_LOG_INFO(
         fmt("WinTLS: connected with: %s", getCipherSuite(&handle_).c_str()));
-    switch (getProtocolVersion(&handle_)) {
+    auto proto = getProtocolVersion(&handle_);
+    switch (proto) {
     case 0x302:
       version = TLS_PROTO_TLS11;
       break;
     case 0x303:
       version = TLS_PROTO_TLS12;
       break;
+    case 0x304:
+      version = TLS_PROTO_TLS13;
+      break;
     default:
+      A2_LOG_ERROR(fmt("Unknown protocol version: %d", proto));
       assert(0);
       abort();
     }
