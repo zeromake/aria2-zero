@@ -15,6 +15,10 @@ jobs:
         uses: xmake-io/github-action-setup-xmake@v1
         with:
           xmake-version: latest
+      - name: build arm64
+        env:
+          VERSION: ${{ github.ref_name }}
+        run: xmake f -a arm64 -c -y -vD && xmake pack aria2
       - name: build x86
         env:
           VERSION: ${{ github.ref_name }}
@@ -23,12 +27,8 @@ jobs:
         env:
           VERSION: ${{ github.ref_name }}
         run: xmake f -a x64 -c -y && xmake pack aria2
-      - name: build arm64
-        env:
-          VERSION: ${{ github.ref_name }}
-        run: xmake f -a arm64 -c -y -vD && xmake pack aria2
       - name: cp
-        run: mkdir -p dist && cp build/xpack/aria2/*.zip dist/
+        run: cp build/xpack/aria2/*.zip dist/
       - uses: actions/upload-artifact@v4
         with:
           name: aria2c-windows-${{ github.run_id }}
