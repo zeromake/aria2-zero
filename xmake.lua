@@ -367,11 +367,11 @@ target("aria2c")
     if is_plat("mingw") then
         add_ldflags("-static")
     end
-    after_build(function (target)
-        os.mkdir("dist")
-        local ext = is_plat("windows") and ".exe" or ""
-        os.cp(target:targetfile(), format("dist/aria2c-%s-%s%s", target:plat(), target:arch(), ext))
-    end)
+    -- after_build(function (target)
+    --     os.mkdir("dist")
+    --     local ext = is_plat("windows") and ".exe" or ""
+    --     os.cp(target:targetfile(), format("dist/aria2c-%s-%s%s", target:plat(), target:arch(), ext))
+    -- end)
 
 xpack("aria2")
     set_title("aria2")
