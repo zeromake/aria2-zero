@@ -145,6 +145,7 @@ set_configvar("ENABLE_NLS", 1)
 
 if is_plat("windows", "mingw") then
     add_defines("_POSIX_C_SOURCE=1")
+    set_configvar("SCHANNEL_USE_BLACKLISTS", 1)
 else
     add_defines("_GNU_SOURCE=1")
     set_configvar("ENABLE_PTHREAD", 1)
@@ -326,7 +327,7 @@ target("aria2")
         "zlib",
         "sqlite3",
         "c-ares",
-        "libressl",
+        "quictls",
         "ssh2",
         "boost.intl",
         {public = true}
@@ -355,6 +356,7 @@ rule_end()
 target("aria2c")
     if is_plat("windows", "mingw") then
         add_packages("gettext-tools")
+        add_files("src/resource.rc")
     end
     add_rules("mo")
     add_files("po/*.po")

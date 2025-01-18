@@ -5,11 +5,11 @@ add_requires(
     "zlib",
     "sqlite3",
     "c-ares",
-    "libressl",
-    "ssh2",
+    "quictls",
     "nonstd.string-view"
 )
-add_requires("boost.intl", {configs = {debug = true}})
+add_requires("boost.intl")
+add_requires("ssh2", {configs = {quictls = true}})
 if get_config("unit") then
     add_requires("cppunit", {optional = true})
 end

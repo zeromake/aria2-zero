@@ -37,6 +37,7 @@
 
 #include <cassert>
 #include <sstream>
+#include <versionhelpers.h>
 
 #include "BufferedFile.h"
 #include "LogFactory.h"
@@ -68,18 +69,18 @@
 namespace aria2 {
 
 WinTLSContext::WinTLSContext(TLSSessionSide side, TLSVersion ver)
-    : side_(side), store_(0)
+    : side_(side), store_(0), credentialsFlags_(0), enabled_protocols_(0)
 {
-  memset(&credentials_, 0, sizeof(credentials_));
-  credentials_.dwVersion = SCHANNEL_CRED_VERSION;
-  credentials_.grbitEnabledProtocols = 0;
   if (side_ == TLS_CLIENT) {
     switch (ver) {
     case TLS_PROTO_TLS11:
-      credentials_.grbitEnabledProtocols |= SP_PROT_TLS1_1_CLIENT;
+      enabled_protocols_ |= SP_PROT_TLS1_1_CLIENT;
     // fall through
     case TLS_PROTO_TLS12:
-      credentials_.grbitEnabledProtocols |= SP_PROT_TLS1_2_CLIENT;
+      enabled_protocols_ |= SP_PROT_TLS1_2_CLIENT;
+    // fall through
+    case TLS_PROTO_TLS13:
+      if (isTLS13Supported()) enabled_protocols_ |= SP_PROT_TLS1_3_CLIENT;
       break;
     default:
       assert(0);
@@ -89,22 +90,26 @@ WinTLSContext::WinTLSContext(TLSSessionSide side, TLSVersion ver)
   else {
     switch (ver) {
     case TLS_PROTO_TLS11:
-      credentials_.grbitEnabledProtocols |= SP_PROT_TLS1_1_SERVER;
+      enabled_protocols_ |= SP_PROT_TLS1_1_SERVER;
     // fall through
     case TLS_PROTO_TLS12:
-      credentials_.grbitEnabledProtocols |= SP_PROT_TLS1_2_SERVER;
+      enabled_protocols_ |= SP_PROT_TLS1_2_SERVER;
+      // fall through
+    case TLS_PROTO_TLS13:
+      if (isTLS13Supported()) enabled_protocols_ |= SP_PROT_TLS1_3_SERVER;
       break;
     default:
       assert(0);
       abort();
     }
   }
-
-  // Strong protocol versions: Use a minimum strength, which might be later
-  // refined using SCH_USE_STRONG_CRYPTO in the flags.
-  credentials_.dwMinimumCipherStrength = STRONG_CIPHER_BITS;
-
   setVerifyPeer(side_ == TLS_CLIENT);
+}
+
+bool WinTLSContext::isTLS13Supported()
+{
+  static bool supported = IsWindowsVersionOrGreater(10, 0, 0);
+  return supported;
 }
 
 TLSContext* TLSContext::make(TLSSessionSide side, TLSVersion ver)
@@ -124,7 +129,7 @@ WinTLSContext::~WinTLSContext()
 
 bool WinTLSContext::getVerifyPeer() const
 {
-  return credentials_.dwFlags & SCH_CRED_AUTO_CRED_VALIDATION;
+  return credentialsFlags_ & SCH_CRED_AUTO_CRED_VALIDATION;
 }
 
 void WinTLSContext::setVerifyPeer(bool verify)
@@ -133,27 +138,29 @@ void WinTLSContext::setVerifyPeer(bool verify)
 
   // Never automatically push any client or server certs. We'll do cert setup
   // ourselves.
-  credentials_.dwFlags = SCH_CRED_NO_DEFAULT_CREDS;
-
-  if (credentials_.dwMinimumCipherStrength > WEAK_CIPHER_BITS) {
-    // Enable strong crypto if we already set a minimum cipher streams.
-    // This might actually require even stronger algorithms, which is a good
-    // thing.
-    credentials_.dwFlags |= SCH_USE_STRONG_CRYPTO;
+  DWORD dwFlags = 0;
+  if (isTLS13Supported()) {
+    dwFlags = SCH_CRED_NO_DEFAULT_CREDS | SCH_USE_STRONG_CRYPTO;
+  } else {
+    dwFlags = SCH_CRED_NO_DEFAULT_CREDS;
+      // Enable strong crypto if we already set a minimum cipher streams.
+      // This might actually require even stronger algorithms, which is a good
+      // thing.
+      // dwFlags |= SCH_USE_STRONG_CRYPTO;
   }
-
   if (side_ != TLS_CLIENT || !verify) {
     // No verification for servers and if user explicitly requested it
-    credentials_.dwFlags |=
+    dwFlags |=
         SCH_CRED_MANUAL_CRED_VALIDATION | SCH_CRED_IGNORE_NO_REVOCATION_CHECK |
         SCH_CRED_IGNORE_REVOCATION_OFFLINE | SCH_CRED_NO_SERVERNAME_CHECK;
     return;
   }
 
   // Verify other side's cert chain.
-  credentials_.dwFlags |= SCH_CRED_AUTO_CRED_VALIDATION |
+  dwFlags |= SCH_CRED_AUTO_CRED_VALIDATION |
                           SCH_CRED_REVOCATION_CHECK_CHAIN |
                           SCH_CRED_IGNORE_NO_REVOCATION_CHECK;
+  credentialsFlags_ = dwFlags;
 }
 
 CredHandle* WinTLSContext::getCredHandle()
@@ -164,6 +171,30 @@ CredHandle* WinTLSContext::getCredHandle()
 
   TimeStamp ts;
   cred_.reset(new CredHandle());
+  CRYPTO_SETTINGS crypto_settings_[1];
+  TLS_PARAMETERS tls_parameters_;
+  SCH_CREDENTIALS credentials13_;
+
+  SCHANNEL_CRED credentials_;
+
+  if (isTLS13Supported()) {
+    A2_LOG_DEBUG("WinTLS: TLS 1.3 is supported");
+    memset(&tls_parameters_, 0, sizeof(TLS_PARAMETERS));
+    memset(&crypto_settings_, 0, sizeof(CRYPTO_SETTINGS));
+    memset(&credentials13_, 0, sizeof(SCH_CREDENTIALS));
+    tls_parameters_.pDisabledCrypto = crypto_settings_;
+    tls_parameters_.cDisabledCrypto = (DWORD)0;
+    credentials13_.dwVersion = SCH_CREDENTIALS_VERSION;
+    credentials13_.dwFlags = SCH_USE_STRONG_CRYPTO;
+    credentials13_.pTlsParameters = &tls_parameters_;
+    credentials13_.cTlsParameters = 1;
+    credentials13_.pTlsParameters->grbitDisabledProtocols = (DWORD)~enabled_protocols_;
+  } else {
+    memset(&credentials_, 0, sizeof(credentials_));
+    credentials_.dwVersion = SCHANNEL_CRED_VERSION;
+    credentials_.grbitEnabledProtocols = 0;
+    credentials_.grbitEnabledProtocols = enabled_protocols_;
+  }
 
   const CERT_CONTEXT* ctx = nullptr;
   if (store_) {
@@ -171,17 +202,28 @@ CredHandle* WinTLSContext::getCredHandle()
     if (!ctx) {
       throw DL_ABORT_EX("Failed to load certificate");
     }
-    credentials_.cCreds = 1;
-    credentials_.paCred = &ctx;
+    if (isTLS13Supported()) {
+      credentials13_.cCreds = 1;
+      credentials13_.paCred = &ctx;
+    } else {
+      credentials_.cCreds = 1;
+      credentials_.paCred = &ctx;
+    }
   }
   else {
-    credentials_.cCreds = 0;
-    credentials_.paCred = nullptr;
+    if (isTLS13Supported()) {
+      credentials13_.cCreds = 0;
+      credentials13_.paCred = nullptr;
+    } else {
+      credentials_.cCreds = 0;
+      credentials_.paCred = nullptr;
+    }
   }
+  void* credentials = isTLS13Supported() ? (void*)&credentials13_ : (void*)&credentials_;
   SECURITY_STATUS status = ::AcquireCredentialsHandleW(
       nullptr, (SEC_WCHAR*)UNISP_NAME_W,
       side_ == TLS_CLIENT ? SECPKG_CRED_OUTBOUND : SECPKG_CRED_INBOUND, nullptr,
-      &credentials_, nullptr, nullptr, cred_.get(), &ts);
+      credentials, nullptr, nullptr, cred_.get(), &ts);
   if (ctx) {
     ::CertFreeCertificateContext(ctx);
   }
