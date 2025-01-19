@@ -36,6 +36,7 @@ You must use this program at your own risk.
     + [x] osx 的 x86_64,arm64,universal
     + [x] linux 的 x86_64
 - [x] 支持 windows 下的 po 翻译文件加载
+- [ ] 不同域名的 https 链接不重用 socket，[测试示例](https://github.site/mstorsjo/llvm-mingw/releases/download/20250114/llvm-mingw-20250114-ucrt-x86_64.zip)
 - [ ] 从上游拉一些值得修复的问题
     + [x] [findFirstDiskWriterEntry 可能越界](https://github.com/aria2/aria2/issues/2216)
     + [x] [Metalink v3 支持新命名空间](https://github.com/aria2/aria2/issues/2267)

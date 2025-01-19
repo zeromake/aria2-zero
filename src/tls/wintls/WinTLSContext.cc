@@ -108,8 +108,7 @@ WinTLSContext::WinTLSContext(TLSSessionSide side, TLSVersion ver)
 
 bool WinTLSContext::isTLS13Supported()
 {
-  static bool supported = IsWindowsVersionOrGreater(10, 0, 0);
-  return supported;
+  return false;
 }
 
 TLSContext* TLSContext::make(TLSSessionSide side, TLSVersion ver)
