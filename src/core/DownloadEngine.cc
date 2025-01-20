@@ -92,8 +92,8 @@ volatile sig_atomic_t globalHaltRequested = 0;
 
 namespace {
 constexpr auto DEFAULT_REFRESH_INTERVAL = 1_s;
-constexpr auto A2_LOOP_DELTA_MILLIS = 100_ms;
-constexpr auto A2_COMMONAD_DELTA_MILLIS = 50_ms;
+constexpr auto A2_LOOP_DELTA_MILLIS = 300_ms;
+constexpr auto A2_COMMONAD_DELTA_MILLIS = 100_ms;
 } // namespace
 
 DownloadEngine::DownloadEngine(std::unique_ptr<EventPoll> eventPoll)
@@ -139,7 +139,7 @@ void executeCommand(std::deque<std::unique_ptr<Command>>& commands,
 #ifdef ENABLE_COMMONAD_DELTA_DEBUG
       auto difference = now.difference(aria2::Timer());
       if (difference > A2_COMMONAD_DELTA_MILLIS) {
-        A2_LOG_NOTICE(fmt("%s::execute done difference: %fms",
+        A2_LOG_WARN(fmt("%s::execute done difference: %fms",
                           com->classname().c_str(),
                           ((double)difference.count()) / 1000000.0));
       }
@@ -204,7 +204,7 @@ int DownloadEngine::run(bool oneshot)
 #ifdef ENABLE_COMMONAD_DELTA_DEBUG
     auto difference = now.difference(aria2::Timer());
     if (difference > A2_LOOP_DELTA_MILLIS) {
-      A2_LOG_NOTICE(fmt("executeCommand difference: %fms",
+      A2_LOG_WARN(fmt("executeCommand difference: %fms",
                         ((double)difference.count()) / 1000000.0));
     }
 #endif
