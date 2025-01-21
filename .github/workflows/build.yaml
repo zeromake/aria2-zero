@@ -31,7 +31,7 @@ jobs:
           VERSION: ${{ github.ref_name }}
         run: |
           $env:PATH += ";$env:PWD\llvm-mingw\bin"
-          xmake f -a x86_64 -c -y && xmake pack aria2
+          xmake f -p mingw -a x86_64 -c -y && xmake pack aria2
       # - name: build arm64
       #   env:
       #     VERSION: ${{ github.ref_name }}
