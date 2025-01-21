@@ -14,6 +14,12 @@ option("ssl_external")
     set_description("Use external ssl library")
 option_end()
 
+option("use_quictls")
+    set_default(true)
+    set_showmenu(true)
+    set_description("Use external use_quictls library")
+option_end()
+
 option("unit")
     set_default(false)
     set_showmenu(true)
@@ -327,7 +333,7 @@ target("aria2")
         "zlib",
         "sqlite3",
         "c-ares",
-        "quictls",
+        get_config("use_quictls") and "quictls" or "libressl",
         "ssh2",
         "boost.intl",
         {public = true}
