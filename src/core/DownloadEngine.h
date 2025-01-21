@@ -248,9 +248,11 @@ public:
 
   void addRoutineCommand(std::unique_ptr<Command> command);
 
-  void poolSocket(const std::string& ipaddr, uint16_t port,
+  void poolSocket(const std::string& ipaddr, const uint16_t port,
                   const std::string& username, const std::string& proxyhost,
-                  uint16_t proxyport, const std::shared_ptr<SocketCore>& sock,
+                  const uint16_t proxyport,
+                  const std::string& sni,
+                  const std::shared_ptr<SocketCore>& sock,
                   const std::string& options,
                   std::chrono::seconds timeout = 15_s);
 
@@ -261,8 +263,9 @@ public:
                   const std::string& options,
                   std::chrono::seconds timeout = 15_s);
 
-  void poolSocket(const std::string& ipaddr, uint16_t port,
-                  const std::string& proxyhost, uint16_t proxyport,
+  void poolSocket(const std::string& ipaddr, const uint16_t port,
+                  const std::string& proxyhost, const uint16_t proxyport,
+                  const std::string& sni,
                   const std::shared_ptr<SocketCore>& sock,
                   std::chrono::seconds timeout = 15_s);
 
@@ -272,21 +275,23 @@ public:
                   std::chrono::seconds timeout = 15_s);
 
   std::shared_ptr<SocketCore> popPooledSocket(const std::string& ipaddr,
-                                              uint16_t port,
+                                              const uint16_t port,
                                               const std::string& proxyhost,
-                                              uint16_t proxyport);
+                                              const uint16_t proxyport,
+                                              const std::string& sni);
 
   std::shared_ptr<SocketCore>
   popPooledSocket(std::string& options, const std::string& ipaddr,
                   uint16_t port, const std::string& username,
-                  const std::string& proxyhost, uint16_t proxyport);
+                  const std::string& proxyhost, uint16_t proxyport,
+                  const std::string& sni);
 
   std::shared_ptr<SocketCore>
-  popPooledSocket(const std::vector<std::string>& ipaddrs, uint16_t port);
+  popPooledSocket(const std::vector<std::string>& ipaddrs, uint16_t port, const std::string& sni);
 
   std::shared_ptr<SocketCore>
   popPooledSocket(std::string& options, const std::vector<std::string>& ipaddrs,
-                  uint16_t port, const std::string& username);
+                  uint16_t port, const std::string& username, const std::string& sni);
 
   void evictSocketPool();
 

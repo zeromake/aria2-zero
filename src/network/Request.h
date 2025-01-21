@@ -98,6 +98,9 @@ public:
   void setReferer(const std::string& uri);
   const std::string& getProtocol() const { return us_.protocol; }
   const std::string& getHost() const { return us_.host; }
+  const std::string& getSni() const {
+    return us_.protocol == "https" ? us_.host : A2STR::NIL;
+  }
   // Same as getHost(), but for IPv6 literal addresses, enclose them
   // with square brackets and return.
   std::string getURIHost() const;
