@@ -241,7 +241,7 @@
 #define EX_FILE_READ _("Failed to read from the file %s, cause: %s")
 #define EX_DATA_READ _("Failed to read data from disk.")
 #define EX_FILE_SHA1SUM _("Failed to calculate SHA1 digest of or a part of the file %s, cause: %s")
-#define EX_FILE_SEEK _("Failed to seek the file %s, cause: %s")
+#define EX_FILE_SEEK _("Failed to seek the file %s -> %lld, cause: %s")
 #define EX_FILE_OFFSET_OUT_OF_RANGE "The offset is out of range, offset=%" PRId64 ""
 #define EX_NOT_DIRECTORY _("%s is not a directory.")
 #define EX_MAKE_DIR _("Failed to make the directory %s, cause: %s")

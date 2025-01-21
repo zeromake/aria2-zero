@@ -336,7 +336,7 @@ void AbstractDiskWriter::seek(int64_t offset)
   {
     int errNum = fileError();
     throw DL_ABORT_EX2(
-        fmt(EX_FILE_SEEK, filename_.c_str(), fileStrerror(errNum).c_str()),
+        fmt(EX_FILE_SEEK, filename_.c_str(), offset, fileStrerror(errNum).c_str()),
         error_code::FILE_IO_ERROR);
   }
 }

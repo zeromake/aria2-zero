@@ -90,7 +90,7 @@ std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommandProxied(
   if (proxyMethod == V_GET) {
     pooledSocket = getDownloadEngine()->popPooledSocket(
         getRequest()->getHost(), getRequest()->getPort(),
-        proxyRequest->getHost(), proxyRequest->getPort());
+        proxyRequest->getHost(), proxyRequest->getPort(), proxyRequest->getSni());
   }
   else {
     pooledSocket = getDownloadEngine()->popPooledSocket(
@@ -99,7 +99,7 @@ std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommandProxied(
             ->getAuthConfigFactory()
             ->createAuthConfig(getRequest(), getOption().get())
             ->getUser(),
-        proxyRequest->getHost(), proxyRequest->getPort());
+        proxyRequest->getHost(), proxyRequest->getPort(), proxyRequest->getSni());
   }
 
   if (!pooledSocket) {
@@ -178,7 +178,7 @@ std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommandPlain(
           getDownloadEngine()
               ->getAuthConfigFactory()
               ->createAuthConfig(getRequest(), getOption().get())
-              ->getUser());
+              ->getUser(), getRequest()->getSni());
 
   if (!pooledSocket) {
     A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER, getCuid(), addr.c_str(), port));
