@@ -24,7 +24,7 @@ jobs:
           fileName: "llvm-mingw-*-ucrt-x86_64.zip"
       - name: Install llvm-mingw
         run: |
-          unzip llvm-mingw-*-ucrt-x86_64.zip && rm llvm-mingw-*-ucrt-x86_64.zip
+          unzip llvm-mingw-*-ucrt-x86_64.zip | Out-Null && rm llvm-mingw-*-ucrt-x86_64.zip
           mv llvm-mingw-* llvm-mingw
       - name: build x64
         env:
