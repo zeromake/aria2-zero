@@ -58,7 +58,7 @@ public:
   // Updates the already added entry |ent|. The |delta| means how many
   // bytes is increased in this update. If the size is reduced, use
   // negative value.
-  bool update(WrDiskCacheEntry* ent, ssize_t delta);
+  bool update(WrDiskCacheEntry* ent, int64_t delta);
   // Evicts entries from storage so that total size of cache is kept
   // under the limit.
   void ensureLimit();

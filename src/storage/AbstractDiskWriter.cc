@@ -269,7 +269,7 @@ ssize_t AbstractDiskWriter::writeDataInternal(const unsigned char* data,
     seek(offset);
     while ((size_t)writtenLength < len) {
 #ifdef _WIN32
-      DWORD nwrite;
+      DWORD nwrite = 0;
       if (WriteFile(fd_, data + writtenLength, len - writtenLength, &nwrite,
                     0)) {
         writtenLength += nwrite;
@@ -307,7 +307,7 @@ ssize_t AbstractDiskWriter::readDataInternal(unsigned char* data, size_t len,
   else {
     seek(offset);
 #ifdef _WIN32
-    DWORD nread;
+    DWORD nread = 0;
     if (ReadFile(fd_, data, len, &nread, 0)) {
       return nread;
     }

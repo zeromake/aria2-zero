@@ -433,8 +433,8 @@ ssize_t MultiDiskAdaptor::readData(unsigned char* data, size_t len,
 void MultiDiskAdaptor::writeCache(const WrDiskCacheEntry* entry)
 {
   for (auto& d : entry->getDataSet()) {
-    A2_LOG_DEBUG(fmt("Cache flush goff=%" PRId64 ", len=%lu", d->goff,
-                     static_cast<unsigned long>(d->len)));
+    A2_LOG_DEBUG(fmt("Cache flush goff=%" PRId64 ", len=%lld", d->goff,
+                     static_cast<int64_t>(d->len)));
     writeData(d->data + d->offset, d->len, d->goff);
   }
 }
