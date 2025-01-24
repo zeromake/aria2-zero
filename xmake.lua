@@ -231,8 +231,12 @@ target("aria2")
     set_kind("$(kind)")
     add_files("deps/wslay/lib/*.c")
     if is_mode("release") and get_config("with_breakpad") then
-        add_cxxflags("/Zi", "/FS", "/Fd$(buildir)\\$(plat)\\$(arch)\\release\\aria2.pdb")
-        add_ldflags("/DEBUG", "/PDB:$(buildir)\\$(plat)\\$(arch)\\release\\aria2c.pdb")
+        if is_plat("windows") then
+            add_cxflags("/Zi", "/FS", "/Fd$(buildir)\\$(plat)\\$(arch)\\release\\aria2.pdb")
+            add_ldflags("/DEBUG", "/PDB:$(buildir)\\$(plat)\\$(arch)\\release\\aria2.pdb")
+        else
+            add_cxflags("-g")
+        end
     end
     for _, dir in ipairs(sourceDirs) do
         add_files(dir .. "/*.cc")
@@ -371,8 +375,12 @@ rule_end()
 
 target("aria2c")
     if is_mode("release") and get_config("with_breakpad") then
-        add_cxxflags("-Zi", "-FS", "-Fd$(buildir)\\$(plat)\\$(arch)\\release\\aria2.pdb")
-        add_ldflags("/DEBUG", "/PDB:$(buildir)\\$(plat)\\$(arch)\\release\\aria2c.pdb")
+        if is_plat("windows") then
+            add_cxflags("/Zi", "/FS", "/Fd$(buildir)\\$(plat)\\$(arch)\\release\\aria2c.pdb")
+            add_ldflags("/DEBUG", "/PDB:$(buildir)\\$(plat)\\$(arch)\\release\\aria2c.pdb")
+        else
+            add_cxflags("-g")
+        end
     end
     if get_config("with_breakpad") then
         add_packages("breakpad")
