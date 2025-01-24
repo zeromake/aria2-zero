@@ -61,7 +61,7 @@ bool WrDiskCache::add(WrDiskCacheEntry* ent)
                      ent,
                      static_cast<int64_t>(ent->getSize()),
                      ent->getLastUpdate(), total_));
-    total_ += ent->getSize();
+    total_ += static_cast<int64_t>(ent->getSize());
     ensureLimit();
     return true;
   }
@@ -86,7 +86,7 @@ bool WrDiskCache::remove(WrDiskCacheEntry* ent)
                      ent,
                      static_cast<int64_t>(ent->getSize()),
                      ent->getLastUpdate(), total_));
-    total_ -= ent->getSize();
+    total_ -= static_cast<int64_t>(ent->getSize());
     return true;
   }
   else {
@@ -141,7 +141,7 @@ void WrDiskCache::ensureLimit()
                      ent,
                      static_cast<int64_t>(ent->getSizeKey()),
                      ent->getLastUpdate(), total_));
-    total_ -= ent->getSize();
+    total_ -= static_cast<int64_t>(ent->getSize());
     ent->writeToDisk();
     set_.erase(i);
 

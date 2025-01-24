@@ -20,6 +20,12 @@ option("use_quictls")
     set_description("Use external use_quictls library")
 option_end()
 
+option("with_breakpad")
+    set_default(false)
+    set_showmenu(true)
+    set_description("Use external with_breakpad library")
+option_end()
+
 option("unit")
     set_default(false)
     set_showmenu(true)
@@ -224,6 +230,10 @@ local sourceDirs = {
 target("aria2")
     set_kind("$(kind)")
     add_files("deps/wslay/lib/*.c")
+    if is_mode("release") and get_config("with_breakpad") then
+        add_cxxflags("/Zi", "/FS", "/Fd$(buildir)\\$(plat)\\$(arch)\\release\\aria2.pdb")
+        add_ldflags("/DEBUG", "/PDB:$(buildir)\\$(plat)\\$(arch)\\release\\aria2c.pdb")
+    end
     for _, dir in ipairs(sourceDirs) do
         add_files(dir .. "/*.cc")
         add_includedirs(dir)
@@ -360,6 +370,14 @@ rule("mo")
 rule_end()
 
 target("aria2c")
+    if is_mode("release") and get_config("with_breakpad") then
+        add_cxxflags("-Zi", "-FS", "-Fd$(buildir)\\$(plat)\\$(arch)\\release\\aria2.pdb")
+        add_ldflags("/DEBUG", "/PDB:$(buildir)\\$(plat)\\$(arch)\\release\\aria2c.pdb")
+    end
+    if get_config("with_breakpad") then
+        add_packages("breakpad")
+        add_defines("ENABLE_BREAKPAD=1")
+    end
     if is_plat("windows", "mingw") then
         add_packages("gettext-tools")
         add_files("src/resource.rc")
@@ -368,7 +386,7 @@ target("aria2c")
     add_files("po/*.po")
     add_files("src/*.cc")
     add_deps("aria2")
-    add_includedirs("include", "compat", "src/core", "src/tls", "src/network", "src/util")
+    add_includedirs("include", "compat", "src/core", "src/tls", "src/network", "src/util", "src/storage")
     add_defines("HAVE_CONFIG_H=1")
     if is_plat("mingw") then
         add_ldflags("-static")

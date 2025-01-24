@@ -62,14 +62,14 @@ public:
   // Evicts entries from storage so that total size of cache is kept
   // under the limit.
   void ensureLimit();
-  size_t getSize() const { return total_; }
+  int64_t getSize() const { return total_; }
 
 private:
   typedef std::set<WrDiskCacheEntry*, DerefLess<WrDiskCacheEntry*>> EntrySet;
   // Maximum number of bytes the storage can cache.
-  size_t limit_;
+  int64_t limit_;
   // Current number of bytes cached.
-  size_t total_;
+  int64_t total_;
   EntrySet set_;
   int64_t clock_;
 };
