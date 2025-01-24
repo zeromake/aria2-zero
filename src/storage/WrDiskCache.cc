@@ -57,10 +57,10 @@ bool WrDiskCache::add(WrDiskCacheEntry* ent)
   ent->setLastUpdate(++clock_);
   std::pair<EntrySet::iterator, bool> rv = set_.insert(ent);
   if (rv.second) {
-    A2_LOG_DEBUG(fmt("Add cache entry=%p, size=%" PRId64 ", clock=%" PRId64 ", total=%" PRId64,
-                     ent,
-                     static_cast<int64_t>(ent->getSize()),
-                     ent->getLastUpdate(), total_));
+    // A2_LOG_DEBUG(fmt("Add cache entry=%p, size=%" PRId64 ", clock=%" PRId64 ", total=%" PRId64,
+    //                  ent,
+    //                  static_cast<int64_t>(ent->getSize()),
+    //                  ent->getLastUpdate(), total_));
     total_ += static_cast<int64_t>(ent->getSize());
     ensureLimit();
     return true;
