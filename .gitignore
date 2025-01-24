@@ -50,3 +50,4 @@ build
 dist
 !config.h.in
 .DS_Store
+sym

@@ -22,3 +22,8 @@ end
 if is_plat("windows", "mingw") then
     add_requires("gettext-tools", {optional = true})
 end
+
+
+if get_config("with_breakpad") then
+    add_requires("breakpad")
+end

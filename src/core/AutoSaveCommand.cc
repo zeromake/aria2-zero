@@ -40,7 +40,7 @@ namespace aria2 {
 
 AutoSaveCommand::AutoSaveCommand(cuid_t cuid, DownloadEngine* e,
                                  std::chrono::seconds interval)
-    : TimeBasedAsyncCommand(cuid, e, std::move(interval), true)
+    : TimeBasedCommand(cuid, e, std::move(interval), true)
 {
 }
 

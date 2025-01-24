@@ -47,8 +47,7 @@ WrDiskCache::WrDiskCache(size_t limit) : limit_(limit), total_(0), clock_(0) {}
 WrDiskCache::~WrDiskCache()
 {
   if (total_) {
-    A2_LOG_WARN(fmt("Write disk cache is not empty size=%lu",
-                    static_cast<unsigned long>(total_)));
+    A2_LOG_WARN(fmt("Write disk cache is not empty size=%" PRId64,total_));
   }
 }
 
@@ -58,16 +57,23 @@ bool WrDiskCache::add(WrDiskCacheEntry* ent)
   ent->setLastUpdate(++clock_);
   std::pair<EntrySet::iterator, bool> rv = set_.insert(ent);
   if (rv.second) {
-    total_ += ent->getSize();
+    // A2_LOG_DEBUG(fmt("Add cache entry=%p, size=%" PRId64 ", clock=%" PRId64 ", total=%" PRId64,
+    //                  ent,
+    //                  static_cast<int64_t>(ent->getSize()),
+    //                  ent->getLastUpdate(), total_));
+    total_ += static_cast<int64_t>(ent->getSize());
     ensureLimit();
     return true;
   }
   else {
-    A2_LOG_WARN(fmt("Found duplicate cache entry a.{size=%lu,clock=%" PRId64
-                    "} b{size=%lu,clock=%" PRId64 "}",
-                    static_cast<unsigned long>((*rv.first)->getSize()),
+    A2_LOG_WARN(fmt("Found duplicate cache total=%" PRId64 "a.{entry=%p, size=%" PRId64 ",clock=%" PRId64
+                    "} b{entry=%p, size=%" PRId64 ",clock=%" PRId64 "}",
+                    total_,
+                    (*rv.first),
+                    static_cast<int64_t>((*rv.first)->getSize()),
                     (*rv.first)->getLastUpdate(),
-                    static_cast<unsigned long>(ent->getSize()),
+                    ent,
+                    static_cast<int64_t>(ent->getSize()),
                     ent->getLastUpdate()));
     return false;
   }
@@ -76,10 +82,11 @@ bool WrDiskCache::add(WrDiskCacheEntry* ent)
 bool WrDiskCache::remove(WrDiskCacheEntry* ent)
 {
   if (set_.erase(ent)) {
-    A2_LOG_DEBUG(fmt("Removed cache entry size=%lu, clock=%" PRId64,
-                     static_cast<unsigned long>(ent->getSize()),
-                     ent->getLastUpdate()));
-    total_ -= ent->getSize();
+    A2_LOG_DEBUG(fmt("Removed cache entry=%p, size=%" PRId64 ", clock=%" PRId64 ", total=%" PRId64,
+                     ent,
+                     static_cast<int64_t>(ent->getSize()),
+                     ent->getLastUpdate(), total_));
+    total_ -= static_cast<int64_t>(ent->getSize());
     return true;
   }
   else {
@@ -87,21 +94,24 @@ bool WrDiskCache::remove(WrDiskCacheEntry* ent)
   }
 }
 
-bool WrDiskCache::update(WrDiskCacheEntry* ent, ssize_t delta)
+bool WrDiskCache::update(WrDiskCacheEntry* ent, int64_t delta)
 {
   if (!set_.erase(ent)) {
     return false;
   }
-  A2_LOG_DEBUG(fmt("Update cache entry size=%lu, delta=%ld, clock=%" PRId64,
-                   static_cast<unsigned long>(ent->getSize()),
-                   static_cast<long>(delta), ent->getLastUpdate()));
+  A2_LOG_DEBUG(fmt("Update cache entry=%p, size=%" PRId64 ", delta=%" PRId64 ", clock=%" PRId64 ", total=%" PRId64,
+                   ent,
+                   static_cast<int64_t>(ent->getSize()),
+                   delta,
+                   ent->getLastUpdate(),
+                   total_));
 
   ent->setSizeKey(ent->getSize());
   ent->setLastUpdate(++clock_);
   set_.insert(ent);
 
   if (delta < 0) {
-    assert(total_ >= static_cast<size_t>(-delta));
+    assert(total_ >= -delta);
   }
   total_ += delta;
   ensureLimit();
@@ -112,11 +122,26 @@ void WrDiskCache::ensureLimit()
 {
   while (total_ > limit_) {
     auto i = set_.begin();
+    // find the first non-empty entry
+    for (; i != set_.end(); ++i) {
+      if ((*i)->getSize() <= 0) {
+        A2_LOG_WARN(fmt("Found empty cache entry=%p, size=%" PRId64 ", clock=%" PRId64 ", total=%" PRId64,
+                        *i,
+                        static_cast<int64_t>((*i)->getSize()),
+                        (*i)->getLastUpdate(), total_));
+        continue;
+      }
+    }
+    if (i == set_.end()) {
+      A2_LOG_WARN(fmt("Cache is empty but total=%" PRId64 ", limit=%" PRId64, total_, limit_));
+      break;
+    }
     WrDiskCacheEntry* ent = *i;
-    A2_LOG_DEBUG(fmt("Force flush cache entry size=%lu, clock=%" PRId64,
-                     static_cast<unsigned long>(ent->getSizeKey()),
-                     ent->getLastUpdate()));
-    total_ -= ent->getSize();
+    A2_LOG_DEBUG(fmt("Force flush cache entry=%p, size=%" PRId64 ", clock=%" PRId64 ", total=%" PRId64,
+                     ent,
+                     static_cast<int64_t>(ent->getSizeKey()),
+                     ent->getLastUpdate(), total_));
+    total_ -= static_cast<int64_t>(ent->getSize());
     ent->writeToDisk();
     set_.erase(i);
 

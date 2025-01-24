@@ -647,7 +647,8 @@ SegList<int> parseIntSegments(const std::string& src)
       throw DL_ABORT_EX(fmt(MSG_INCOMPLETE_RANGE, std::string(i, j).c_str()));
     }
     else {
-      int a, b;
+      int a = 0;
+      int b = 0;
       if (parseIntNoThrow(a, std::string(i, p)) &&
           parseIntNoThrow(b, (std::string(p + 1, j)))) {
         sgl.add(a, b + 1);
@@ -1904,7 +1905,12 @@ void usleep(long microseconds)
   ::usleep(microseconds);
 #elif defined(HAVE_WINSOCK2_H)
 
-  LARGE_INTEGER current, freq, end;
+  LARGE_INTEGER current;
+  LARGE_INTEGER freq;
+  LARGE_INTEGER end;
+  current.QuadPart = 0;
+  freq.QuadPart = 0;
+  end.QuadPart = 0;
 
   static enum {
     GET_FREQUENCY,

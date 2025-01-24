@@ -96,10 +96,11 @@ ssize_t AbstractSingleDiskAdaptor::readDataDropCache(unsigned char* data,
 
 void AbstractSingleDiskAdaptor::writeCache(const WrDiskCacheEntry* entry)
 {
+  A2_LOG_DEBUG(fmt("Cache flush entry=%p", entry));
   for (auto& d : entry->getDataSet()) {
-    A2_LOG_DEBUG(fmt("Cache flush goff=%" PRId64 ", len=%lu", d->goff,
-                     static_cast<unsigned long>(d->len)));
-    writeData(d->data + d->offset, d->len, d->goff);
+    A2_LOG_DEBUG(fmt("Cache flush goff=%" PRId64 ", len=%lld", d->goff,
+                     static_cast<int64_t>(d->len)));
+    writeData(d->data + d->offset, static_cast<size_t>(d->len), d->goff);
   }
 }
 

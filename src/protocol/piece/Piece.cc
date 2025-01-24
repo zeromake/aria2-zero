@@ -340,7 +340,11 @@ void Piece::updateWrCache(WrDiskCache* diskCache, unsigned char* data,
   }
   assert(wrCache_);
   assert(capacity >= len);
-  A2_LOG_DEBUG(fmt("updateWrCache entry=%p", wrCache_.get()));
+  A2_LOG_DEBUG(fmt("updateWrCache entry=%p, goff=%lld, len=%lld, capacity=%lld",
+    wrCache_.get(),
+    goff,
+    static_cast<int64_t>(len),
+    static_cast<int64_t>(capacity)));
   auto cell = new WrDiskCacheEntry::DataCell();
   cell->goff = goff;
   cell->data = data;

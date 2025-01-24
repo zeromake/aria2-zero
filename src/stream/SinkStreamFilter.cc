@@ -55,14 +55,14 @@ ssize_t SinkStreamFilter::transform(const std::shared_ptr<BinaryStream>& out,
                                     const std::shared_ptr<Segment>& segment,
                                     const unsigned char* inbuf, size_t inlen)
 {
-  size_t wlen;
+  int64_t wlen;
   if (inlen > 0) {
     if (segment->getLength() > 0) {
       // We must not write data larger than available space in
       // segment.
       assert(segment->getLength() >= segment->getWrittenLength());
-      size_t lenAvail = segment->getLength() - segment->getWrittenLength();
-      wlen = std::min(inlen, lenAvail);
+      int64_t lenAvail = segment->getLength() - segment->getWrittenLength();
+      wlen = std::min(static_cast<int64_t>(inlen), lenAvail);
     }
     else {
       wlen = inlen;
