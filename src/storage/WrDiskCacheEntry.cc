@@ -66,6 +66,9 @@ WrDiskCacheEntry::~WrDiskCacheEntry()
 
 void WrDiskCacheEntry::deleteDataCells()
 {
+
+  A2_LOG_DEBUG(fmt("WrDiskCacheEntry deleteDataCells %p",
+                   this));
   for (auto& e : set_) {
     delete[] e->data;
     delete e;

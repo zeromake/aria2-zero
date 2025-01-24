@@ -35,11 +35,11 @@
 #ifndef D_AUTO_SAVE_COMMAND_H
 #define D_AUTO_SAVE_COMMAND_H
 
-#include "TimeBasedAsyncCommand.h"
+#include "TimeBasedCommand.h"
 
 namespace aria2 {
 
-class AutoSaveCommand : public TimeBasedAsyncCommand {
+class AutoSaveCommand : public TimeBasedCommand {
   COMMAND_CLASSNAME(AutoSaveCommand)
 public:
   AutoSaveCommand(cuid_t cuid, DownloadEngine* e,
