@@ -52,11 +52,13 @@
 #include "File.h"
 #include <iostream>
 
+#ifdef ENABLE_BREAKPAD
 #ifdef _WIN32
 #include <client/windows/handler/exception_handler.h>
 #elif defined(__APPLE__)
 #include <client/mac/handler/exception_handler.h>
 #endif // _WIN32
+#endif // ENABLE_BREAKPAD
 
 
 namespace aria2 {
