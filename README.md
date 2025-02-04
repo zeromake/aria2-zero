@@ -19,11 +19,14 @@ You must use this program at your own risk.
 - 支持默认跳过 bt 种子里的 `_____padding_file_` 文件，不会创建，也不会写入磁盘（但是依旧会下载，这个 bt 里是用来填充另一个文件的，不能不下载）
 - 应用了 [#2209](https://github.com/aria2/aria2/pull/2209) 补丁，未认证时没有正确回收 socket
 - 把两个明显的执行时间过长的命令使用 `ThreadPool` 改为异步执行：`AutoSaveCommand`, `FileAllocationCommand` （不能保证改修改正确，线程里的调用确实在访问 `DownloadEngine` 的数据）[#2059](https://github.com/aria2/aria2/issues/2059), [#2134](https://github.com/aria2/aria2/issues/2134)
+  + 撤销掉 `AutoSaveCommand` 异步操作，任务下载完成时也会调用 `AutoSaveCommand` 里的资源
 - 下载列表文件支持 utf8 的 bom `"\xEF\xBB\xBF"` 开头跳过 [2021](https://github.com/aria2/aria2/issues/2021)
 - 添加 `--category-dir` 和 `--category-dir-scope` 选项支持简单的后缀匹配添加目录分类
 - 支持跨平台的 `mo` 翻译文件加载支持
 - 为 windows 下的 tls1.3 添加支持，顺便修复 windows 下的 `tls` 调用 `recv` 返回为 0 直接关闭会导致一些情况下多次重试并失败。
-- 改为使用 openssl3 可以为 macosx 支持 tls1.3
+  + 撤销 windows 下 tls1.3 支持，出现意外重置 tls 连接
+- 改为使用 openssl3 可以为全平台支持 tls1.3
+- `Content-Disposition` 解析支持最后带 `;` 的情况。
 
 ## ChangeLog
 
@@ -64,7 +67,7 @@ You must use this program at your own risk.
     + [ ] Range 拼接错误 [1](https://github.com/aria2/aria2/issues/1971), [2](https://github.com/aria2/aria2/issues/1344#issuecomment-1570701152), [3](https://github.com/aria2/aria2/pull/1587)
     + [ ] [Socks5h 代理支持](https://github.com/aria2/aria2/issues/1830)
     + [ ] [bitTorrent v2 支持](https://github.com/aria2/aria2/issues/1685)
-    + [ ] [Content-Disposition 正确的解析实现](https://github.com/aria2/aria2/issues/1118)
+    + [x] [Content-Disposition 正确的解析实现](https://github.com/aria2/aria2/issues/1118)
     + [ ] [进度](https://github.com/aria2/aria2/issues?page=17&q=is%3Aissue+is%3Aopen)
 - [ ] 标记一些有报告，但是没有问题的 issues
     - [无法使用 ip 直连下载内网文件](https://github.com/aria2/aria2/issues/2049)

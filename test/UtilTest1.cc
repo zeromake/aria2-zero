@@ -824,6 +824,39 @@ void UtilTest1::testGetContentDispositionFilename()
   val = "attachment; filename=\"foo-\xc2\x02.html\"";
   CPPUNIT_ASSERT_EQUAL(std::string(""),
                        util::getContentDispositionFilename(val, true));
+  // support ; end of filename 1
+  val = "attachment; filename=\"opensmile-2.3.0.tar.gz\";";
+  CPPUNIT_ASSERT_EQUAL(std::string("opensmile-2.3.0.tar.gz"),
+                       util::getContentDispositionFilename(val, false));
+
+  // support ; end of filename 2
+  val = "attachment; filename=genome.jpeg;";
+  CPPUNIT_ASSERT_EQUAL(std::string("genome.jpeg"),
+                       util::getContentDispositionFilename(val, false));
+
+  // support not attachment
+  val = "filename=stock-photo-1022280281.jpg";
+  CPPUNIT_ASSERT_EQUAL(std::string("stock-photo-1022280281.jpg"),
+                       util::getContentDispositionFilename(val, false));
+
+  // support UTF-8 filename*
+  val = "attachment; filename*= UTF-8''%5B%E6%B5%8B%E8%AF%95%5D.txt";
+  CPPUNIT_ASSERT_EQUAL(std::string("[测试].txt"),
+                       util::getContentDispositionFilename(val, false));
+
+  // support UTF-8 filename
+  val = "attachment; filename=%5B%E6%B5%8B%E8%AF%95%5D.txt";
+  CPPUNIT_ASSERT_EQUAL(std::string("%5B%E6%B5%8B%E8%AF%95%5D.txt"),
+                       util::getContentDispositionFilename(val, true));
+
+  // support UTF-8 filename
+  val = "attachment; filename=%3C%E6%B5%8B%E8%AF%95%3E.txt";
+  CPPUNIT_ASSERT_EQUAL(std::string("%3C%E6%B5%8B%E8%AF%95%3E.txt"),
+                       util::getContentDispositionFilename(val, true));
+
+  val = "attachment; filename=test-%3C%E6%B5%8B%E8%AF%95%3E.txt";
+  CPPUNIT_ASSERT_EQUAL(std::string("test-%3C%E6%B5%8B%E8%AF%95%3E.txt"),
+                       util::getContentDispositionFilename(val, true));
 }
 
 void UtilTest1::testParseContentDisposition1()
@@ -950,7 +983,7 @@ void UtilTest1::testParseContentDisposition1()
 
   // attwithasciifilenamenqs
   val = "attachment; filename=foo.html ;";
-  CPPUNIT_ASSERT_EQUAL((ssize_t)-1, util::parse_content_disposition(
+  CPPUNIT_ASSERT_EQUAL((ssize_t)8, util::parse_content_disposition(
                                         dest, destlen, &cs, &cslen, val.c_str(),
                                         val.size(), false));
 

@@ -1556,6 +1556,9 @@ ssize_t parse_content_disposition(char* dest, size_t destlen,
   case CD_AFTER_VALUE:
   case CD_TOKEN:
     return destlen - dlen;
+  case CD_BEFORE_DISPOSITION_PARM_NAME:
+    if (dlen == destlen) return -1;
+    return destlen - dlen;
   case CD_VALUE_CHARS:
     if (charset == CD_ENC_UTF8 && dfa_state != UTF8_ACCEPT) {
       return -1;
@@ -1573,9 +1576,16 @@ std::string getContentDispositionFilename(const std::string& header,
   size_t cdvallen = cdval.size();
   const char* charset;
   size_t charsetlen;
+  std::string _header = header;
+
+  // add attachment start
+  if (!startsWith(_header, "attachment")) {
+    _header = "attachment; " + _header;
+  }
+
   ssize_t rv =
       parse_content_disposition(cdval.data(), cdvallen, &charset, &charsetlen,
-                                header.c_str(), header.size(), defaultUTF8);
+                                _header.c_str(), _header.size(), defaultUTF8);
   if (rv == -1) {
     return "";
   }
