@@ -91,9 +91,9 @@ void PieceTest::testFlushWrCache()
   data = new unsigned char[3];
   memcpy(data, "foo", 3);
   p.updateWrCache(&dc, data, 0, 3, 0);
-  CPPUNIT_ASSERT_EQUAL((size_t)3, dc.getSize());
+  CPPUNIT_ASSERT_EQUAL((int64_t)3, dc.getSize());
   p.clearWrCache(&dc);
-  CPPUNIT_ASSERT_EQUAL((size_t)0, dc.getSize());
+  CPPUNIT_ASSERT_EQUAL((int64_t)0, dc.getSize());
   p.releaseWrCache(&dc);
   CPPUNIT_ASSERT(!p.getWrDiskCacheEntry());
 }
