@@ -131,6 +131,7 @@ void WrDiskCache::ensureLimit()
                         (*i)->getLastUpdate(), total_));
         continue;
       }
+      break;
     }
     if (i == set_.end()) {
       A2_LOG_WARN(fmt("Cache is empty but total=%" PRId64 ", limit=%" PRId64, total_, limit_));
