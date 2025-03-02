@@ -386,8 +386,10 @@ target("aria2c")
         add_packages("breakpad")
         add_defines("ENABLE_BREAKPAD=1")
     end
-    if is_plat("windows", "mingw") then
+    if os.host() == "windows" then
         add_packages("gettext-tools")
+    end
+    if is_plat("windows", "mingw") then
         add_files("src/resource.rc")
     end
     add_rules("mo")

@@ -19,7 +19,7 @@ end
 if get_config("unit") then
     add_requires("cppunit", {optional = true})
 end
-if is_plat("windows", "mingw") then
+if os.host() == "windows" then
     add_requires("gettext-tools", {optional = true})
 end
 

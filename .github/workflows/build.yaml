@@ -67,6 +67,19 @@ jobs:
         env:
           VERSION: ${{ github.ref_name }}
         run: xmake f -a x86_64 -c -y && xmake pack aria2
+      - name: setup arm-gnu-toolchain
+        run: |
+          curl -L -o arm-gnu-toolchain.txz https://developer.arm.com/-/media/Files/downloads/gnu/14.2.rel1/binrel/arm-gnu-toolchain-14.2.rel1-x86_64-aarch64-none-linux-gnu.tar.xz
+          mkdir -p build/arm-gnu-toolchain
+          tar -xf arm-gnu-toolchain.txz -C build/arm-gnu-toolchain
+          ls build/arm-gnu-toolchain
+          rm arm-gnu-toolchain.txz
+      - name: build arm64
+        env:
+          VERSION: ${{ github.ref_name }}
+        run: |
+          xmake f -p linux -a arm64 --sdk="build/arm-gnu-toolchain" -c --use_quictls=n -y
+          xmake pack aria2
       - name: cp
         run: mkdir -p dist && cp build/xpack/aria2/*.zip dist/
       - uses: actions/upload-artifact@v4
