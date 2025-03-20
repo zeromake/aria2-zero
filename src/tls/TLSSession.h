@@ -46,7 +46,8 @@ enum TLSDirection { TLS_WANT_READ = 1, TLS_WANT_WRITE };
 enum TLSErrorCode {
   TLS_ERR_OK = 0,
   TLS_ERR_ERROR = -1,
-  TLS_ERR_WOULDBLOCK = -2
+  TLS_ERR_WOULDBLOCK = -2,
+  TLS_ERR_RETRY = -3,
 };
 
 // To create another SSL/TLS backend, implement TLSSession class below.

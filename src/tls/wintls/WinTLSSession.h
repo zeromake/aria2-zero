@@ -197,6 +197,8 @@ private:
   // Returns the number of bytes in the remaining TLS record size.
   size_t getLeftTLSRecordSize() const;
 
+  int connectStep2(bool skipRead = false);
+
   std::string hostname_;
   sock_t sockfd_;
   TLSSessionSide side_;

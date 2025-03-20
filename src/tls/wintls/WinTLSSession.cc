@@ -539,18 +539,18 @@ ssize_t WinTLSSession::readData(void* data, size_t len)
     }
 
     if (status_ == SEC_I_RENEGOTIATE) {
-      // Renegotiation basically means performing another handshake
-      state_ = st_initialized;
+      // Renegotiation should be performed on existing connection
       A2_LOG_INFO("WinTLS: Renegotiate");
-      std::string hn, err;
-      TLSVersion ver;
-      auto connect = tlsConnect(hn, ver, err);
+      auto connect = connectStep2(true);
       if (connect == TLS_ERR_WOULDBLOCK) {
         break;
       }
-      if (connect == TLS_ERR_ERROR) {
-        return connect;
+      if (connect == TLS_ERR_ERROR || connect == TLS_ERR_RETRY) {
+        return TLS_ERR_ERROR;
       }
+      // 重新解析
+      A2_LOG_INFO("WinTLS: Renegotiate success");
+      continue;
       // Still good.
     }
     if (status_ == SEC_I_CONTEXT_EXPIRED) {
@@ -572,6 +572,120 @@ ssize_t WinTLSSession::readData(void* data, size_t len)
   memcpy(data, decBuf_.data(), len);
   decBuf_.eat(len);
   return len;
+}
+
+int WinTLSSession::connectStep2(bool skipRead) {
+  A2_LOG_DEBUG("WinTLS: Reading handshake...");
+  // All write buffered data is invalid at this point!
+  writeBuf_.clear();
+  // Read as many bytes as possible, up to 4k new bytes.
+  // We do not know how many bytes will arrive from the server at this
+  // point.
+  if (!skipRead) {
+    readBuf_.resize(readBuf_.size() + 4_k);
+    while (readBuf_.free()) {
+      ssize_t read = ::recv(sockfd_, readBuf_.end(), readBuf_.free(), 0);
+      errno = ::WSAGetLastError();
+      if (read < 0 && errno == WSAEINTR) {
+        continue;
+      }
+      if (read < 0 && errno == WSAEWOULDBLOCK) {
+        break;
+      }
+      if (read <= 0) {
+        status_ = errno;
+        state_ = st_error;
+        return TLS_ERR_ERROR;
+      }
+      if (read == 0) {
+        A2_LOG_DEBUG("WinTLS: Connection abruptly closed during handshake!");
+        status_ = SEC_E_INCOMPLETE_MESSAGE;
+        state_ = st_error;
+        return TLS_ERR_ERROR;
+      }
+      readBuf_.advance(read);
+      break;
+    }
+  }
+  if (!readBuf_.size()) {
+    return TLS_ERR_WOULDBLOCK;
+  }
+
+  // Need to copy the data, as Schannel is free to mess with it. But we
+  // might later need unmodified data from the original read buffer.
+  auto bufcopy = aria2::make_unique<char[]>(readBuf_.size());
+  memcpy(bufcopy.get(), readBuf_.data(), readBuf_.size());
+
+  // Set up buffers. inbufs will be the raw bytes the library has to decode.
+  // outbufs will contain generated responses, if any.
+  TLSBuffer inbufs[] = {
+      TLSBuffer(SECBUFFER_TOKEN, readBuf_.size(), bufcopy.get()),
+      TLSBuffer(SECBUFFER_EMPTY, 0, nullptr),
+  };
+  TLSBufferDesc indesc(inbufs, 2);
+  TLSBuffer outbufs[] = {
+      TLSBuffer(SECBUFFER_TOKEN, 0, nullptr),
+      TLSBuffer(SECBUFFER_ALERT, 0, nullptr),
+      TLSBuffer(SECBUFFER_EMPTY, 0, nullptr),
+  };
+  TLSBufferDesc outdesc(outbufs, 3);
+  if (side_ == TLS_CLIENT) {
+    SEC_CHAR* host = hostname_.empty()
+                          ? nullptr
+                          : const_cast<SEC_CHAR*>(hostname_.c_str());
+    status_ = ::InitializeSecurityContextA(cred_, &handle_, host, kReqFlags, 0,
+                                          0, &indesc, 0, nullptr, &outdesc,
+                                          &flags, nullptr);
+  }
+  else {
+    status_ = ::AcceptSecurityContext(
+        cred_, state_ == st_initialized ? nullptr : &handle_, &indesc,
+        kReqAFlags, 0, state_ == st_initialized ? &handle_ : nullptr,
+        &outdesc, &flags, nullptr);
+  }
+  if (status_ == SEC_E_INCOMPLETE_MESSAGE) {
+    // Not enough raw bytes read yet to decode a full message.
+    return TLS_ERR_WOULDBLOCK;
+  }
+  if (status_ != SEC_E_OK && status_ != SEC_I_CONTINUE_NEEDED) {
+    state_ = st_error;
+    return TLS_ERR_ERROR;
+  }
+
+  // Raw bytes where not entirely consumed, i.e. readBuf_ still contains
+  // unprocessed data from the next message?
+  if (inbufs[1].BufferType == SECBUFFER_EXTRA && inbufs[1].cbBuffer > 0) {
+    readBuf_.eat(readBuf_.size() - inbufs[1].cbBuffer);
+  }
+  else {
+    readBuf_.clear();
+  }
+
+  // Check if the library produced a new outgoing message and queue it.
+  for (auto& buf : outbufs) {
+    if (buf.BufferType == SECBUFFER_TOKEN && buf.cbBuffer > 0) {
+      writeBuf_.write(buf.pvBuffer, buf.cbBuffer);
+      FreeContextBuffer(buf.pvBuffer);
+      state_ = st_handshake_write;
+    }
+  }
+
+  // Need to read additional messages?
+  if (status_ == SEC_I_CONTINUE_NEEDED) {
+    A2_LOG_DEBUG("WinTLS: Continuing with handshake");
+    return TLS_ERR_RETRY;
+  }
+
+  if (side_ == TLS_CLIENT && flags != kReqFlags) {
+    A2_LOG_ERROR(fmt("WinTLS: Channel setup failed. Schannel provider did "
+                      "not fulfill requested flags. "
+                      "Excepted: %lu Actual: %lu",
+                      kReqFlags, flags));
+    status_ = SEC_E_INTERNAL_ERROR;
+    state_ = st_error;
+    return TLS_ERR_ERROR;
+  }
+  return TLS_ERR_OK;
 }
 
 int WinTLSSession::tlsConnect(const std::string& hostname, TLSVersion& version,
@@ -661,117 +775,13 @@ restart:
 
   case st_handshake_read: {
   read:
-    A2_LOG_DEBUG("WinTLS: Reading handshake...");
-
-    // All write buffered data is invalid at this point!
-    writeBuf_.clear();
-
-    // Read as many bytes as possible, up to 4k new bytes.
-    // We do not know how many bytes will arrive from the server at this
-    // point.
-    readBuf_.resize(readBuf_.size() + 4_k);
-    while (readBuf_.free()) {
-      ssize_t read = ::recv(sockfd_, readBuf_.end(), readBuf_.free(), 0);
-      errno = ::WSAGetLastError();
-      if (read < 0 && errno == WSAEINTR) {
-        continue;
-      }
-      if (read < 0 && errno == WSAEWOULDBLOCK) {
-        break;
-      }
-      if (read <= 0) {
-        status_ = errno;
-        state_ = st_error;
-        return TLS_ERR_ERROR;
-      }
-      if (read == 0) {
-        A2_LOG_DEBUG("WinTLS: Connection abruptly closed during handshake!");
-        status_ = SEC_E_INCOMPLETE_MESSAGE;
-        state_ = st_error;
-        return TLS_ERR_ERROR;
-      }
-      readBuf_.advance(read);
-      break;
-    }
-    if (!readBuf_.size()) {
-      return TLS_ERR_WOULDBLOCK;
-    }
-
-    // Need to copy the data, as Schannel is free to mess with it. But we
-    // might later need unmodified data from the original read buffer.
-    auto bufcopy = aria2::make_unique<char[]>(readBuf_.size());
-    memcpy(bufcopy.get(), readBuf_.data(), readBuf_.size());
-
-    // Set up buffers. inbufs will be the raw bytes the library has to decode.
-    // outbufs will contain generated responses, if any.
-    TLSBuffer inbufs[] = {
-        TLSBuffer(SECBUFFER_TOKEN, readBuf_.size(), bufcopy.get()),
-        TLSBuffer(SECBUFFER_EMPTY, 0, nullptr),
-    };
-    TLSBufferDesc indesc(inbufs, 2);
-    TLSBuffer outbufs[] = {
-        TLSBuffer(SECBUFFER_TOKEN, 0, nullptr),
-        TLSBuffer(SECBUFFER_ALERT, 0, nullptr),
-        TLSBuffer(SECBUFFER_EMPTY, 0, nullptr),
-    };
-    TLSBufferDesc outdesc(outbufs, 3);
-    if (side_ == TLS_CLIENT) {
-      SEC_CHAR* host = hostname_.empty()
-                           ? nullptr
-                           : const_cast<SEC_CHAR*>(hostname_.c_str());
-      status_ = ::InitializeSecurityContextA(cred_, &handle_, host, kReqFlags, 0,
-                                            0, &indesc, 0, nullptr, &outdesc,
-                                            &flags, nullptr);
-    }
-    else {
-      status_ = ::AcceptSecurityContext(
-          cred_, state_ == st_initialized ? nullptr : &handle_, &indesc,
-          kReqAFlags, 0, state_ == st_initialized ? &handle_ : nullptr,
-          &outdesc, &flags, nullptr);
-    }
-    if (status_ == SEC_E_INCOMPLETE_MESSAGE) {
-      // Not enough raw bytes read yet to decode a full message.
-      return TLS_ERR_WOULDBLOCK;
-    }
-    if (status_ != SEC_E_OK && status_ != SEC_I_CONTINUE_NEEDED) {
-      state_ = st_error;
-      return TLS_ERR_ERROR;
-    }
-
-    // Raw bytes where not entirely consumed, i.e. readBuf_ still contains
-    // unprocessed data from the next message?
-    if (inbufs[1].BufferType == SECBUFFER_EXTRA && inbufs[1].cbBuffer > 0) {
-      readBuf_.eat(readBuf_.size() - inbufs[1].cbBuffer);
-    }
-    else {
-      readBuf_.clear();
-    }
-
-    // Check if the library produced a new outgoing message and queue it.
-    for (auto& buf : outbufs) {
-      if (buf.BufferType == SECBUFFER_TOKEN && buf.cbBuffer > 0) {
-        writeBuf_.write(buf.pvBuffer, buf.cbBuffer);
-        FreeContextBuffer(buf.pvBuffer);
-        state_ = st_handshake_write;
-      }
-    }
-
-    // Need to read additional messages?
-    if (status_ == SEC_I_CONTINUE_NEEDED) {
-      A2_LOG_DEBUG("WinTLS: Continuing with handshake");
+    int code = connectStep2();
+    if (code == TLS_ERR_RETRY) {
       goto restart;
     }
-
-    if (side_ == TLS_CLIENT && flags != kReqFlags) {
-      A2_LOG_ERROR(fmt("WinTLS: Channel setup failed. Schannel provider did "
-                       "not fulfill requested flags. "
-                       "Excepted: %lu Actual: %lu",
-                       kReqFlags, flags));
-      status_ = SEC_E_INTERNAL_ERROR;
-      state_ = st_error;
-      return TLS_ERR_ERROR;
+    if (code != TLS_ERR_OK) {
+      return code;
     }
-
     if (state_ == st_handshake_write) {
       A2_LOG_DEBUG("WinTLS: Continuing with handshake (last write)");
       state_ = st_handshake_write_last;
