@@ -576,6 +576,7 @@ ssize_t WinTLSSession::readData(void* data, size_t len)
 
 int WinTLSSession::connectStep2(bool skipRead) {
   A2_LOG_DEBUG("WinTLS: Reading handshake...");
+  ULONG flags = 0;
   // All write buffered data is invalid at this point!
   writeBuf_.clear();
   // Read as many bytes as possible, up to 4k new bytes.
