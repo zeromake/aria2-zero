@@ -26,6 +26,13 @@ option("with_breakpad")
     set_description("Use external with_breakpad library")
 option_end()
 
+
+option("with_static")
+    set_default(false)
+    set_showmenu(true)
+    set_description("Use static glibc build")
+option_end()
+
 option("unit")
     set_default(false)
     set_showmenu(true)
@@ -399,6 +406,8 @@ target("aria2c")
     add_includedirs("include", "compat", "src/core", "src/tls", "src/network", "src/util", "src/storage")
     add_defines("HAVE_CONFIG_H=1")
     if is_plat("mingw") then
+        add_ldflags("-static")
+    elseif is_plat("android", "linux") and get_config("with_static") then
         add_ldflags("-static")
     end
     -- after_build(function (target)
