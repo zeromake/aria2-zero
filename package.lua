@@ -11,10 +11,10 @@ add_requires(
 add_requires("boost.intl")
 if get_config("use_quictls") then
     add_requires("quictls")
-    add_requires("ssh2", {configs = {quictls = true}})
+    add_requires("ssh2", {configs = {quictls = true, libressl = false}})
 else
     add_requires("libressl")
-    add_requires("ssh2", {configs = {libressl = true}})
+    add_requires("ssh2", {configs = {quictls = false, libressl = true}})
 end
 if get_config("unit") then
     add_requires("cppunit", {optional = true})
