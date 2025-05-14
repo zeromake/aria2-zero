@@ -410,11 +410,9 @@ target("aria2c")
     elseif is_plat("android", "linux") and get_config("with_static") then
         add_ldflags("-static")
     end
-    -- after_build(function (target)
-    --     os.mkdir("dist")
-    --     local ext = is_plat("windows") and ".exe" or ""
-    --     os.cp(target:targetfile(), format("dist/aria2c-%s-%s%s", target:plat(), target:arch(), ext))
-    -- end)
+    if is_plat("macosx", "iphoneos") then
+        add_rpathdirs("@executable_path/../lib")
+    end
 
 xpack("aria2")
     set_title("aria2")
@@ -425,6 +423,7 @@ xpack("aria2")
     set_author("zeromake<a390720046@gmail.com>")
     add_targets("aria2c")
     add_installfiles("build/(locale/*/LC_MESSAGES/aria2-zero.mo)", {prefixdir = "share"})
+    add_installfiles("(include/aria2/*.h)")
     set_basename("aria2-$(plat)-$(arch)")
 xpack_end()
 
