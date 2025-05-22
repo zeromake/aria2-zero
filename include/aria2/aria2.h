@@ -42,6 +42,28 @@
 #include <string>
 #include <vector>
 
+#if defined(_WIN32) || defined(__CYGWIN__) || defined(__SYMBIAN32__)
+#  ifdef ARIA2_STATICLIB
+#    define ARIA2_EXTERN
+#  else
+#    ifdef ARIA2_BUILDING_LIBRARY
+#      define ARIA2_EXTERN __declspec(dllexport)
+#    else
+#      define ARIA2_EXTERN __declspec(dllimport)
+#    endif
+#  endif
+#else
+#  if defined(__GNUC__) && __GNUC__ >= 4
+#    define ARIA2_EXTERN __attribute__((visibility("default")))
+#  elif defined(__INTEL_COMPILER) && __INTEL_COMPILER >= 900
+#    define ARIA2_EXTERN __attribute__((visibility("default")))
+#  elif defined(__SUNPRO_C)
+#    define ARIA2_EXTERN _global
+#  else
+#    define ARIA2_EXTERN
+#  endif
+#endif
+
 // Libaria2: The aim of this library is provide same functionality
 // available in RPC methods. The function signatures are not
 // necessarily the same, because we can take advantage of the direct,
@@ -71,7 +93,7 @@ struct Session;
  * Call this function only once before calling any other API
  * functions.
  */
-int libraryInit();
+ARIA2_EXTERN int libraryInit();
 
 /**
  * @function
@@ -81,7 +103,7 @@ int libraryInit();
  *
  * Call this function only once at the end of the application.
  */
-int libraryDeinit();
+ARIA2_EXTERN int libraryDeinit();
 
 /**
  * @typedef
@@ -205,7 +227,7 @@ struct SessionConfig {
  * Please note that only one Session object can be created per
  * process.
  */
-Session* sessionNew(const KeyVals& options, const SessionConfig& config);
+ARIA2_EXTERN Session* sessionNew(const KeyVals& options, const SessionConfig& config);
 
 /**
  * @function
@@ -215,7 +237,7 @@ Session* sessionNew(const KeyVals& options, const SessionConfig& config);
  * for it. This function returns the last error code and it is the
  * equivalent to the :ref:`exit-status` of :manpage:`aria2c(1)`.
  */
-int sessionFinal(Session* session);
+ARIA2_EXTERN int sessionFinal(Session* session);
 
 /**
  * @enum
@@ -250,28 +272,28 @@ enum RUN_MODE {
  *
  * In either case, this function returns negative error code on error.
  */
-int run(Session* session, RUN_MODE mode);
+ARIA2_EXTERN int run(Session* session, RUN_MODE mode);
 
 /**
  * @function
  *
  * Returns textual representation of the |gid|.
  */
-std::string gidToHex(A2Gid gid);
+ARIA2_EXTERN std::string gidToHex(A2Gid gid);
 
 /**
  * @function
  *
  * Returns GID converted from the textual representation |hex|.
  */
-A2Gid hexToGid(const std::string& hex);
+ARIA2_EXTERN A2Gid hexToGid(const std::string& hex);
 
 /**
  * @function
  *
  * Returns true if the |gid| is invalid.
  */
-bool isNull(A2Gid gid);
+ARIA2_EXTERN bool isNull(A2Gid gid);
 
 /**
  * @function
@@ -291,7 +313,7 @@ bool isNull(A2Gid gid);
  * the queue, it is appended at the end of the queue.  This function
  * returns 0 if it succeeds, or negative error code.
  */
-int addUri(Session* session, A2Gid* gid, const std::vector<std::string>& uris,
+ARIA2_EXTERN int addUri(Session* session, A2Gid* gid, const std::vector<std::string>& uris,
            const KeyVals& options, int position = -1);
 
 /**
@@ -308,7 +330,7 @@ int addUri(Session* session, A2Gid* gid, const std::vector<std::string>& uris,
  * the queue, it is appended at the end of the queue. This function
  * returns 0 if it succeeds, or negative error code.
  */
-int addMetalink(Session* session, std::vector<A2Gid>* gids,
+ARIA2_EXTERN int addMetalink(Session* session, std::vector<A2Gid>* gids,
                 const std::string& metalinkFile, const KeyVals& options,
                 int position = -1);
 
@@ -334,7 +356,7 @@ int addMetalink(Session* session, std::vector<A2Gid>* gids,
  * This function returns 0 if it succeeds, or negative error code.
  *
  */
-int addTorrent(Session* session, A2Gid* gid, const std::string& torrentFile,
+ARIA2_EXTERN int addTorrent(Session* session, A2Gid* gid, const std::string& torrentFile,
                const std::vector<std::string>& webSeedUris,
                const KeyVals& options, int position = -1);
 
@@ -344,7 +366,7 @@ int addTorrent(Session* session, A2Gid* gid, const std::string& torrentFile,
  * Same as :func:`addTorrent()` with an empty vector as the
  * |webSeedUris|.
  */
-int addTorrent(Session* session, A2Gid* gid, const std::string& torrentFile,
+ARIA2_EXTERN int addTorrent(Session* session, A2Gid* gid, const std::string& torrentFile,
                const KeyVals& options, int position = -1);
 
 /**
@@ -352,7 +374,7 @@ int addTorrent(Session* session, A2Gid* gid, const std::string& torrentFile,
  *
  * Returns the array of active download GID.
  */
-std::vector<A2Gid> getActiveDownload(Session* session);
+ARIA2_EXTERN std::vector<A2Gid> getActiveDownload(Session* session);
 
 /**
  * @function
@@ -364,7 +386,7 @@ std::vector<A2Gid> getActiveDownload(Session* session);
  * takes time such as contacting BitTorrent tracker. This function
  * returns 0 if it succeeds, or negative error code.
  */
-int removeDownload(Session* session, A2Gid gid, bool force = false);
+ARIA2_EXTERN int removeDownload(Session* session, A2Gid gid, bool force = false);
 
 /**
  * @function
@@ -384,7 +406,7 @@ int removeDownload(Session* session, A2Gid gid, bool force = false);
  * :member:`SessionConfig::keepRunning` to true. Otherwise, the
  * behavior is undefined.
  */
-int pauseDownload(Session* session, A2Gid gid, bool force = false);
+ARIA2_EXTERN int pauseDownload(Session* session, A2Gid gid, bool force = false);
 
 /**
  * @function
@@ -394,7 +416,7 @@ int pauseDownload(Session* session, A2Gid gid, bool force = false);
  * makes the download eligible to restart. This function returns 0 if
  * it succeeds, or negative error code.
  */
-int unpauseDownload(Session* session, A2Gid gid);
+ARIA2_EXTERN int unpauseDownload(Session* session, A2Gid gid);
 
 /**
  * @function
@@ -426,7 +448,7 @@ int unpauseDownload(Session* session, A2Gid gid);
  *
  * This function returns 0 if it succeeds, or negative error code.
  */
-int changeOption(Session* session, A2Gid gid, const KeyVals& options);
+ARIA2_EXTERN int changeOption(Session* session, A2Gid gid, const KeyVals& options);
 
 /**
  * @function
@@ -434,7 +456,7 @@ int changeOption(Session* session, A2Gid gid, const KeyVals& options);
  * Returns global option denoted by the |name|. If such option is not
  * available, returns empty string.
  */
-const std::string& getGlobalOption(Session* session, const std::string& name);
+ARIA2_EXTERN const std::string& getGlobalOption(Session* session, const std::string& name);
 
 /**
  * @function
@@ -443,7 +465,7 @@ const std::string& getGlobalOption(Session* session, const std::string& name);
  * options which have no default value and have not been set by
  * :func:`sessionNew()`, configuration files or API functions.
  */
-KeyVals getGlobalOptions(Session* session);
+ARIA2_EXTERN KeyVals getGlobalOptions(Session* session);
 
 /**
  * @function
@@ -475,7 +497,7 @@ KeyVals getGlobalOptions(Session* session);
  *
  * This function returns 0 if it succeeds, or negative error code.
  */
-int changeGlobalOption(Session* session, const KeyVals& options);
+ARIA2_EXTERN int changeGlobalOption(Session* session, const KeyVals& options);
 
 /**
  * @struct
@@ -511,7 +533,7 @@ struct GlobalStat {
  * Returns global statistics such as overall download and upload
  * speed.
  */
-GlobalStat getGlobalStat(Session* session);
+ARIA2_EXTERN GlobalStat getGlobalStat(Session* session);
 
 /**
  * @enum
@@ -560,7 +582,7 @@ enum OffsetMode {
  * This function returns the final destination position of this
  * download, or negative error code.
  */
-int changePosition(Session* session, A2Gid gid, int pos, OffsetMode how);
+ARIA2_EXTERN int changePosition(Session* session, A2Gid gid, int pos, OffsetMode how);
 
 /**
  * @function
@@ -571,7 +593,7 @@ int changePosition(Session* session, A2Gid gid, int pos, OffsetMode how);
  * calling :func:`run()` function until it returns 0.  This function
  * returns 0 if it succeeds, or negative error code.
  */
-int shutdown(Session* session, bool force = false);
+ARIA2_EXTERN int shutdown(Session* session, bool force = false);
 
 /**
  * @enum
@@ -878,14 +900,14 @@ public:
  * responsibility of the caller to call :func:`deleteDownloadHandle()`
  * to delete handle object.
  */
-DownloadHandle* getDownloadHandle(Session* session, A2Gid gid);
+ARIA2_EXTERN DownloadHandle* getDownloadHandle(Session* session, A2Gid gid);
 
 /**
  * @function
  *
  * Deallocates the |dh|. Calling this function with ``NULL`` is safe.
  */
-void deleteDownloadHandle(DownloadHandle* dh);
+ARIA2_EXTERN void deleteDownloadHandle(DownloadHandle* dh);
 
 } // namespace aria2
 
