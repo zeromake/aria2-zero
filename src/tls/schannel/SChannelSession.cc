@@ -467,6 +467,7 @@ int SChannelSession::handshakeStep2()
       for (int i = 0; i < 3; ++i) {
         if (outbufs[i].pvBuffer) {
           ::FreeContextBuffer(outbufs[i].pvBuffer);
+          outbufs[i].pvBuffer = nullptr;
         }
       }
       state_ = STATE_ERROR;
@@ -477,6 +478,15 @@ int SChannelSession::handshakeStep2()
     for (int i = 0; i < 3; ++i) {
       if (outbufs[i].BufferType == SECBUFFER_TOKEN && outbufs[i].cbBuffer > 0) {
         outBuf_.append(outbufs[i].pvBuffer, outbufs[i].cbBuffer);
+        ::FreeContextBuffer(outbufs[i].pvBuffer);
+        outbufs[i].pvBuffer = nullptr;
+      }
+    }
+
+    // ISC_REQ_ALLOCATE_MEMORY 下，非 TOKEN 缓冲（如 ALERT）也可能被分配。
+    // 这里统一释放剩余非空缓冲，避免握手成功路径泄漏。
+    for (int i = 0; i < 3; ++i) {
+      if (outbufs[i].pvBuffer) {
         ::FreeContextBuffer(outbufs[i].pvBuffer);
         outbufs[i].pvBuffer = nullptr;
       }
@@ -555,7 +565,7 @@ int SChannelSession::handshakeStep3(TLSVersion& version)
   }
 
   // 查询流大小限制
-  lastStatus_ = ::QueryContextAttributes(&ctxtHandle_,
+  lastStatus_ = ::QueryContextAttributesA(&ctxtHandle_,
                                          SECPKG_ATTR_STREAM_SIZES,
                                          &streamSizes_);
   if (lastStatus_ != SEC_E_OK || streamSizes_.cbMaximumMessage == 0) {
@@ -572,7 +582,7 @@ int SChannelSession::handshakeStep3(TLSVersion& version)
   // 查询协议版本 — 优先使用 SECPKG_ATTR_CONNECTION_INFO (兼容性更好)，
   // 再用 SECPKG_ATTR_CIPHER_INFO 获取密码套件名称。
   SecPkgContext_ConnectionInfo connInfo = {};
-  lastStatus_ = ::QueryContextAttributes(&ctxtHandle_,
+  lastStatus_ = ::QueryContextAttributesA(&ctxtHandle_,
                                          SECPKG_ATTR_CONNECTION_INFO,
                                          &connInfo);
   if (lastStatus_ == SEC_E_OK) {
@@ -803,7 +813,7 @@ ssize_t SChannelSession::readData(void* data, size_t len)
   if (state_ == STATE_CLOSED || state_ == STATE_ERROR ||
       state_ == STATE_SHUTTING_DOWN) {
     if (decBuf_.size() > 0) {
-      size_t n = std::min(decBuf_.size(), len);
+      size_t n = (std::min)(decBuf_.size(), len);
       memcpy(data, decBuf_.data(), n);
       decBuf_.consume(n);
       return static_cast<ssize_t>(n);
@@ -830,7 +840,10 @@ ssize_t SChannelSession::readData(void* data, size_t len)
 
   // 4. 先发送缓存的加密数据（如果有）
   if (pendingSend_.size() > pendingSendOffset_) {
-    flushPendingSend();
+    int rv = flushPendingSend();
+    if (rv == TLS_ERR_ERROR) {
+      return TLS_ERR_ERROR;
+    }
     // 即使 WOULDBLOCK 也继续解密已有数据
   }
 
@@ -985,7 +998,7 @@ ssize_t SChannelSession::readData(void* data, size_t len)
   }
 
   // 7. 从 decBuf_ 返回数据给调用方
-  size_t nread = std::min(decBuf_.size(), len);
+  size_t nread = (std::min)(decBuf_.size(), len);
   if (nread > 0) {
     memcpy(data, decBuf_.data(), nread);
     decBuf_.consume(nread);
