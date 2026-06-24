@@ -179,6 +179,8 @@ private:
   bool recvCloseNotify_;       // 收到服务器 close_notify
   bool recvConnectionClosed_;  // recv() 返回 0（对端关闭 TCP）
   bool sentShutdown_;          // 已发送己方 close_notify
+  bool renegotiationPending_;  // SEC_I_RENEGOTIATE 后需要先调用 ISC 生成 ClientHello
+  bool handshakeFlushPending_; // ISC 返回 SEC_E_OK 但 flush 未完成，下次仅 flush 不重入 ISC
 
   // ---- ISC 请求标志 ----
   static const ULONG kReqFlags;
