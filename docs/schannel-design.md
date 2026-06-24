@@ -1,7 +1,7 @@
 # SChannel TLS 实现文档
 
-> **状态**: 已实现并验证通过  
-> **参考**: curl `lib/vtls/schannel.c`  
+> **状态**: 已实现并验证通过
+> **参考**: curl `lib/vtls/schannel.c`
 > **最后更新**: 2025-06
 
 ---
@@ -151,7 +151,18 @@ STATE_CLOSED
 
 **重协商路径**（`readData` 中收到 `SEC_I_RENEGOTIATE`）：
 ```
-STATE_CONNECTED → STATE_HANDSHAKE_RECV → handshakeStep2() → handshakeStep3() → STATE_CONNECTED
+STATE_CONNECTED
+    │ DecryptMessage 返回 SEC_I_RENEGOTIATE
+    │ 设 renegotiationPending_ = true
+    ▼
+STATE_HANDSHAKE_RECV
+    │ handshakeStep2(): encBuf_ 为空，renegotiationPending_ 放行
+    │ ISC 以 0 字节输入生成 ClientHello → outBuf_
+    ▼
+STATE_HANDSHAKE_SEND ←→ STATE_HANDSHAKE_RECV（循环收发握手消息）
+    │ ISC 返回 SEC_E_OK
+    ▼
+handshakeStep3() → STATE_CONNECTED
 ```
 
 ### 4.2 缓冲区设计
@@ -203,6 +214,8 @@ const ULONG SChannelSession::kReqFlags =
 ```cpp
 static const int kMaxRenegotiations = 3;  // 单次 readData 调用允许的最大重协商次数
 #define SCHANNEL_BUFFER_INIT_SIZE 4096    // encBuf_ 每次扩容的增量
+bool renegotiationPending_;   // SEC_I_RENEGOTIATE 后需先调用 ISC 生成 ClientHello
+bool handshakeFlushPending_;  // SEC_E_OK 但 flush 未完成，下次仅 flush 不重入 ISC
 ```
 
 ---
@@ -227,6 +240,7 @@ loop:
   [发送阶段] state_ == STATE_HANDSHAKE_SEND:
     flushOutBuffer()
     WOULDBLOCK → 返回 WOULDBLOCK
+    完成 且 handshakeFlushPending_ → 清除标志，返回 0（握手已完成）
     完成 → state_ = STATE_HANDSHAKE_RECV
 
   [接收阶段] state_ == STATE_HANDSHAKE_RECV:
@@ -234,7 +248,9 @@ loop:
       needMoreData = false
       ensureCapacity()
       recv() → 追加到 encBuf_
-      encBuf_ 仍为空 → 返回 WOULDBLOCK
+      encBuf_ 仍为空:
+        若 renegotiationPending_ → 清除标志，继续调用 ISC（生成重协商 ClientHello）
+        否则 → 返回 WOULDBLOCK
 
     [调用 ISC]
     inbufs[0] = SECBUFFER_TOKEN（encBuf_ 全部数据）
@@ -267,12 +283,19 @@ loop:
        continue loop
 
     6. SEC_E_OK:
-       有输出 → 先 flushOutBuffer()
+       有输出 → flushOutBuffer()
+         WOULDBLOCK → 设 handshakeFlushPending_=true，返回 WOULDBLOCK
        返回 0（握手数据交换完成，进入 step3）
 ```
 
-**`needMoreData` 标志的必要性**：  
+**`needMoreData` 标志的必要性**：
 `SEC_E_INCOMPLETE_MESSAGE` 表示 SChannel 未消费任何字节（encBuf_ 数据量不足一条完整 TLS 记录）。若不设此标志，下次循环 `encBuf_.size() > 0` 会跳过 recv 直接再跑 ISC，永远得到相同结果，形成死循环。
+
+**`renegotiationPending_` 标志的必要性（BUG-13 修复）**：
+服务端发起的 TLS 1.2 重协商协议流程为：Server 发送 HelloRequest（被 `DecryptMessage` 消费，返回 `SEC_I_RENEGOTIATE`）→ Client 必须发送新的 ClientHello → Server 才会响应 ServerHello 等。`handshakeStep2` 的默认逻辑是「先 recv 再跑 ISC」，但重协商时 Server 已经在等 ClientHello，不会再发送任何数据。若 `encBuf_` 为空时直接返回 WOULDBLOCK，事件循环等待 socket 可读，而 Server 等待 Client 发送 → **双方互等，形成死锁**。设置此标志后，`handshakeStep2` 在 `encBuf_` 为空时不返回 WOULDBLOCK，而是继续调用 ISC。ISC 内部感知到安全上下文刚收到 `SEC_I_RENEGOTIATE`，即使输入 0 字节也会生成 ClientHello 并返回 `SEC_I_CONTINUE_NEEDED`。ClientHello 写入 `outBuf_`，`state_` 变为 `STATE_HANDSHAKE_SEND`，`checkDirection()` 返回 `TLS_WANT_WRITE`，事件循环改为等写就绪，ClientHello 发出后 Server 响应，握手正常推进。标志在首次 ISC 调用前用完即清，不会造成后续忙循环。
+
+**`handshakeFlushPending_` 标志的必要性（BUG-14 修复）**：
+当 ISC 返回 `SEC_E_OK`（握手完成）时，步骤 4 的 EXTRA 处理在步骤 6 之前执行（代码结构），因此 `encBuf_` 中可能保存了 EXTRA 数据（此时为已加密的应用层数据，而非握手数据）。若步骤 6 的 `flushOutBuffer()` 因发送缓冲区满返回 WOULDBLOCK，函数设 `state_ = STATE_HANDSHAKE_SEND` 后返回。下次重入时 flush 成功后 `state_` 变为 `STATE_HANDSHAKE_RECV`，`encBuf_` 非空导致 ISC 被调用——但输入是应用层密文而非握手数据，ISC 无法解析，连接失败。设置此标志后，重入时 flush 完成后直接返回 0（握手已完成），不再进入 ISC 循环，`encBuf_` 中的 EXTRA 留给 `readData` 的解密循环正确处理。
 
 ### 5.3 handshakeStep3() — 查询连接参数
 
@@ -347,8 +370,9 @@ loop:
      提取已解密数据（若有）
      保留 EXTRA 到 encBuf_（供 handshakeStep2 消费）
      renegotiateCount_++ 超限 → 错误
+     renegotiationPending_ = true（让 handshakeStep2 先调用 ISC 生成 ClientHello）
      state_ = STATE_HANDSHAKE_RECV
-     handshakeStep2() → 若失败返回错误
+     handshakeStep2() → WOULDBLOCK 返回给调用方，错误返回错误
      handshakeStep3() → 若失败返回错误
      （step3 内部已设 state_ = STATE_CONNECTED）
      continue（继续解密循环，encBuf_ 可能还有应用数据）
@@ -425,6 +449,8 @@ state_ = STATE_CLOSED
 | BUG-10 | 初始化列表顺序与声明顺序不一致（UB 风险） | 对齐 |
 | BUG-11（新发现）| `grbitDisabledProtocols` 未取反，实际禁用了想启用的协议 | `~enabledProtocols_` |
 | BUG-12（新发现）| ISC 返回 `SEC_E_INCOMPLETE_MESSAGE` 时先做 EXTRA memmove，cbBuffer 值无效导致下溢，encBuf_ 不变形成死循环（463711 行日志） | 错误检查移到 EXTRA 处理之前；对 `SEC_E_INCOMPLETE_MESSAGE` 单独处理并设 `needMoreData=true` |
+| BUG-13（新发现）| 服务端发起 TLS 1.2 重协商时，`readData` 设 `state_=HANDSHAKE_RECV` 后调用 `handshakeStep2`，但 step2 先 recv 再跑 ISC——Server 在等 ClientHello 不会发数据，recv 永远 WOULDBLOCK，`checkDirection` 返回 `TLS_WANT_READ`，双方互等形成死锁 | `renegotiationPending_` 标志让 step2 在 `encBuf_` 为空时仍调用 ISC 生成 ClientHello |
+| BUG-14（新发现）| ISC 返回 `SEC_E_OK` 且有 EXTRA 时，若 `flushOutBuffer` 返回 WOULDBLOCK，重入 step2 后 `encBuf_` 中的应用层密文被当作握手数据送给 ISC，导致连接失败 | `handshakeFlushPending_` 标志让重入时 flush 完成后直接返回 0，不重入 ISC 循环 |
 
 ---
 
@@ -437,6 +463,8 @@ state_ = STATE_CLOSED
 | 加密发送 | 每次 `malloc/free` | 预分配 `sendRecordBuf_`，避免碎片 |
 | EXTRA 缓冲区处理 | 同逻辑：memmove 至头部，更新 offset | 完全对齐 |
 | `SEC_E_INCOMPLETE_MESSAGE` | 标记 `doread=TRUE`，下次循环强制 recv | `needMoreData=true`，语义一致 |
+| 重协商启动 | `io_need=SEND` + `doread=FALSE` 跳过 recv 直接跑 ISC | `renegotiationPending_` 标志让 step2 在 `encBuf_` 为空时仍调用 ISC |
+| SEC_E_OK + flush 中断 | `break` 跳出循环，EXTRA 留给 `schannel_recv` 解密 | `handshakeFlushPending_` 标志阻止重入 ISC |
 | renegotiation 限制 | `MAX_RENEG_BLOCK_TIME`（时间限制） | `kMaxRenegotiations = 3`（次数限制） |
 | 关闭流程 | `ApplyControlToken` + ISC + send，尽力发送 | 完全对齐 |
 | ALPN | 支持（`SCH_CRED_ALPN`） | 未实现（`TLSSession` 基类无此接口） |

@@ -169,7 +169,9 @@ SChannelSession::SChannelSession(SChannelContext* ctx)
       pendingSendOffset_(0),
       recvCloseNotify_(false),
       recvConnectionClosed_(false),
-      sentShutdown_(false)
+      sentShutdown_(false),
+      renegotiationPending_(false),
+      handshakeFlushPending_(false)
 {
   memset(&ctxtHandle_, 0, sizeof(ctxtHandle_));
   memset(&streamSizes_, 0, sizeof(streamSizes_));
@@ -349,6 +351,10 @@ int SChannelSession::handshakeStep2()
       if (rv != 0) {
         return rv;
       }
+      if (handshakeFlushPending_) {
+        handshakeFlushPending_ = false;
+        return 0;
+      }
       // 发送完毕，转入接收
       state_ = STATE_HANDSHAKE_RECV;
     }
@@ -392,7 +398,12 @@ int SChannelSession::handshakeStep2()
       }
 
       if (encBuf_.size() == 0) {
-        return TLS_ERR_WOULDBLOCK;
+        if (renegotiationPending_) {
+          renegotiationPending_ = false;
+        }
+        else {
+          return TLS_ERR_WOULDBLOCK;
+        }
       }
     }
 
@@ -505,6 +516,7 @@ int SChannelSession::handshakeStep2()
       state_ = STATE_HANDSHAKE_SEND;
       int rv = flushOutBuffer();
       if (rv == TLS_ERR_WOULDBLOCK) {
+        handshakeFlushPending_ = true;
         return TLS_ERR_WOULDBLOCK;
       }
       if (rv != 0) {
@@ -934,7 +946,12 @@ ssize_t SChannelSession::readData(void* data, size_t len)
         return TLS_ERR_ERROR;
       }
 
-      // 进入握手状态，让 handshakeStep2 完成 Key Update 应答
+      // 进入握手状态，让 handshakeStep2 完成 Key Update 应答。
+      // 设置 renegotiationPending_ 标志：服务端发起的重协商需要客户端先调用 ISC
+      // 生成新的 ClientHello，而 handshakeStep2 默认会先等待接收数据。此标志让
+      // handshakeStep2 在 encBuf_ 为空时仍调用 ISC，避免双方互等造成死锁。
+      A2_LOG_DEBUG("SChannel: remote party requests renegotiation");
+      renegotiationPending_ = true;
       state_ = STATE_HANDSHAKE_RECV;
       int rv = handshakeStep2();
       if (rv != 0) {
