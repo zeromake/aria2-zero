@@ -339,7 +339,7 @@ target("aria2")
     end
     if ssl_external ~= true then
         if is_plat("windows", "mingw") then
-            add_files("src/tls/wintls/*.cc")
+            add_files("src/tls/schannel/*.cc")
             add_syslinks("crypt32", "secur32")
             set_configvar("SECURITY_WIN32", 1)
         elseif is_plat("macosx", "iphoneos") then
