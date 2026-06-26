@@ -42,6 +42,7 @@
 #include <map>
 
 #include "Event.h"
+#include "WakeupPipe.h"
 #include "a2functional.h"
 #ifdef ENABLE_ASYNC_DNS
 #  include "AsyncNameResolver.h"
@@ -81,7 +82,8 @@ private:
   KAsyncNameResolverEntrySet nameResolverEntries_;
 #endif // ENABLE_ASYNC_DNS
 
-  // Allocated the number of struct pollfd in pollfds_.
+  WakeupPipe wakeupPipe_; // 跨线程唤醒管道
+
   int pollfdCapacity_;
 
   // The number of valid struct pollfd in pollfds_.
@@ -107,6 +109,8 @@ public:
   virtual ~PollEventPoll();
 
   virtual void poll(const struct timeval& tv) CXX11_OVERRIDE;
+
+  virtual void wakeup() CXX11_OVERRIDE;
 
   virtual bool addEvents(sock_t socket, Command* command,
                          EventPoll::EventType events) CXX11_OVERRIDE;

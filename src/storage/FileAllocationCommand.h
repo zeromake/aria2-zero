@@ -36,12 +36,7 @@
 #define D_FILE_ALLOCATION_COMMAND_H
 
 #include "RealtimeCommand.h"
-
-#include <vector>
-#include <memory>
-#include <future>
-#include <tuple>
-
+#include "AsyncTask.h"
 #include "TimerA2.h"
 
 namespace aria2 {
@@ -50,15 +45,11 @@ class FileAllocationEntry;
 
 class FileAllocationCommand : public RealtimeCommand {
   COMMAND_CLASSNAME(FileAllocationCommand)
-  using ExecuteResult =
-      std::tuple<std::unique_ptr<std::vector<std::unique_ptr<Command>>>, bool>;
 
 private:
   FileAllocationEntry* fileAllocationEntry_;
   Timer timer_;
-  std::unique_ptr<std::future<ExecuteResult>> future_ = nullptr;
-
-  ExecuteResult executeInternalImpl();
+  AsyncTask asyncTask_;
 
 public:
   FileAllocationCommand(cuid_t cuid, RequestGroup* requestGroup,

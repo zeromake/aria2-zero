@@ -267,6 +267,7 @@ target("aria2")
         add_includedirs(dir)
     end
     add_files(
+        "src/poll/WakeupPipe.cc",
         "src/poll/select/*.cc",
         "src/parser/xml/expat/*.cc",
         "src/protocol/sftp/*.cc",

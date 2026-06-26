@@ -77,9 +77,13 @@ struct pollfd PollEventPoll::KSocketEntry::getEvents()
 
 PollEventPoll::PollEventPoll()
     : pollfdCapacity_(1024),
-      pollfdNum_(0),
+      pollfdNum_(1),
       pollfds_(aria2::make_unique<struct pollfd[]>(pollfdCapacity_))
 {
+  // pollfds_[0] 固定为唤醒管道，不参与 socketEntries_ 管理
+  pollfds_[0].fd = wakeupPipe_.readFd();
+  pollfds_[0].events = POLLIN;
+  pollfds_[0].revents = 0;
 }
 
 PollEventPoll::~PollEventPoll() = default;
@@ -93,7 +97,10 @@ void PollEventPoll::poll(const struct timeval& tv)
          errno == EINTR)
     ;
   if (res > 0) {
-    for (auto first = pollfds_.get(), last = pollfds_.get() + pollfdNum_;
+    if (pollfds_[0].revents) {
+      wakeupPipe_.drain();
+    }
+    for (auto first = pollfds_.get() + 1, last = pollfds_.get() + pollfdNum_;
          first != last; ++first) {
       if (first->revents) {
         auto itr = socketEntries_.find(first->fd);
@@ -127,6 +134,8 @@ void PollEventPoll::poll(const struct timeval& tv)
   // TODO timeout of name resolver is determined in Command(AbstractCommand,
   // DHTEntryPoint...Command)
 }
+
+void PollEventPoll::wakeup() { wakeupPipe_.signal(); }
 
 int PollEventPoll::translateEvents(EventPoll::EventType events)
 {

@@ -42,6 +42,7 @@
 #include <map>
 
 #include "Event.h"
+#include "WakeupPipe.h"
 #include "a2functional.h"
 #ifdef ENABLE_ASYNC_DNS
 #  include "AsyncNameResolver.h"
@@ -82,6 +83,7 @@ private:
 #endif // ENABLE_ASYNC_DNS
 
   int epfd_;
+  WakeupPipe wakeupPipe_; // 跨线程唤醒管道
 
   size_t epEventsSize_;
 
@@ -107,6 +109,8 @@ public:
   virtual ~EpollEventPoll();
 
   virtual void poll(const struct timeval& tv) CXX11_OVERRIDE;
+
+  virtual void wakeup() CXX11_OVERRIDE;
 
   virtual bool addEvents(sock_t socket, Command* command,
                          EventPoll::EventType events) CXX11_OVERRIDE;

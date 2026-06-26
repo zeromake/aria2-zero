@@ -92,6 +92,14 @@ KqueueEventPoll::KqueueEventPoll()
       kqEvents_(aria2::make_unique<struct kevent[]>(kqEventsSize_))
 {
   kqfd_ = kqueue();
+  // 将唤醒管道读端注册到 kqueue，udata=nullptr 用于区分唤醒事件
+  if (kqfd_ != -1) {
+    struct kevent ev;
+    EV_SET(&ev, wakeupPipe_.readFd(), EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0,
+           PTR_TO_UDATA(nullptr));
+    struct timespec zeroTs = {0, 0};
+    kevent(kqfd_, &ev, 1, nullptr, 0, &zeroTs);
+  }
 }
 
 KqueueEventPoll::~KqueueEventPoll()
@@ -120,6 +128,10 @@ void KqueueEventPoll::poll(const struct timeval& tv)
   if (res > 0) {
     for (int i = 0; i < res; ++i) {
       KSocketEntry* p = reinterpret_cast<KSocketEntry*>(kqEvents_[i].udata);
+      if (!p) {
+        wakeupPipe_.drain();
+        continue;
+      }
       int events = 0;
       int filter = kqEvents_[i].filter;
       if (filter == EVFILT_READ) {
@@ -151,6 +163,8 @@ void KqueueEventPoll::poll(const struct timeval& tv)
   // TODO timeout of name resolver is determined in Command(AbstractCommand,
   // DHTEntryPoint...Command)
 }
+
+void KqueueEventPoll::wakeup() { wakeupPipe_.signal(); }
 
 namespace {
 int translateEvents(EventPoll::EventType events)

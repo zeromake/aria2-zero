@@ -34,6 +34,9 @@
 /* copyright --> */
 #include "TimeBasedAsyncCommand.h"
 #include "DownloadEngine.h"
+#include "LogFactory.h"
+#include "Logger.h"
+#include "fmt.h"
 #include "wallclock.h"
 
 namespace aria2 {
@@ -50,47 +53,56 @@ TimeBasedAsyncCommand::TimeBasedAsyncCommand(cuid_t cuid, DownloadEngine* e,
 {
 }
 
+// AsyncTask 析构函数会自动等待工作线程完成
 TimeBasedAsyncCommand::~TimeBasedAsyncCommand() = default;
 
 bool TimeBasedAsyncCommand::execute()
 {
-  bool result = false;
-  if (future_ == nullptr) {
-    auto f = e_->getThreadPool()->enqueue(
-        &TimeBasedAsyncCommand::executeInternal, this);
-    future_ = aria2::make_unique<std::future<bool>>(std::move(f));
-  }
-  if (future_->wait_for(100_ns) == std::future_status::ready) {
-    result = future_->get();
-    future_ = nullptr;
-  }
-  if (!result) {
-    if (routineCommand_) {
-      e_->addRoutineCommand(std::unique_ptr<Command>(this));
-    }
-    else {
-      e_->addCommand(std::unique_ptr<Command>(this));
-    }
-  }
-  return result;
-}
-
-bool TimeBasedAsyncCommand::executeInternal()
-{
   preProcess();
-  if (exit_) {
+  if (exit_.load(std::memory_order_relaxed)) {
     return true;
   }
-  if (checkPoint_.difference(global::wallclock()) >= interval_) {
+
+  // 定时间隔到达且无正在执行的任务时，提交 process() 到 ThreadPool
+  if (!asyncTask_.isRunning() &&
+      checkPoint_.difference(global::wallclock()) >= interval_) {
     checkPoint_ = global::wallclock();
-    process();
-    if (exit_) {
+    asyncTask_.submit(*e_->getThreadPool(), e_, [this]() { process(); });
+  }
+
+  // 主线程检查工作线程是否完成
+  if (asyncTask_.checkFinished()) {
+    // 捕获所有异常，防止逃逸到 DownloadEngine::run() 导致崩溃
+    if (asyncTask_.hasException()) {
+      try {
+        asyncTask_.rethrowIfException();
+      }
+      catch (std::exception& ex) {
+        A2_LOG_ERROR(fmt("async process error: %s", ex.what()));
+      }
+      catch (...) {
+        A2_LOG_ERROR("unknown exception in async process");
+      }
+      enableExit();
+      return true;
+    }
+
+    // process() 中调用 enableExit() 后跳过 postProcess()，与旧行为一致
+    if (exit_.load(std::memory_order_relaxed)) {
       return true;
     }
   }
+
   postProcess();
-  if (exit_) {
+  if (exit_.load(std::memory_order_relaxed)) {
     return true;
+  }
+
+  if (routineCommand_) {
+    e_->addRoutineCommand(std::unique_ptr<Command>(this));
+  }
+  else {
+    e_->addCommand(std::unique_ptr<Command>(this));
   }
   return false;
 }

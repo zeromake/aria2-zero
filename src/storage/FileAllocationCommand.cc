@@ -42,10 +42,10 @@
 #include "message.h"
 #include "prefs.h"
 #include "util.h"
-#include "DownloadEngine.h"
 #include "DownloadContext.h"
 #include "a2functional.h"
 #include "RecoverableException.h"
+#include "DlAbortEx.h"
 #include "wallclock.h"
 #include "RequestGroupMan.h"
 #include "fmt.h"
@@ -62,57 +62,72 @@ FileAllocationCommand::FileAllocationCommand(
 
 FileAllocationCommand::~FileAllocationCommand()
 {
+  // AsyncTask 析构函数会自动等待工作线程完成
   getDownloadEngine()->getFileAllocationMan()->dropPickedEntry();
 }
 
 bool FileAllocationCommand::executeInternal()
 {
-  bool result = false;
-  if (future_ == nullptr) {
-    auto f = getDownloadEngine()->getThreadPool()->enqueue(
-        &FileAllocationCommand::executeInternalImpl, this);
-    future_ =
-        aria2::make_unique<std::future<FileAllocationCommand::ExecuteResult>>(
-            std::move(f));
+  if (getRequestGroup()->isHaltRequested()) {
+    // 异步任务仍在执行时不直接返回，避免析构自旋阻塞主循环
+    if (asyncTask_.isRunning() && !asyncTask_.checkFinished()) {
+      getDownloadEngine()->addCommand(std::unique_ptr<Command>(this));
+      return false;
+    }
+    return true;
   }
-  if (future_->wait_for(100_ns) == std::future_status::ready) {
-    auto execResult = future_->get();
-    future_ = nullptr;
-    result = std::get<1>(execResult);
-    auto commands = std::move(std::get<0>(execResult));
-    if (result && commands != nullptr) {
-      getDownloadEngine()->addCommand(std::move(*commands));
-      commands.release();
+
+  // 提交 allocateChunk 到 ThreadPool，仅执行纯磁盘 I/O
+  if (!asyncTask_.isRunning()) {
+    auto* entry = fileAllocationEntry_;
+    asyncTask_.submit(*getDownloadEngine()->getThreadPool(),
+                      getDownloadEngine(),
+                      [entry]() { entry->allocateChunk(); });
+  }
+
+  // 主线程检查工作线程是否完成
+  if (asyncTask_.checkFinished()) {
+    // 将非 RecoverableException 转换为 DlAbortEx，
+    // 确保 RealtimeCommand::execute() 的 catch 能捕获
+    if (asyncTask_.hasException()) {
+      try {
+        asyncTask_.rethrowIfException();
+      }
+      catch (RecoverableException&) {
+        throw;
+      }
+      catch (std::exception& e) {
+        throw DL_ABORT_EX(e.what());
+      }
+      catch (...) {
+        throw DL_ABORT_EX("unknown error in file allocation");
+      }
+    }
+
+    // 异步完成后再次检查 halt，避免为已取消的下载创建后续命令
+    if (getRequestGroup()->isHaltRequested()) {
+      return true;
+    }
+
+    if (fileAllocationEntry_->finished()) {
+      A2_LOG_DEBUG(fmt(
+          MSG_ALLOCATION_COMPLETED,
+          static_cast<long int>(std::chrono::duration_cast<std::chrono::seconds>(
+                                    timer_.difference(global::wallclock()))
+                                    .count()),
+          getRequestGroup()->getTotalLength()));
+
+      // prepareForNextAction 在主线程执行，访问 DownloadEngine 共享状态
+      std::vector<std::unique_ptr<Command>> commands;
+      fileAllocationEntry_->prepareForNextAction(commands, getDownloadEngine());
+      getDownloadEngine()->addCommand(std::move(commands));
       getDownloadEngine()->setNoWait(true);
+      return true;
     }
   }
-  if (!result) {
-    getDownloadEngine()->addCommand(std::unique_ptr<Command>(this));
-  }
-  return result;
-}
 
-FileAllocationCommand::ExecuteResult
-FileAllocationCommand::executeInternalImpl()
-{
-  if (getRequestGroup()->isHaltRequested()) {
-    return {nullptr, true};
-  }
-  fileAllocationEntry_->allocateChunk();
-  if (fileAllocationEntry_->finished()) {
-    A2_LOG_DEBUG(fmt(
-        MSG_ALLOCATION_COMPLETED,
-        static_cast<long int>(std::chrono::duration_cast<std::chrono::seconds>(
-                                  timer_.difference(global::wallclock()))
-                                  .count()),
-        getRequestGroup()->getTotalLength()));
-    auto commands = aria2::make_unique<std::vector<std::unique_ptr<Command>>>();
-    fileAllocationEntry_->prepareForNextAction(*commands, getDownloadEngine());
-    return {std::move(commands), true};
-  }
-  else {
-    return {nullptr, false};
-  }
+  getDownloadEngine()->addCommand(std::unique_ptr<Command>(this));
+  return false;
 }
 
 bool FileAllocationCommand::handleException(Exception& e)

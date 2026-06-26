@@ -17,6 +17,8 @@ public:
   template <class F, class... Args>
   auto enqueue(F&& f, Args&&... args)
       -> std::future<typename std::result_of<F(Args...)>::type>;
+  // 无返回值的 fire-and-forget 入队，跳过 std::packaged_task 开销
+  template <class F> void enqueueDetached(F&& f);
   ~ThreadPool();
 
 private:
@@ -76,6 +78,18 @@ auto ThreadPool::enqueue(F&& f, Args&&... args)
   }
   condition.notify_one();
   return res;
+}
+
+// 无返回值的 fire-and-forget 入队，跳过 std::packaged_task 开销
+template <class F> void ThreadPool::enqueueDetached(F&& f)
+{
+  {
+    std::unique_lock<std::mutex> lock(queue_mutex);
+    if (stop)
+      throw std::runtime_error("enqueue on stopped ThreadPool");
+    tasks.emplace(std::forward<F>(f));
+  }
+  condition.notify_one();
 }
 
 // the destructor joins all threads

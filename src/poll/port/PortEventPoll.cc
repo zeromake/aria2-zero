@@ -80,6 +80,11 @@ PortEventPoll::PortEventPoll()
       portEvents_(new port_event_t[portEventsSize_])
 {
   port_ = port_create();
+  // 将唤醒管道注册到 event port，user=nullptr 用于区分唤醒事件
+  if (port_ != -1) {
+    port_associate(port_, PORT_SOURCE_FD, wakeupPipe_.readFd(), POLLIN,
+                   nullptr);
+  }
 }
 
 PortEventPoll::~PortEventPoll()
@@ -113,6 +118,13 @@ void PortEventPoll::poll(const struct timeval& tv)
     for (uint_t i = 0; i < nget; ++i) {
       const port_event_t& pev = portEvents_[i];
       KSocketEntry* p = reinterpret_cast<KSocketEntry*>(pev.portev_user);
+      if (!p) {
+        wakeupPipe_.drain();
+        // event port 是 one-shot 的，需要重新注册
+        port_associate(port_, PORT_SOURCE_FD, wakeupPipe_.readFd(), POLLIN,
+                       nullptr);
+        continue;
+      }
       p->processEvents(pev.portev_events);
       int r = port_associate(port_, PORT_SOURCE_FD, pev.portev_object,
                              p->getEvents().events, p);
@@ -145,6 +157,8 @@ void PortEventPoll::poll(const struct timeval& tv)
   // TODO timeout of name resolver is determined in Command(AbstractCommand,
   // DHTEntryPoint...Command)
 }
+
+void PortEventPoll::wakeup() { wakeupPipe_.signal(); }
 
 namespace {
 int translateEvents(EventPoll::EventType events)

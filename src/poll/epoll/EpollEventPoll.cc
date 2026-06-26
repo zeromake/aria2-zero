@@ -86,6 +86,14 @@ EpollEventPoll::EpollEventPoll()
       epEvents_(aria2::make_unique<struct epoll_event[]>(epEventsSize_))
 {
   epfd_ = epoll_create(EPOLL_EVENTS_MAX);
+  // 将唤醒管道读端注册到 epoll，data.ptr=nullptr 用于区分唤醒事件
+  if (epfd_ != -1) {
+    struct epoll_event ev;
+    memset(&ev, 0, sizeof(ev));
+    ev.events = EPOLLIN;
+    ev.data.ptr = nullptr;
+    epoll_ctl(epfd_, EPOLL_CTL_ADD, wakeupPipe_.readFd(), &ev);
+  }
 }
 
 EpollEventPoll::~EpollEventPoll()
@@ -117,6 +125,10 @@ void EpollEventPoll::poll(const struct timeval& tv)
   if (res > 0) {
     for (int i = 0; i < res; ++i) {
       KSocketEntry* p = reinterpret_cast<KSocketEntry*>(epEvents_[i].data.ptr);
+      if (!p) {
+        wakeupPipe_.drain();
+        continue;
+      }
       p->processEvents(epEvents_[i].events);
     }
   }
@@ -141,6 +153,8 @@ void EpollEventPoll::poll(const struct timeval& tv)
   // TODO timeout of name resolver is determined in Command(AbstractCommand,
   // DHTEntryPoint...Command)
 }
+
+void EpollEventPoll::wakeup() { wakeupPipe_.signal(); }
 
 namespace {
 int translateEvents(EventPoll::EventType events)

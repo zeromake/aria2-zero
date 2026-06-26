@@ -39,6 +39,7 @@
 
 #include <string>
 #include <memory>
+#include <mutex>
 
 namespace aria2 {
 
@@ -56,6 +57,8 @@ public:
   };
 
 private:
+  // 保护所有共享状态，允许工作线程安全地查询日志级别和写入日志
+  std::mutex mutex_;
   // Minimum log level for file log output.
   LEVEL logLevel_;
   std::shared_ptr<OutputFile> fpp_;
@@ -98,9 +101,9 @@ public:
 
   void closeFile();
 
-  void setLogLevel(LEVEL level) { logLevel_ = level; }
+  void setLogLevel(LEVEL level);
 
-  void setConsoleLogLevel(LEVEL level) { consoleLogLevel_ = level; }
+  void setConsoleLogLevel(LEVEL level);
 
   void setConsoleOutput(bool enabled);
 

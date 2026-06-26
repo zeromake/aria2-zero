@@ -338,6 +338,9 @@ public:
 
   bool validateToken(const std::string& token);
   std::unique_ptr<ThreadPool>& getThreadPool() { return threadPool_; }
+
+  // 唤醒 EventPoll，供工作线程完成异步任务后调用
+  void wakeupPoll();
 };
 
 } // namespace aria2

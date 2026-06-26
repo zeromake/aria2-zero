@@ -120,6 +120,7 @@ private:
 #endif // ENABLE_ASYNC_DNS
 
   uv_loop_t* loop_;
+  uv_async_t wakeupAsync_; // libuv 内建的跨线程唤醒句柄
   KSocketEntrySet socketEntries_;
   KPolls polls_;
 
@@ -147,6 +148,8 @@ public:
   bool good() const { return loop_; }
 
   virtual void poll(const struct timeval& tv) CXX11_OVERRIDE;
+
+  virtual void wakeup() CXX11_OVERRIDE;
 
   virtual bool addEvents(sock_t socket, Command* command,
                          EventPoll::EventType events) CXX11_OVERRIDE;

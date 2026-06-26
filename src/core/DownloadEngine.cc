@@ -329,6 +329,8 @@ bool DownloadEngine::deleteNameResolverCheck(
 
 void DownloadEngine::setNoWait(bool b) { noWait_ = b; }
 
+void DownloadEngine::wakeupPoll() { eventPoll_->wakeup(); }
+
 void DownloadEngine::addRoutineCommand(std::unique_ptr<Command> command)
 {
   routineCommands_.push_back(std::move(command));

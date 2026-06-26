@@ -62,6 +62,7 @@ Logger::~Logger() = default;
 
 void Logger::openFile(const std::string& filename)
 {
+  std::lock_guard<std::mutex> lock(mutex_);
   closeFile();
   if (filename == DEV_STDOUT) {
     fpp_ = global::cout();
@@ -75,6 +76,7 @@ void Logger::openFile(const std::string& filename)
   }
 }
 
+// 内部方法，调用方已持有 mutex_
 void Logger::closeFile()
 {
   if (fpp_) {
@@ -82,9 +84,29 @@ void Logger::closeFile()
   }
 }
 
-void Logger::setConsoleOutput(bool enabled) { consoleOutput_ = enabled; }
+void Logger::setLogLevel(LEVEL level)
+{
+  std::lock_guard<std::mutex> lock(mutex_);
+  logLevel_ = level;
+}
 
-void Logger::setColorOutput(bool enabled) { colorOutput_ = enabled; }
+void Logger::setConsoleLogLevel(LEVEL level)
+{
+  std::lock_guard<std::mutex> lock(mutex_);
+  consoleLogLevel_ = level;
+}
+
+void Logger::setConsoleOutput(bool enabled)
+{
+  std::lock_guard<std::mutex> lock(mutex_);
+  consoleOutput_ = enabled;
+}
+
+void Logger::setColorOutput(bool enabled)
+{
+  std::lock_guard<std::mutex> lock(mutex_);
+  colorOutput_ = enabled;
+}
 
 bool Logger::fileLogEnabled(LEVEL level) { return level >= logLevel_ && fpp_; }
 
@@ -95,6 +117,7 @@ bool Logger::consoleLogEnabled(LEVEL level)
 
 bool Logger::levelEnabled(LEVEL level)
 {
+  std::lock_guard<std::mutex> lock(mutex_);
   return fileLogEnabled(level) || consoleLogEnabled(level);
 }
 
@@ -192,6 +215,7 @@ void writeStackTrace(Output& fp, const char* stackTrace)
 void Logger::writeLog(Logger::LEVEL level, const char* sourceFile, int lineNum,
                       const char* msg, const char* trace)
 {
+  std::lock_guard<std::mutex> lock(mutex_);
   if (fileLogEnabled(level)) {
     writeHeader(*fpp_, level, sourceFile, lineNum);
     fpp_->printf("%s\n", msg);

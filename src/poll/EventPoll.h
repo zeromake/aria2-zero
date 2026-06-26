@@ -62,6 +62,9 @@ public:
 
   virtual void poll(const struct timeval& tv) = 0;
 
+  // 从任意线程调用，唤醒正在 poll() 中阻塞的主线程
+  virtual void wakeup() = 0;
+
   virtual bool addEvents(sock_t socket, Command* command, EventType events) = 0;
 
   virtual bool deleteEvents(sock_t socket, Command* command,

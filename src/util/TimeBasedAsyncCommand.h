@@ -36,8 +36,10 @@
 #define D_TIME_BASED_ASYNC_COMMAND_H
 
 #include "Command.h"
+#include "AsyncTask.h"
 #include "TimerA2.h"
-#include <future>
+
+#include <atomic>
 
 namespace aria2 {
 
@@ -52,43 +54,24 @@ private:
 
   std::chrono::seconds interval_;
 
-  /**
-   * setting exit_ to true if this command's job has finished and you want to
-   * delete this command.
-   * The exit_ variable is evaluated  after preProcess(), process(),
-   * postProcess(), and terminate processing immediately and execute() returns
-   * true.
-   */
-  bool exit_;
+  // 原子类型，避免工作线程 enableExit() 与主线程读取的数据竞争
+  std::atomic<bool> exit_;
 
   bool routineCommand_;
 
-  std::unique_ptr<std::future<bool>> future_ = nullptr;
-  bool executeInternal();
+  AsyncTask asyncTask_;
 
 protected:
   DownloadEngine* getDownloadEngine() const { return e_; }
 
-  void enableExit() { exit_ = true; }
+  void enableExit() { exit_.store(true, std::memory_order_relaxed); }
 
   const std::chrono::seconds& getInterval() const { return interval_; }
 
 public:
-  /**
-   * preProcess() is called each time when execute() is called.
-   */
-  virtual void preProcess() {};
-
-  /**
-   * process() is called only when execute() is called and specified time has
-   * elapsed.
-   */
-  virtual void process() = 0;
-
-  /**
-   * postProcess() is called each time when execute() is called.
-   */
-  virtual void postProcess() {};
+  virtual void preProcess() {};  // 主线程执行，每次 execute() 调用
+  virtual void process() = 0;    // 工作线程执行，定时触发的阻塞 I/O
+  virtual void postProcess() {}; // 主线程执行，每次 execute() 调用
 
 public:
   TimeBasedAsyncCommand(cuid_t cuid, DownloadEngine* e,
@@ -102,4 +85,4 @@ public:
 
 } // namespace aria2
 
-#endif // D_TIME_BASED_COMMAND_H
+#endif // D_TIME_BASED_ASYNC_COMMAND_H

@@ -97,14 +97,26 @@ int LibuvEventPoll::KSocketEntry::getEvents() const
   return events;
 }
 
-LibuvEventPoll::LibuvEventPoll() { loop_ = uv_loop_new(); }
+LibuvEventPoll::LibuvEventPoll()
+{
+  loop_ = uv_loop_new();
+  // 初始化跨线程唤醒句柄，回调中 uv_stop 使 uv_run 立即返回
+  if (loop_) {
+    uv_async_init(loop_, &wakeupAsync_, [](uv_async_t* handle) {
+      uv_stop(handle->loop);
+    });
+  }
+}
 
 LibuvEventPoll::~LibuvEventPoll()
 {
   for (auto& p : polls_) {
     p.second->close();
   }
-  // Actually kill the polls, and timers, if any.
+  if (loop_) {
+    uv_close(reinterpret_cast<uv_handle_t*>(&wakeupAsync_), nullptr);
+  }
+  // Actually kill the polls, timers, and the async handle.
   uv_run(loop_, (uv_run_mode)(UV_RUN_ONCE | UV_RUN_NOWAIT));
 
   if (loop_) {
@@ -153,6 +165,8 @@ void LibuvEventPoll::poll(const struct timeval& tv)
   // TODO timeout of name resolver is determined in Command(AbstractCommand,
   // DHTEntryPoint...Command)
 }
+
+void LibuvEventPoll::wakeup() { uv_async_send(&wakeupAsync_); }
 
 int LibuvEventPoll::translateEvents(EventPoll::EventType events)
 {

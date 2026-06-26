@@ -204,6 +204,9 @@ void SelectEventPoll::poll(const struct timeval& tv)
 #endif // !_WIN32
   } while (retval == -1 && errno == EINTR);
   if (retval > 0) {
+    if (FD_ISSET(wakeupPipe_.readFd(), &rfds)) {
+      wakeupPipe_.drain();
+    }
     for (auto& i : socketEntries_) {
       auto& e = i.second;
       int events = 0;
@@ -258,6 +261,11 @@ void SelectEventPoll::updateFdSet()
 #else  // !_WIN32
   fdmax_ = 0;
 #endif // !_WIN32
+  // 唤醒管道读端始终加入读集合
+  FD_SET(wakeupPipe_.readFd(), &rfdset_);
+  if (fdmax_ < wakeupPipe_.readFd()) {
+    fdmax_ = wakeupPipe_.readFd();
+  }
 
   for (auto& i : socketEntries_) {
     auto& e = i.second;
@@ -287,6 +295,8 @@ void SelectEventPoll::updateFdSet()
     }
   }
 }
+
+void SelectEventPoll::wakeup() { wakeupPipe_.signal(); }
 
 bool SelectEventPoll::addEvents(sock_t socket, Command* command,
                                 EventPoll::EventType events)
