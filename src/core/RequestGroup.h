@@ -456,9 +456,16 @@ public:
 
   void removeControlFile() const;
 
+  bool isSaveControlFileEnabled() const { return saveControlFile_; }
+
   void enableSaveControlFile() { saveControlFile_ = true; }
 
   void disableSaveControlFile() { saveControlFile_ = false; }
+
+  const std::shared_ptr<BtProgressInfoFile>& getProgressInfoFile() const
+  {
+    return progressInfoFile_;
+  }
 
   template <typename InputIterator>
   void followedBy(InputIterator groupFirst, InputIterator groupLast)

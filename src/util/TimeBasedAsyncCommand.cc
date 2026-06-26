@@ -67,6 +67,8 @@ bool TimeBasedAsyncCommand::execute()
   if (!asyncTask_.isRunning() &&
       checkPoint_.difference(global::wallclock()) >= interval_) {
     checkPoint_ = global::wallclock();
+    // 主线程准备阶段：收集工作线程需要的数据
+    prepareProcess();
     asyncTask_.submit(*e_->getThreadPool(), e_, [this]() { process(); });
   }
 

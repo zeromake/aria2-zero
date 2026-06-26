@@ -54,6 +54,8 @@
 #include "DownloadFailureException.h"
 #include "fmt.h"
 #include "array_fun.h"
+#include "StringIOFile.h"
+#include "MessageDigest.h"
 #include "DownloadContext.h"
 #include "BufferedFile.h"
 #include "SHA1IOFile.h"
@@ -221,6 +223,23 @@ void DefaultBtProgressInfoFile::save()
   if (!File(filenameTemp).renameTo(filename_)) {
     throw DL_ABORT_EX(fmt(EX_SEGMENT_FILE_WRITE, filename_.c_str()));
   }
+}
+
+bool DefaultBtProgressInfoFile::serializeToBuffer(std::string& out)
+{
+  StringIOFile sio;
+  save(sio);
+
+  auto sha1 = MessageDigest::sha1();
+  sha1->update(sio.str().data(), sio.str().size());
+  auto digest = sha1->digest();
+  if (digest == lastDigest_) {
+    out.clear();
+    return false;
+  }
+  lastDigest_ = std::move(digest);
+  out = std::move(sio.str());
+  return true;
 }
 
 #define READ_CHECK(fp, ptr, count)                                             \

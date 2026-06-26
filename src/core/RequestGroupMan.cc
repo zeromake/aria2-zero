@@ -80,6 +80,7 @@
 #include "WrDiskCache.h"
 #include "PieceStorage.h"
 #include "DiskAdaptor.h"
+#include "BufferedFile.h"
 #include "SimpleRandomizer.h"
 #include "array_fun.h"
 #include "OpenedFileCounter.h"
@@ -608,6 +609,81 @@ void RequestGroupMan::save()
         A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
       }
     }
+  }
+}
+
+std::unique_ptr<SaveSnapshot> RequestGroupMan::collectSaveSnapshot()
+{
+  auto snapshot = make_unique<SaveSnapshot>();
+  for (auto& rg : requestGroups_) {
+    if (rg->allDownloadFinished() &&
+        !rg->getDownloadContext()->isChecksumVerificationNeeded() &&
+        !rg->getOption()->getAsBool(PREF_FORCE_SAVE)) {
+      // 已完成的下载：收集 .aria2 文件路径，工作线程删除
+      auto filename = rg->getProgressInfoFile()->getFilename();
+      if (!filename.empty() && rg->getProgressInfoFile()->exists()) {
+        snapshot->removeItems.push_back(std::move(filename));
+      }
+    }
+    else {
+      try {
+        auto& ps = rg->getPieceStorage();
+        if (!rg->isSaveControlFileEnabled()) {
+          continue;
+        }
+        std::shared_ptr<DiskAdaptor> adaptor;
+        if (ps) {
+          ps->flushWrDiskCacheEntry(false);
+          adaptor = ps->getDiskAdaptor();
+        }
+        // 主线程：序列化控制文件到内存 buffer（读取 PieceStorage 状态）
+        std::string data;
+        if (rg->getProgressInfoFile()->serializeToBuffer(data)) {
+          ControlFileSaveItem item;
+          item.data = std::move(data);
+          item.filePath = rg->getProgressInfoFile()->getFilename();
+          item.adaptor = adaptor;
+          snapshot->saveItems.push_back(std::move(item));
+        }
+      }
+      catch (RecoverableException& e) {
+        A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
+      }
+    }
+  }
+  return std::move(snapshot);
+}
+
+void RequestGroupMan::writeSaveSnapshot(
+    const std::unique_ptr<SaveSnapshot>& snapshot)
+{
+  // 工作线程：执行所有磁盘 I/O（fsync + 写文件 + rename + 删除）
+  if (!snapshot) {
+    return;
+  }
+  for (auto& item : snapshot->saveItems) {
+    if (item.adaptor) {
+      item.adaptor->flushOSBuffers();
+    }
+    std::string tempPath = item.filePath + "__temp";
+    {
+      BufferedFile fp(tempPath.c_str(), BufferedFile::WRITE);
+      if (!fp) {
+        A2_LOG_ERROR(fmt(EX_SEGMENT_FILE_WRITE, item.filePath.c_str()));
+        continue;
+      }
+      if (fp.write(item.data.data(), item.data.size()) != item.data.size()) {
+        A2_LOG_ERROR(fmt(EX_SEGMENT_FILE_WRITE, item.filePath.c_str()));
+        File(tempPath).remove();
+        continue;
+      }
+    }
+    if (!File(tempPath).renameTo(item.filePath)) {
+      A2_LOG_ERROR(fmt(EX_SEGMENT_FILE_WRITE, item.filePath.c_str()));
+    }
+  }
+  for (auto& path : snapshot->removeItems) {
+    File(path).remove();
   }
 }
 

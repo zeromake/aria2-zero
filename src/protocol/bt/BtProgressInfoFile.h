@@ -51,6 +51,12 @@ public:
 
   virtual void save() = 0;
 
+  virtual bool serializeToBuffer(std::string& out)
+  {
+    out.clear();
+    return false;
+  }
+
   virtual void load() = 0;
 
   virtual void removeFile() = 0;

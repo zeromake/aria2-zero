@@ -69,9 +69,10 @@ protected:
   const std::chrono::seconds& getInterval() const { return interval_; }
 
 public:
-  virtual void preProcess() {};  // 主线程执行，每次 execute() 调用
-  virtual void process() = 0;    // 工作线程执行，定时触发的阻塞 I/O
-  virtual void postProcess() {}; // 主线程执行，每次 execute() 调用
+  virtual void preProcess() {};      // 主线程执行，每次 execute() 调用
+  virtual void prepareProcess() {};  // 主线程执行，在 process() 提交到 ThreadPool 前调用
+  virtual void process() = 0;       // 工作线程执行，定时触发的阻塞 I/O
+  virtual void postProcess() {};    // 主线程执行，每次 execute() 调用
 
 public:
   TimeBasedAsyncCommand(cuid_t cuid, DownloadEngine* e,

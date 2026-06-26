@@ -35,12 +35,18 @@
 #ifndef D_AUTO_SAVE_COMMAND_H
 #define D_AUTO_SAVE_COMMAND_H
 
-#include "TimeBasedCommand.h"
+#include "TimeBasedAsyncCommand.h"
+#include "RequestGroupMan.h"
 
 namespace aria2 {
 
-class AutoSaveCommand : public TimeBasedCommand {
+// 定时保存控制文件（.aria2）。
+// 主线程采集快照（flush 缓存 + 序列化到内存），工作线程执行磁盘写入（fsync + 写文件 + rename）。
+class AutoSaveCommand : public TimeBasedAsyncCommand {
   COMMAND_CLASSNAME(AutoSaveCommand)
+
+  std::unique_ptr<SaveSnapshot> pendingSnapshot_;
+
 public:
   AutoSaveCommand(cuid_t cuid, DownloadEngine* e,
                   std::chrono::seconds interval);
@@ -48,6 +54,8 @@ public:
   virtual ~AutoSaveCommand();
 
   virtual void preProcess() CXX11_OVERRIDE;
+
+  virtual void prepareProcess() CXX11_OVERRIDE;
 
   virtual void process() CXX11_OVERRIDE;
 };

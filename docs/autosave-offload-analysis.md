@@ -75,24 +75,25 @@ AutoSaveCommand::process()                    [主线程，阻塞事件循环]
 ### 2.2 数据流
 
 ```
-主线程                                    工作线程
-──────                                    ────────
-遍历 requestGroups_:
-  rg1: flushCache + 序列化 → buf1
+主线程 (prepareProcess)                   工作线程 (process)
+──────────────────────                    ────────────────────
+collectSaveSnapshot():
+  rg1: flushCache + serializeToBuffer → buf1
   rg2: 已完成 → 记录删除路径
-  rg3: flushCache + 序列化 → buf3
+  rg3: flushCache + serializeToBuffer → buf3
   ...
-收集结果:
-  saveItems = [{fd, buf1, path1}, ...]   
-  removeItems = [path2, ...]             
+pendingSnapshot_ = unique_ptr<SaveSnapshot>:
+  saveItems = [{shared_ptr<adaptor>, buf1, path1}, ...]
+  removeItems = [path2, ...]
                     │
                     ▼ submit(AsyncTask)
-                                          for item in saveItems:
-                                            fsync(item.fd)
-                                            write(item.path + "__temp", item.buf)
-                                            rename(item.path + "__temp", item.path)
-                                          for path in removeItems:
-                                            remove(path)
+                                          writeSaveSnapshot(pendingSnapshot_):
+                                            for item in saveItems:
+                                              adaptor->flushOSBuffers()
+                                              write(path + "__temp", data)
+                                              rename(path + "__temp", path)
+                                            for path in removeItems:
+                                              remove(path)
                     ◄── wakeup ───────────
 ```
 
@@ -101,52 +102,43 @@ AutoSaveCommand::process()                    [主线程，阻塞事件循环]
 #### 2.3.1 RequestGroup 新增快照方法
 
 ```cpp
-// RequestGroup.h
-struct ControlFileSaveData {
-  std::string serializedData;  // 序列化后的控制文件内容
-  std::string filePath;        // .aria2 文件路径
-  DiskAdaptor* diskAdaptor;    // 用于 fsync 的 fd（指针在 save 期间稳定）
-  bool needFsync;              // 是否需要 fsync 下载数据文件
+// RequestGroupMan.h
+struct ControlFileSaveItem {
+  std::string data;
+  std::string filePath;
+  // 持有 shared_ptr 保证工作线程 fsync 期间 DiskAdaptor 不被析构
+  std::shared_ptr<DiskAdaptor> adaptor;
 };
 
-// RequestGroup.cc
-// 主线程调用：flush 缓存 + 序列化到内存（不写盘）
-std::unique_ptr<ControlFileSaveData> RequestGroup::snapshotControlFile();
-
-// 工作线程调用：fsync + 写盘 + rename
-static void RequestGroup::writeControlFile(const ControlFileSaveData& data);
+struct SaveSnapshot {
+  std::vector<ControlFileSaveItem> saveItems;
+  std::vector<std::string> removeItems;
+};
 ```
 
 #### 2.3.2 DefaultBtProgressInfoFile 新增序列化到 buffer 的方法
 
-当前 `save()` 直接写文件。需要一个新方法将序列化结果输出到 `std::string`：
+当前 `save()` 直接写文件。新增 `serializeToBuffer()` 将序列化结果输出到 `std::string`：
 
 ```cpp
-// 已有 save(IOFile& fp) 可以序列化到任意 IOFile
-// SHA1IOFile 已经是内存 IOFile，可复用
-// 新增：序列化到 string 并返回（含 SHA1 变化检测）
-bool DefaultBtProgressInfoFile::snapshotToBuffer(std::string& out);
+// 序列化一次到 StringIOFile，再对 buffer 计算 SHA1 检测变化（避免双重序列化）
+bool DefaultBtProgressInfoFile::serializeToBuffer(std::string& out);
 ```
 
 #### 2.3.3 AutoSaveCommand 改继承 TimeBasedAsyncCommand
 
 ```cpp
 class AutoSaveCommand : public TimeBasedAsyncCommand {
-  // 主线程快照结果，传递给工作线程
-  struct SaveSnapshot {
-    struct Item {
-      std::string data;        // 序列化数据
-      std::string filePath;    // .aria2 路径
-      DiskAdaptor* adaptor;    // fsync 用
-    };
-    std::vector<Item> saveItems;
-    std::vector<std::string> removeItems;
-  };
   std::unique_ptr<SaveSnapshot> pendingSnapshot_;
 
-  void preProcess() override;   // 退出检查 + 快照收集
-  void process() override;      // 工作线程：fsync + 写盘
+  void preProcess() override;       // 退出检查
+  void prepareProcess() override;   // 主线程采集快照
+  void process() override;          // 工作线程：fsync + 写盘
 };
+
+// RequestGroupMan
+std::unique_ptr<SaveSnapshot> collectSaveSnapshot();
+static void writeSaveSnapshot(const std::unique_ptr<SaveSnapshot>& snapshot);
 ```
 
 ### 2.4 fsync 安全性
@@ -160,15 +152,11 @@ class AutoSaveCommand : public TimeBasedAsyncCommand {
 
 `fsync` 和 `write` 对同一 fd 并发是操作系统级别支持的，不需要应用层加锁。
 
-### 2.5 DiskAdaptor 指针稳定性
+### 2.5 DiskAdaptor 生命周期
 
-`SaveSnapshot::Item::adaptor` 是裸指针，工作线程通过它调用 `flushOSBuffers()`。需要确认该指针在工作线程执行期间不会失效。
+`ControlFileSaveItem::adaptor` 使用 `shared_ptr<DiskAdaptor>` 持有引用，保证工作线程 fsync 期间对象不被析构。
 
-`DiskAdaptor` 的生命周期绑定到 `PieceStorage`，后者绑定到 `RequestGroup`。`RequestGroup` 在下载活跃期间不会被销毁（由 `RequestGroupMan` 持有）。`AutoSaveCommand` 只在活跃下载上调用 `saveControlFile()`，因此指针在工作线程执行期间稳定。
-
-但存在一个边界情况：如果在快照采集后、工作线程 fsync 前，该 `RequestGroup` 完成下载并被 `FillRequestGroupCommand` 移除（`removeStoppedGroup` 会 `closeFile()`），则 fd 已关闭，fsync 会操作无效 fd。
-
-**缓解**：`flushOSBuffers()` 内部检查 `fd_ == A2_BAD_FD` 则跳过（已有此检查）。所以即使 fd 被关闭，也不会崩溃，只是 fsync 被跳过（可接受，因为文件已关闭意味着数据已写完）。
+如果快照采集后 `RequestGroup` 完成下载并被 `removeStoppedGroup` 移除（`closeFile()` 关闭 fd），`shared_ptr` 保证 `DiskAdaptor` 对象存活，`flushOSBuffers()` 内部检查 `fd_ == A2_BAD_FD` 跳过（已有此检查）。fsync 被跳过是可接受的——文件已关闭意味着数据已写完。
 
 ---
 
@@ -176,9 +164,9 @@ class AutoSaveCommand : public TimeBasedAsyncCommand {
 
 | 改动 | 说明 | 行数 |
 |------|------|------|
-| `DefaultBtProgressInfoFile` 新增 `snapshotToBuffer()` | 复用已有 `save(IOFile&)`，用 `StringIOFile` 适配器 | ~30 |
-| `RequestGroup` 新增 `snapshotControlFile()` | 拆分 `saveControlFile()` 为快照+写盘 | ~30 |
-| `RequestGroupMan` 新增 `snapshotForSave()` | 遍历收集快照 | ~25 |
+| `DefaultBtProgressInfoFile` 新增 `serializeToBuffer()` | 复用已有 `save(IOFile&)`，单次序列化 + SHA1 校验 | ~20 |
+| `RequestGroup` 新增访问器 | `isSaveControlFileEnabled()` + `getProgressInfoFile()` | ~5 |
+| `RequestGroupMan` 新增 `collectSaveSnapshot()` | 遍历收集快照 | ~25 |
 | `AutoSaveCommand` 改继承 + 实现 | 从 `TimeBasedCommand` → `TimeBasedAsyncCommand` | ~40 |
 | `StringIOFile` 或类似内存 IOFile | 如果没有现成的则需要新增 | ~40 |
 | **总计** | | **~165** |
@@ -225,4 +213,4 @@ class AutoSaveCommand : public TimeBasedAsyncCommand {
 2. fsync 占阻塞耗时 90%+，收益最大化
 3. 后续如果需要进一步优化，再做完整快照方案
 
-如果选择完整方案，需要先确认是否有现成的 `StringIOFile` 类（将 IOFile 接口适配到 `std::string`），否则需要新增一个。
+完整方案已实现，新增 `StringIOFile`（`src/storage/StringIOFile.h`）将 IOFile 接口适配到 `std::string`，支持 `write` 和 `vprintf`。

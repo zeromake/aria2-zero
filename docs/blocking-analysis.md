@@ -19,7 +19,7 @@ aria2-zero 采用**单线程事件驱动架构**，所有 Command 的 `execute()
 
 ---
 
-## 一、确认存在阻塞的 Command（共 12 个）
+## 一、确认存在阻塞的 Command（共 10 个，2 个已修复）
 
 ### 1. CheckIntegrityCommand ⬤ CRITICAL
 
@@ -36,19 +36,12 @@ aria2-zero 采用**单线程事件驱动架构**，所有 Command 的 `execute()
 
 ---
 
-### 2. AutoSaveCommand ⬤ CRITICAL
+### 2. ~~AutoSaveCommand~~ ✅ 已修复
 
 **文件**: `src/core/AutoSaveCommand.cc`  
-**基类**: TimeBasedCommand
+**基类**: ~~TimeBasedCommand~~ → TimeBasedAsyncCommand
 
-| 阻塞操作 | 位置 | 说明 |
-|----------|------|------|
-| `fsync()` / `FlushFileBuffers()` | `process()` → `RequestGroupMan::save()` → `saveControlFile()` → `flushOSBuffers()` | 对**每个**活跃下载任务执行 fsync |
-| 同步写入 .aria2 控制文件 | `saveControlFile()` → `progressInfoFile_->save()` | 序列化并写入进度信息 |
-| 同步刷新磁盘缓存 | `saveControlFile()` → `flushWrDiskCacheEntry(false)` | 刷新写缓存到磁盘 |
-| 同步删除控制文件 | `removeControlFile()` → `progressInfoFile_->removeFile()` | 已完成任务删除 .aria2 文件 |
-
-**详细分析**: `RequestGroupMan::save()` 遍历所有 `requestGroups_`，对每个任务调用 `saveControlFile()` 或 `removeControlFile()`。`saveControlFile()` 的调用链：`flushWrDiskCacheEntry()` → `flushOSBuffers()`（即 `fsync()`）→ `progressInfoFile_->save()`。`fsync()` 是已知的高延迟操作，在机械硬盘上可达数十至数百毫秒。当有 N 个活跃下载时，此操作执行 N 次。
+**已通过快照方案卸载到 ThreadPool**：主线程采集快照（flush 缓存 + 序列化到内存 buffer），工作线程执行磁盘写入（fsync + 写文件 + rename + 删除）。详见 `docs/autosave-offload-analysis.md`。
 
 ---
 
@@ -320,8 +313,8 @@ HTTP 响应头接收本身是非阻塞的（`receiveResponse()` 未完成时返�
 | 13 | PeerChokeCommand | `src/protocol/peer/PeerChokeCommand.cc` | CPU 排序（512 peer 上限，每 10 秒一次） |
 | 14 | PeerListenCommand | `src/protocol/peer/PeerListenCommand.cc` | 非阻塞 accept 循环，上限 3 次 |
 | 15 | SftpFinishDownloadCommand | `src/protocol/sftp/SftpFinishDownloadCommand.cc` | 非阻塞 libssh2 SFTP close（EAGAIN 处理） |
-| 16 | FileAllocationCommand | `src/storage/FileAllocationCommand.cc` | ✅ 已正确异步化：ThreadPool + future + wait_for(100ns) |
-| 17 | TimeBasedAsyncCommand | `src/util/TimeBasedAsyncCommand.cc` | ✅ 异步模板：ThreadPool + future（当前无子类使用） |
+| 16 | FileAllocationCommand | `src/storage/FileAllocationCommand.cc` | ✅ 已异步化（AsyncTask + EventPoll wakeup），但 `prepareForNextAction` 中残留 `saveControlFile()` 阻塞（见发现 7） |
+| 17 | TimeBasedAsyncCommand | `src/util/TimeBasedAsyncCommand.cc` | ✅ 异步基类（AsyncTask + EventPoll wakeup + prepareProcess 钩子） |
 | 18 | PeerAbstractCommand | `src/protocol/peer/PeerAbstractCommand.cc` | 基类无阻塞，依赖子类 executeInternal() |
 
 ### TimeBasedCommand 无阻塞子类
@@ -337,6 +330,7 @@ HTTP 响应头接收本身是非阻塞的（`receiveResponse()` 未完成时返�
 | 7 | DelayedCommand | `src/core/DelayedCommand.h` | 延迟入队命令（内存） |
 | 8 | TimedHaltCommand | `src/util/TimedHaltCommand.cc` | 设置 halt 标志 |
 | 9 | WatchProcessCommand | `src/core/WatchProcessCommand.cc` | 进程存活检查（0 超时，实际非阻塞） |
+| 10 | AutoSaveCommand | `src/core/AutoSaveCommand.cc` | ✅ 已异步化（继承 TimeBasedAsyncCommand，快照+写盘卸载） |
 
 ---
 
@@ -349,7 +343,7 @@ HTTP 响应头接收本身是非阻塞的（`receiveResponse()` 未完成时返�
 | **SChannel SSPI 内部网络请求** | 2 个（HttpRequestCommand, HttpResponseCommand） | 200ms ~ 30s（CRL/OCSP/AIA） |
 | **同步 DNS (getaddrinfo)** | 5 个（AbstractCommand, NameResolveCommand, DHTEntryPointNameResolveCommand, FtpNegotiationCommand, LpdDispatchMessageCommand） | 1ms ~ 30s |
 | **同步文件 I/O (open/stat/write/delete)** | 7 个（FillRequestGroupCommand, HttpResponseCommand, HttpRequestCommand, FtpNegotiationCommand, SftpNegotiationCommand, SaveSessionCommand, DHTAutoSaveCommand） | 0.1ms ~ 100ms |
-| **fsync / FlushFileBuffers** | 2 个（AutoSaveCommand, FillRequestGroupCommand） | 1ms ~ 500ms |
+| **fsync / FlushFileBuffers** | 1 个（FillRequestGroupCommand）+ FileAllocationCommand 残留（prepareForNextAction） | 1ms ~ 500ms |
 | **同步磁盘读取 + 哈希** | 1 个（CheckIntegrityCommand） | 1ms ~ 1000ms |
 | **CPU 密集（压缩/序列化）** | 1 个（HttpServerBodyCommand） | 1ms ~ 100ms |
 
@@ -360,7 +354,8 @@ HTTP 响应头接收本身是非阻塞的（`receiveResponse()` 未完成时返�
 | **每次 HTTPS 连接** | HttpRequestCommand (SChannel TLS 握手) | SSPI 内部 CRL/OCSP/AIA 同步网络请求，首次连接或证书缓存过期时触发 |
 | **每次下载启动** | HttpResponseCommand, FtpNegotiationCommand, SftpNegotiationCommand, HttpRequestCommand | 新连接文件准备时一次性阻塞 |
 | **每次下载完成** | FillRequestGroupCommand | 清理时阻塞，批量完成时叠加 |
-| **定时循环（~60s）** | AutoSaveCommand, SaveSessionCommand | 周期性阻塞，影响随活跃下载数量线性增长 |
+| **定时循环（~60s）** | ~~AutoSaveCommand~~（✅ 已卸载）, SaveSessionCommand | SaveSessionCommand 仍周期性阻塞 |
+| **文件分配完成时** | FileAllocationCommand → `prepareForNextAction` → `saveControlFile()` | 一次性阻塞（fsync），仅在 `AUTO_SAVE_INTERVAL != 0` 时 |
 | **定时循环（~30min）** | DHTAutoSaveCommand | 低频，单次影响有限 |
 | **完整性校验期间** | CheckIntegrityCommand | 校验期间持续阻塞，每次读一个 piece |
 | **连接建立时** | AbstractCommand (DNS), NameResolveCommand, DHTEntryPointNameResolveCommand | 仅在 async DNS 禁用时 |
@@ -371,24 +366,11 @@ HTTP 响应头接收本身是非阻塞的（`receiveResponse()` 未完成时返�
 
 ### 发现 1：CheckIntegrityCommand 未异步化（遗漏）
 
-`FileAllocationCommand` 和 `CheckIntegrityCommand` 同为 `RealtimeCommand` 子类，执行类似的重 I/O 操作。`FileAllocationCommand` 已正确迁移到 ThreadPool 异步模式：
+`FileAllocationCommand` 和 `CheckIntegrityCommand` 同为 `RealtimeCommand` 子类，执行类似的重 I/O 操作。`FileAllocationCommand` 已通过 `AsyncTask` + EventPoll wakeup 完成异步化改造，但 `CheckIntegrityCommand` 仍然直接在事件循环线程上执行磁盘读取和哈希计算。建议参照 `FileAllocationCommand` 进行异步化改造，详见 `docs/threadpool-offload-guide.md` 模式 A。
 
-```cpp
-// FileAllocationCommand - 正确的异步模式
-future_ = e_->getThreadPool()->enqueue([this]() { executeInternalImpl(); });
-// ...
-if (future_->wait_for(100_ns) == std::future_status::ready) {
-    future_->get();
-}
-```
+### 发现 2：~~AutoSaveCommand 的 fsync 风暴~~ ✅ 已修复
 
-但 `CheckIntegrityCommand` 仍然直接在事件循环线程上执行磁盘读取和哈希计算。建议参照 `FileAllocationCommand` 进行异步化改造。
-
-### 发现 2：AutoSaveCommand 的 fsync 风暴
-
-`AutoSaveCommand::process()` 对**每个活跃下载任务**调用 `saveControlFile()`，其中包含 `flushOSBuffers()`（即 `fsync()`）。当有 N 个活跃下载时，单次 `process()` 会触发 N 次 fsync。在 HDD 上每次 fsync 可达 10-100ms，10 个活跃下载就可能阻塞 1 秒。
-
-建议：将 `AutoSaveCommand` 迁移到 `TimeBasedAsyncCommand` 模式（该基类已存在但当前无子类使用），或在 ThreadPool 中执行 save 操作。
+`AutoSaveCommand` 已改为继承 `TimeBasedAsyncCommand`，采用主线程快照 + 工作线程写盘方案。主线程执行 flush 缓存 + 序列化到内存（快速），工作线程执行 fsync + 写文件 + rename（慢）。详见 `docs/autosave-offload-analysis.md`。
 
 ### 发现 3：文件初始化是共性问题
 
@@ -396,9 +378,9 @@ HTTP、FTP、SFTP 三种协议的下载命令在收到服务端文件大小信�
 
 这是架构性问题 —— 文件准备阶段缺少异步化。可考虑将文件打开/创建操作卸载到 ThreadPool，或引入文件操作的 Command 状态机。
 
-### 发现 4：TimeBasedAsyncCommand 基础设施闲置
+### 发现 4：~~TimeBasedAsyncCommand 基础设施闲置~~ ✅ 已启用
 
-`TimeBasedAsyncCommand` 已实现正确的 ThreadPool 异步模式，但**当前没有任何子类**。`AutoSaveCommand`、`SaveSessionCommand`、`DHTAutoSaveCommand` 这些需要定时执行文件 I/O 的命令都继承自同步的 `TimeBasedCommand`，未利用已有的异步基础设施。
+`TimeBasedAsyncCommand` 已重构为 AsyncTask + EventPoll wakeup 触发式异步，并新增 `prepareProcess()` 钩子。`AutoSaveCommand` 已迁移为其子类。`SaveSessionCommand`、`DHTAutoSaveCommand` 仍继承同步的 `TimeBasedCommand`，可后续迁移。
 
 ### 发现 5：同步 DNS 有条件触发
 
@@ -439,6 +421,31 @@ SChannel 实现（`src/tls/schannel/SChannelSession.cc`）的 socket I/O（`::se
 3. 使用 OpenSSL/QUICTLS 替代 SChannel（当前默认配置已支持 `use_quictls=true`）
 4. 在 SChannel 凭证创建时设置 `SCH_CRED_REVOCATION_CHECK_CHAIN` 策略控制吊销检查行为
 
+### 发现 7：FileAllocationCommand 的 `prepareForNextAction` 残留阻塞
+
+`FileAllocationCommand` 的 `allocateChunk()` 已通过 AsyncTask 卸载到 ThreadPool，但分配完成后在主线程调用的 `prepareForNextAction()` 内部仍有同步文件 I/O。
+
+**`StreamFileAllocationEntry::prepareForNextAction()`**（行 104-109）:
+```cpp
+if (option->getAsInt(PREF_AUTO_SAVE_INTERVAL) != 0 &&
+    !rg->allDownloadFinished()) {
+  rg->saveControlFile();  // ← 同步 fsync + 写文件
+}
+```
+
+**`BtFileAllocationEntry::prepareForNextAction()`**（行 85-92）:
+```cpp
+if (option->getAsInt(PREF_AUTO_SAVE_INTERVAL) != 0) {
+  rg->saveControlFile();  // ← 同步 fsync + 写文件
+}
+```
+
+`saveControlFile()` 包含 `flushWrDiskCacheEntry(false)` + `flushOSBuffers()`（fsync，HDD 上 1-500ms）+ `progressInfoFile_->save()`（写文件）。
+
+**影响**：仅在文件分配完成时触发一次（不像 AutoSaveCommand 周期性执行），且仅在 `PREF_AUTO_SAVE_INTERVAL != 0` 时。属于原有代码的历史遗留问题，不是 ThreadPool 改造引入的回归。
+
+**后续优化方向**：可将 `prepareForNextAction` 中的 `saveControlFile()` 替换为 `snapshotForSave()` + 异步写盘，但需要引入额外的异步状态管理（当前 `prepareForNextAction` 是同步返回后立即创建下载命令），改动较大。
+
 ---
 
 ## 六、总览表
@@ -446,7 +453,7 @@ SChannel 实现（`src/tls/schannel/SChannelSession.cc`）的 socket I/O（`::se
 | # | Command | 文件 | 阻塞? | 严重度 | 主要阻塞操作 |
 |---|---------|------|-------|--------|-------------|
 | 1 | CheckIntegrityCommand | `src/core/CheckIntegrityCommand.cc` | **YES** | **CRITICAL** | 同步读 piece + 哈希（最大 16MB/次） |
-| 2 | AutoSaveCommand | `src/core/AutoSaveCommand.cc` | **YES** | **CRITICAL** | N × fsync + 写控制文件 |
+| 2 | ~~AutoSaveCommand~~ | `src/core/AutoSaveCommand.cc` | ~~YES~~ ✅ | ~~CRITICAL~~ | ✅ 已通过快照方案卸载到 ThreadPool |
 | 3 | FillRequestGroupCommand | `src/core/FillRequestGroupCommand.cc` | **YES** | **CRITICAL** | 关闭/写入/删除多个文件 |
 | 4 | HttpRequestCommand | `src/network/HttpRequestCommand.cc` | **YES** | **HIGH** | SChannel `InitializeSecurityContextA()` 内部同步 CRL/OCSP/AIA 网络请求；stat 文件（条件 GET） |
 | 5 | HttpResponseCommand | `src/network/HttpResponseCommand.cc` | **YES** | **HIGH** | SChannel 重协商时同 #4；打开/创建/stat 文件 + 加载进度 |
@@ -461,4 +468,5 @@ SChannel 实现（`src/tls/schannel/SChannelSession.cc`）的 socket I/O（`::se
 | 14 | WebSocketInteractionCommand | `src/protocol/ws/WebSocketInteractionCommand.cc` | POTENTIAL | **LOW** | RPC 处理同步执行 |
 | 15 | LpdDispatchMessageCommand | `src/core/LpdDispatchMessageCommand.cc` | POTENTIAL | **LOW** | getaddrinfo（数值 IP，通常即时） |
 | 16 | BackupIPv4ConnectCommand | `src/core/BackupIPv4ConnectCommand.cc` | POTENTIAL | **LOW** | getaddrinfo（数值 IP，通常即时） |
-| 17-30 | 其余 14 个 Command | — | **NO** | — | 非阻塞 |
+| 17 | FileAllocationCommand | `src/storage/FileAllocationCommand.cc` | RESIDUAL | **LOW** | ✅ allocateChunk 已异步化；残留：`prepareForNextAction` → `saveControlFile()`（一次性 fsync） |
+| 18-30 | 其余 13 个 Command | — | **NO** | — | 非阻塞 |

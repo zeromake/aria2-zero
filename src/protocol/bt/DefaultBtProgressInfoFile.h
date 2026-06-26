@@ -79,6 +79,10 @@ public:
 
   virtual void save() CXX11_OVERRIDE;
 
+  // 序列化到内存 buffer（主线程调用）。如果内容未变化则返回 false 且 out 为空。
+  // 返回 true 时 out 包含完整的控制文件内容，由调用者负责写盘。
+  bool serializeToBuffer(std::string& out);
+
   virtual void load() CXX11_OVERRIDE;
 
   virtual void removeFile() CXX11_OVERRIDE;

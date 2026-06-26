@@ -40,7 +40,7 @@ namespace aria2 {
 
 AutoSaveCommand::AutoSaveCommand(cuid_t cuid, DownloadEngine* e,
                                  std::chrono::seconds interval)
-    : TimeBasedCommand(cuid, e, std::move(interval), true)
+    : TimeBasedAsyncCommand(cuid, e, std::move(interval), true)
 {
 }
 
@@ -54,9 +54,19 @@ void AutoSaveCommand::preProcess()
   }
 }
 
+void AutoSaveCommand::prepareProcess()
+{
+  // 主线程：遍历活跃下载组，flush 缓存 + 序列化到内存 buffer。
+  // 所有共享状态的读取在此完成，不存在竞态。
+  pendingSnapshot_ =
+      getDownloadEngine()->getRequestGroupMan()->collectSaveSnapshot();
+}
+
 void AutoSaveCommand::process()
 {
-  getDownloadEngine()->getRequestGroupMan()->save();
+  // 工作线程：执行磁盘 I/O（fsync + 写文件 + rename + 删除）。
+  // 仅操作独立的文件和已序列化的 buffer，不读取任何共享数据结构。
+  RequestGroupMan::writeSaveSnapshot(pendingSnapshot_);
 }
 
 } // namespace aria2

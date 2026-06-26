@@ -17,11 +17,8 @@ xmake f -m release && xmake
 # 编译静态库 (Debug)
 xmake f -m debug -k static && xmake
 
-# 编译单元测试
-xmake f --unit=true && xmake
-
-# MSVC 编译
-xmake f -p windows -a x64 && xmake
+# 编译
+xmake f -c && xmake
 ```
 
 ### 构建选项
@@ -95,8 +92,10 @@ aria2-zero/
 
 ## 测试
 
+> windows 下需要在 pwsh 执行
+
 ```bash
-xmake f --unit=true && xmake && xmake run test
+rm -rf build && xmake f -c -y && xmake
 ```
 
 ## 特性 (相对于原版 aria2 的改进)

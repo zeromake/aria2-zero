@@ -61,6 +61,20 @@ class OutputFile;
 class UriListParser;
 class WrDiskCache;
 class OpenedFileCounter;
+class DiskAdaptor;
+
+// 控制文件保存快照，由主线程采集、工作线程写盘
+struct ControlFileSaveItem {
+  std::string data;
+  std::string filePath;
+  // 持有 shared_ptr 保证工作线程 fsync 期间 DiskAdaptor 不被析构
+  std::shared_ptr<DiskAdaptor> adaptor;
+};
+
+struct SaveSnapshot {
+  std::vector<ControlFileSaveItem> saveItems;   // 需要写盘的条目
+  std::vector<std::string> removeItems;         // 需要删除的 .aria2 文件路径
+};
 
 typedef IndexedList<a2_gid_t, std::shared_ptr<RequestGroup>> RequestGroupList;
 typedef IndexedList<a2_gid_t, std::shared_ptr<DownloadResult>>
@@ -156,6 +170,13 @@ public:
   bool downloadFinished();
 
   void save();
+
+  // 主线程调用：遍历活跃下载组，flush 缓存 + 序列化到内存，收集快照数据。
+  // 返回的 SaveSnapshot 可安全传递给工作线程执行 fsync + 写盘。
+  std::unique_ptr<SaveSnapshot> collectSaveSnapshot();
+
+  // 工作线程调用：将快照数据写入磁盘（fsync + 写文件 + rename + 删除）。
+  static void writeSaveSnapshot(const std::unique_ptr<SaveSnapshot>& snapshot);
 
   void closeFile();
 
