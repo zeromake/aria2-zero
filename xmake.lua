@@ -362,6 +362,9 @@ target("aria2")
         elseif is_plat("macosx", "iphoneos", "bsd") then
             add_files("src/poll/kqueue/*.cc")
             set_configvar("HAVE_KQUEUE", 1)
+        elseif is_plat("windows", "mingw") then
+            add_files("src/poll/iocp/*.cc")
+            set_configvar("HAVE_IOCP", 1)
         end
     end
 

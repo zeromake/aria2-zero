@@ -39,7 +39,7 @@ extern "C" {
 
 #ifdef _WIN32
 #  ifndef _WIN32_WINNT
-#    define _WIN32_WINNT 0x501
+#    define _WIN32_WINNT 0x0600
 #  endif // _WIN32_WINNT
 #  include <winsock2.h>
 #  undef ERROR

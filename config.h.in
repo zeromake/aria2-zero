@@ -98,6 +98,7 @@ ${define A2_TEST_OUT_DIR}
 
 ${define HAVE_LIBUV}
 ${define HAVE_EPOLL}
+${define HAVE_IOCP}
 ${define HAVE_PORT_ASSOCIATE}
 ${define HAVE_KQUEUE}
 ${define HAVE_POLL}

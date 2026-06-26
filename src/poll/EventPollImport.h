@@ -7,6 +7,9 @@
 #ifdef HAVE_EPOLL
 #  include "epoll/EpollEventPoll.h"
 #endif // HAVE_EPOLL
+#ifdef HAVE_IOCP
+#  include "iocp/IocpEventPoll.h"
+#endif // HAVE_IOCP
 #ifdef HAVE_PORT_ASSOCIATE
 #  include "port/PortEventPoll.h"
 #endif // HAVE_PORT_ASSOCIATE

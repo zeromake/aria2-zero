@@ -93,7 +93,18 @@ std::unique_ptr<EventPoll> createEventPoll(Option* op)
     return std::move(ep);
   }
   else
-#endif // HAVE_EPLL
+#endif // HAVE_EPOLL
+#ifdef HAVE_IOCP
+      if (pollMethod == V_IOCP) {
+    auto ep = aria2::make_unique<IocpEventPoll>();
+    if (!ep->good()) {
+      throw DL_ABORT_EX("Initializing IocpEventPoll failed."
+                        " Try --event-poll=select");
+    }
+    return std::move(ep);
+  }
+  else
+#endif // HAVE_IOCP
 #ifdef HAVE_KQUEUE
       if (pollMethod == V_KQUEUE) {
     auto kp = aria2::make_unique<KqueueEventPoll>();

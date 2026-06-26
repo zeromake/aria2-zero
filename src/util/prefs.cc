@@ -137,6 +137,7 @@ const std::string V_FEEDBACK("feedback");
 const std::string V_ADAPTIVE("adaptive");
 const std::string V_LIBUV("libuv");
 const std::string V_EPOLL("epoll");
+const std::string V_IOCP("iocp");
 const std::string V_KQUEUE("kqueue");
 const std::string V_PORT("port");
 const std::string V_POLL("poll");

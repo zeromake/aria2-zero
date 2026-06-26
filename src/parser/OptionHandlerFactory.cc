@@ -285,6 +285,8 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
                                                  TEXT_EVENT_POLL,
 #if defined(HAVE_EPOLL)
                                                  V_EPOLL,
+#elif defined(HAVE_IOCP)
+                                                 V_IOCP,
 #elif defined(HAVE_KQUEUE)
                                                  V_KQUEUE,
 #elif defined(HAVE_PORT_ASSOCIATE)
@@ -300,6 +302,9 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
 #ifdef HAVE_EPOLL
                                                      V_EPOLL,
 #endif // HAVE_EPOLL
+#ifdef HAVE_IOCP
+                                                     V_IOCP,
+#endif // HAVE_IOCP
 #ifdef HAVE_KQUEUE
                                                      V_KQUEUE,
 #endif // HAVE_KQUEUE

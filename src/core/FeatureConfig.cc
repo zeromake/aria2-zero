@@ -339,37 +339,51 @@ std::string getOperatingSystemInfo()
     rv << "Legacy, probably XP";
     return rv.str();
   }
-  switch (ovi.dwMinorVersion) {
-  case 0:
-    if (ovi.wProductType == VER_NT_WORKSTATION) {
-      rv << "Vista";
-    }
-    else {
-      rv << "Server 2008";
-    }
-    break;
+  if (ovi.dwMajorVersion == 6) {
+    switch (ovi.dwMinorVersion) {
+    case 0:
+      if (ovi.wProductType == VER_NT_WORKSTATION) {
+        rv << "Vista";
+      }
+      else {
+        rv << "Server 2008";
+      }
+      break;
 
-  case 1:
-    if (ovi.wProductType == VER_NT_WORKSTATION) {
-      rv << "7";
-    }
-    else {
-      rv << "Server 2008 R2";
-    }
-    break;
+    case 1:
+      if (ovi.wProductType == VER_NT_WORKSTATION) {
+        rv << "7";
+      }
+      else {
+        rv << "Server 2008 R2";
+      }
+      break;
 
-  default:
-    // Windows above 6.2 does not actually say so. :p
+    default:
+      // Windows above 6.2 does not actually say so. :p
 
-    rv << ovi.dwMajorVersion;
-    if (ovi.dwMinorVersion) {
-      rv << "." << ovi.dwMinorVersion;
+      rv << ovi.dwMajorVersion;
+      if (ovi.dwMinorVersion) {
+        rv << "." << ovi.dwMinorVersion;
+      }
+      if (ovi.wProductType != VER_NT_WORKSTATION) {
+        rv << " Server";
+      }
+      break;
     }
-    if (ovi.wProductType != VER_NT_WORKSTATION) {
-      rv << " Server";
+  } else if (ovi.dwMajorVersion == 10) {
+    switch (ovi.dwMinorVersion) {
+    case 0:
+      if (ovi.wProductType == VER_NT_WORKSTATION) {
+        rv << "10/11";
+      }
+      else {
+        rv << "Server 2016/2019";
+      }
+      break;
     }
-    break;
   }
+
   if (ovi.szCSDVersion[0]) {
     rv << " (" << ovi.szCSDVersion << ")";
   }
