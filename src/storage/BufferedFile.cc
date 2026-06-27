@@ -52,13 +52,19 @@ BufferedFile::BufferedFile(const char* filename, const char* mode)
 #else  // !_WIN32
               a2fopen(filename, mode)
 #endif // !_WIN32
-              ),
-      supportsColor_(fp_ ? isatty(a2fileno(fp_)) : false)
+        ),
+    supportsColor_(fp_ ? a2isatty(a2fileno(fp_)) : false),
+    commitOnClose_(mode != nullptr &&
+           (strchr(mode, 'w') != nullptr ||
+            strchr(mode, 'a') != nullptr ||
+            strchr(mode, '+') != nullptr))
 {
 }
 
 BufferedFile::BufferedFile(FILE* fp)
-    : fp_(fp), supportsColor_(fp_ ? isatty(a2fileno(fp_)) : false)
+  : fp_(fp),
+    supportsColor_(fp_ ? a2isatty(a2fileno(fp_)) : false),
+    commitOnClose_(false)
 {
 }
 
@@ -80,14 +86,22 @@ int BufferedFile::onClose()
 {
   int rv = 0;
   if (fp_) {
-    fflush(fp_);
+    if (commitOnClose_ && fflush(fp_) != 0) {
+      rv = -1;
+    }
 #ifndef _WIN32
-    fsync(fileno(fp_));
+    if (commitOnClose_ && fsync(a2fileno(fp_)) != 0) {
+      rv = -1;
+    }
 #else  // _WIN32
-    _commit(fileno(fp_));
+    if (commitOnClose_ && _commit(a2fileno(fp_)) != 0) {
+      rv = -1;
+    }
 #endif // _WIN32
     if (fp_ != stdin && fp_ != stderr) {
-      rv = fclose(fp_);
+      if (a2fclose(fp_) != 0) {
+        rv = -1;
+      }
     }
     fp_ = nullptr;
   }

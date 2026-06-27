@@ -96,6 +96,11 @@ FILE* a2fopen(const wchar_t* path, const wchar_t* mode)
   return _wfsopen(toNamespacedPath(path).c_str(), mode, _SH_DENYNO);
 }
 
+int a2fclose(FILE* fp)
+{
+  return fclose(fp);
+}
+
 int a2rename(const wchar_t* oldpath, const wchar_t* newpath)
 {
   BOOL ok = MoveFileExW(toNamespacedPath(oldpath).c_str(),

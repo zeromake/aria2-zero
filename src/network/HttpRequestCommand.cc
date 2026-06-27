@@ -153,7 +153,7 @@ bool HttpRequestCommand::executeInternal()
 
           path = util::createSafePath(
               getOption()->get(PREF_DIR),
-              (getRequest()->getFile().empty()
+              (file.empty()
                    ? Request::DEFAULT_FILE
                    : util::percentDecode(std::begin(file), std::end(file), true)));
         }

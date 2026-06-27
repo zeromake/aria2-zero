@@ -256,8 +256,8 @@ target("aria2")
     add_files("deps/wslay/lib/*.c")
     if is_mode("release") and get_config("with_breakpad") then
         if is_plat("windows") then
-            add_cxflags("/Zi", "/FS", "/Fd$(builddir)\\$(plat)\\$(arch)\\release\\aria2.pdb")
-            add_ldflags("/DEBUG", "/PDB:$(builddir)\\$(plat)\\$(arch)\\release\\aria2.pdb")
+            add_cxflags("/Zi", "/FS")
+            add_ldflags("/DEBUG")
         else
             add_cxflags("-g")
         end
@@ -407,14 +407,14 @@ target("aria2c")
     end
     if is_mode("release") and get_config("with_breakpad") then
         if is_plat("windows") then
-            add_cxflags("/Zi", "/FS", "/Fd$(builddir)\\$(plat)\\$(arch)\\release\\aria2c.pdb")
-            add_ldflags("/DEBUG", "/PDB:$(builddir)\\$(plat)\\$(arch)\\release\\aria2c.pdb")
+            add_cxflags("/Zi", "/FS")
+            add_ldflags("/DEBUG")
         else
             add_cxflags("-g")
         end
     end
     if get_config("with_breakpad") then
-        add_packages("breakpad")
+        add_packages("zeromake.breakpad")
         add_defines("ENABLE_BREAKPAD=1")
     end
     if os.host() == "windows" then
@@ -494,6 +494,12 @@ target("main")
     add_deps("aria2")
     add_defines("HAVE_CONFIG_H=1")
     add_files("main.cc")
+    add_includedirs(
+        "compat"
+    )
+    for _, dir in ipairs(sourceDirs) do
+        add_includedirs(dir)
+    end
     if is_plat("windows", "mingw") then
         add_files("src/resource.rc")
     end

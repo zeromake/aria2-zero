@@ -25,5 +25,5 @@ end
 
 
 if get_config("with_breakpad") then
-    add_requires("breakpad")
+    add_requires("zeromake.breakpad")
 end
