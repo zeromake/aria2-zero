@@ -45,6 +45,8 @@ public:
 
   virtual ~BtFileAllocationEntry();
 
+  virtual void flushIOAfterAllocation() CXX11_OVERRIDE;
+
   virtual void
   prepareForNextAction(std::vector<std::unique_ptr<Command>>& commands,
                        DownloadEngine* e) CXX11_OVERRIDE;

@@ -50,6 +50,10 @@ private:
   FileAllocationEntry* fileAllocationEntry_;
   Timer timer_;
   AsyncTask asyncTask_;
+  // 工作线程写入，主线程读取（AsyncTask 保证 happens-before）
+  bool allocationFinished_ = false;
+  // 工作线程执行：allocateChunk + flushIOAfterAllocation
+  void executeInWorkerThread();
 
 public:
   FileAllocationCommand(cuid_t cuid, RequestGroup* requestGroup,

@@ -77,12 +77,11 @@ bool FileAllocationCommand::executeInternal()
     return true;
   }
 
-  // 提交 allocateChunk 到 ThreadPool，仅执行纯磁盘 I/O
+  // 提交 allocateChunk + flushIOAfterAllocation 到 ThreadPool
   if (!asyncTask_.isRunning()) {
-    auto* entry = fileAllocationEntry_;
     asyncTask_.submit(*getDownloadEngine()->getThreadPool(),
-                      getDownloadEngine(),
-                      [entry]() { entry->allocateChunk(); });
+      getDownloadEngine(),
+      [this]{ executeInWorkerThread(); });
   }
 
   // 主线程检查工作线程是否完成
@@ -109,17 +108,11 @@ bool FileAllocationCommand::executeInternal()
       return true;
     }
 
-    if (fileAllocationEntry_->finished()) {
-      A2_LOG_DEBUG(fmt(
-          MSG_ALLOCATION_COMPLETED,
-          static_cast<long int>(std::chrono::duration_cast<std::chrono::seconds>(
-                                    timer_.difference(global::wallclock()))
-                                    .count()),
-          getRequestGroup()->getTotalLength()));
-
-      // prepareForNextAction 在主线程执行，访问 DownloadEngine 共享状态
+    if (allocationFinished_) {
+      // 主线程：创建后续命令、操作引擎状态（无阻塞 I/O）
       std::vector<std::unique_ptr<Command>> commands;
-      fileAllocationEntry_->prepareForNextAction(commands, getDownloadEngine());
+      fileAllocationEntry_->prepareForNextAction(commands,
+                                                 getDownloadEngine());
       getDownloadEngine()->addCommand(std::move(commands));
       getDownloadEngine()->setNoWait(true);
       return true;
@@ -128,6 +121,27 @@ bool FileAllocationCommand::executeInternal()
 
   getDownloadEngine()->addCommand(std::unique_ptr<Command>(this));
   return false;
+}
+
+// 工作线程执行：纯磁盘 I/O，不访问 DownloadEngine 共享状态
+void FileAllocationCommand::executeInWorkerThread()
+{
+  if (getRequestGroup()->isHaltRequested()) {
+    allocationFinished_ = true;
+    return;
+  }
+  fileAllocationEntry_->allocateChunk();
+  if (fileAllocationEntry_->finished()) {
+    A2_LOG_DEBUG(fmt(
+        MSG_ALLOCATION_COMPLETED,
+        static_cast<long int>(std::chrono::duration_cast<std::chrono::seconds>(
+                                  timer_.difference(global::wallclock()))
+                                  .count()),
+        getRequestGroup()->getTotalLength()));
+    // 分配完成后执行阻塞 I/O（saveControlFile、文件 close/reopen）
+    fileAllocationEntry_->flushIOAfterAllocation();
+    allocationFinished_ = true;
+  }
 }
 
 bool FileAllocationCommand::handleException(Exception& e)

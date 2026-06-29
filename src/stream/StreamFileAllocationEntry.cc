@@ -58,6 +58,23 @@ StreamFileAllocationEntry::StreamFileAllocationEntry(
 
 StreamFileAllocationEntry::~StreamFileAllocationEntry() = default;
 
+// 工作线程调用：分配完成后保存控制文件（阻塞 I/O）
+void StreamFileAllocationEntry::flushIOAfterAllocation()
+{
+  auto rg = getRequestGroup();
+  auto& option = rg->getOption();
+  if (option->getAsInt(PREF_AUTO_SAVE_INTERVAL) != 0 &&
+      !rg->allDownloadFinished()) {
+    try {
+      rg->saveControlFile();
+    }
+    catch (RecoverableException& e) {
+      A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
+    }
+  }
+}
+
+// 主线程调用：创建后续下载命令、操作引擎状态
 void StreamFileAllocationEntry::prepareForNextAction(
     std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)
 {
@@ -97,16 +114,6 @@ void StreamFileAllocationEntry::prepareForNextAction(
   }
   else {
     rg->createNextCommandWithAdj(commands, e, 0);
-  }
-
-  if (option->getAsInt(PREF_AUTO_SAVE_INTERVAL) != 0 &&
-      !rg->allDownloadFinished()) {
-    try {
-      rg->saveControlFile();
-    }
-    catch (RecoverableException& e) {
-      A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
-    }
   }
 }
 

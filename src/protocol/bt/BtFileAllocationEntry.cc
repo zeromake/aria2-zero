@@ -57,6 +57,39 @@ BtFileAllocationEntry::BtFileAllocationEntry(RequestGroup* requestGroup)
 
 BtFileAllocationEntry::~BtFileAllocationEntry() = default;
 
+// 工作线程调用：分配完成后保存控制文件、重开文件（阻塞 I/O）
+void BtFileAllocationEntry::flushIOAfterAllocation()
+{
+  auto rg = getRequestGroup();
+  auto& option = rg->getOption();
+
+  if (!rg->downloadFinished()) {
+    if (option->getAsInt(PREF_AUTO_SAVE_INTERVAL) != 0) {
+      try {
+        rg->saveControlFile();
+      }
+      catch (RecoverableException& e) {
+        A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
+      }
+    }
+  }
+  else {
+#ifdef _WIN32
+    // 下载已完成（仅做种），以只读模式重开文件，避免阻止其他程序访问
+    auto& ps = rg->getPieceStorage();
+    auto diskAdaptor = ps->getDiskAdaptor();
+    if (!diskAdaptor->isReadOnlyEnabled()) {
+      A2_LOG_INFO("Closing files and re-open them with read-only mode"
+                  " enabled.");
+      diskAdaptor->closeFile();
+      diskAdaptor->enableReadOnly();
+      diskAdaptor->openFile();
+    }
+#endif // _WIN32
+  }
+}
+
+// 主线程调用：创建 BT 命令、操作引擎状态
 void BtFileAllocationEntry::prepareForNextAction(
     std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)
 {
@@ -81,30 +114,8 @@ void BtFileAllocationEntry::prepareForNextAction(
                                          std::end(fileEntries))) {
       rg->createNextCommandWithAdj(commands, e, 0);
     }
-
-    if (option->getAsInt(PREF_AUTO_SAVE_INTERVAL) != 0) {
-      try {
-        rg->saveControlFile();
-      }
-      catch (RecoverableException& e) {
-        A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
-      }
-    }
   }
   else {
-#ifdef _WIN32
-    if (!diskAdaptor->isReadOnlyEnabled()) {
-      // On Windows, if aria2 opens files with GENERIC_WRITE access
-      // right, some programs cannot open them aria2 is seeding. To
-      // avoid this situation, re-open the files with read-only
-      // enabled.
-      A2_LOG_INFO("Closing files and re-open them with read-only mode"
-                  " enabled.");
-      diskAdaptor->closeFile();
-      diskAdaptor->enableReadOnly();
-      diskAdaptor->openFile();
-    }
-#endif // _WIN32
     rg->enableSeedOnly();
   }
 }

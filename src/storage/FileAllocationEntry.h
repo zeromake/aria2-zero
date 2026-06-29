@@ -68,6 +68,11 @@ public:
 
   void allocateChunk();
 
+  // 工作线程调用：分配完成后执行阻塞 I/O（saveControlFile、文件 close/reopen）
+  // 此时该 RequestGroup 无其他活跃命令，无并发竞态
+  virtual void flushIOAfterAllocation() = 0;
+
+  // 主线程调用：创建后续命令、操作引擎状态（不含阻塞 I/O）
   virtual void
   prepareForNextAction(std::vector<std::unique_ptr<Command>>& commands,
                        DownloadEngine* e) = 0;
