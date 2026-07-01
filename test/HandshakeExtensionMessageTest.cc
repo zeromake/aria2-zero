@@ -91,7 +91,7 @@ void HandshakeExtensionMessageTest::testToString()
 
 void HandshakeExtensionMessageTest::testDoReceivedAction()
 {
-  auto dctx = std::make_shared<DownloadContext>(METADATA_PIECE_SIZE, 0);
+  auto dctx = std::make_shared<DownloadContext>(static_cast<int32_t>(METADATA_PIECE_SIZE), 0);
   auto op = std::make_shared<Option>();
   RequestGroup rg(GroupId::create(), op);
   rg.setDownloadContext(dctx);

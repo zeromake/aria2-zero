@@ -82,9 +82,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION(HttpRequestTest);
 void HttpRequestTest::testGetStartByte()
 {
   HttpRequest httpRequest;
-  auto p = std::make_shared<Piece>(1, 1_k);
-  auto segment = std::make_shared<PiecedSegment>(1_k, p);
-  auto fileEntry = std::make_shared<FileEntry>("file", 10_k, 0);
+  auto p = std::make_shared<Piece>(1, static_cast<int32_t>(1_k));
+  auto segment = std::make_shared<PiecedSegment>(static_cast<int32_t>(1_k), p);
+  auto fileEntry = std::make_shared<FileEntry>("file", static_cast<int64_t>(10_k), 0);
 
   CPPUNIT_ASSERT_EQUAL((int64_t)0LL, httpRequest.getStartByte());
 
@@ -101,9 +101,9 @@ void HttpRequestTest::testGetEndByte()
   size_t segmentLength = 1_m;
 
   HttpRequest httpRequest;
-  auto piece = std::make_shared<Piece>(index, length);
-  auto segment = std::make_shared<PiecedSegment>(segmentLength, piece);
-  auto fileEntry = std::make_shared<FileEntry>("file", segmentLength * 10, 0);
+  auto piece = std::make_shared<Piece>(index, static_cast<int32_t>(length));
+  auto segment = std::make_shared<PiecedSegment>(static_cast<int32_t>(segmentLength), piece);
+  auto fileEntry = std::make_shared<FileEntry>("file", static_cast<int64_t>(segmentLength * 10), 0);
 
   CPPUNIT_ASSERT_EQUAL((int64_t)0LL, httpRequest.getEndByte());
 
@@ -138,9 +138,9 @@ void HttpRequestTest::testCreateRequest()
   request->supportsPersistentConnection(true);
   request->setUri("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
 
-  auto p = std::make_shared<Piece>(0, 1_k);
-  auto segment = std::make_shared<PiecedSegment>(1_k, p);
-  auto fileEntry = std::make_shared<FileEntry>("file", 10_m, 0);
+  auto p = std::make_shared<Piece>(0, static_cast<int32_t>(1_k));
+  auto segment = std::make_shared<PiecedSegment>(static_cast<int32_t>(1_k), p);
+  auto fileEntry = std::make_shared<FileEntry>("file", static_cast<int64_t>(10_m), 0);
 
   HttpRequest httpRequest;
   httpRequest.disableContentEncoding();
@@ -178,8 +178,8 @@ void HttpRequestTest::testCreateRequest()
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
-  p.reset(new Piece(1, 1_m));
-  segment.reset(new PiecedSegment(1_m, p));
+  p.reset(new Piece(1, static_cast<int32_t>(1_m)));
+  segment.reset(new PiecedSegment(static_cast<int32_t>(1_m), p));
   httpRequest.setSegment(segment);
 
   expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
@@ -336,9 +336,9 @@ void HttpRequestTest::testCreateRequest_ftp()
   CPPUNIT_ASSERT(proxyRequest->setUri("http://localhost:9000"));
 
   HttpRequest httpRequest;
-  auto p = std::make_shared<Piece>(0, 1_m);
-  auto segment = std::make_shared<PiecedSegment>(1_m, p);
-  auto fileEntry = std::make_shared<FileEntry>("file", 10_m, 0);
+  auto p = std::make_shared<Piece>(0, static_cast<int32_t>(1_m));
+  auto segment = std::make_shared<PiecedSegment>(static_cast<int32_t>(1_m), p);
+  auto fileEntry = std::make_shared<FileEntry>("file", static_cast<int64_t>(10_m), 0);
 
   httpRequest.disableContentEncoding();
   httpRequest.setRequest(request);
@@ -395,9 +395,9 @@ void HttpRequestTest::testCreateRequest_with_cookie()
 {
   auto request = std::make_shared<Request>();
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
-  auto p = std::make_shared<Piece>(0, 1_m);
-  auto segment = std::make_shared<PiecedSegment>(1_m, p);
-  auto fileEntry = std::make_shared<FileEntry>("file", 10_m, 0);
+  auto p = std::make_shared<Piece>(0, static_cast<int32_t>(1_m));
+  auto segment = std::make_shared<PiecedSegment>(static_cast<int32_t>(1_m), p);
+  auto fileEntry = std::make_shared<FileEntry>("file", static_cast<int64_t>(10_m), 0);
 
   auto st = CookieStorage{};
   CPPUNIT_ASSERT(st.store(
@@ -564,11 +564,11 @@ void HttpRequestTest::testCreateRequest_endOffsetOverride()
   httpRequest.setAuthConfigFactory(authConfigFactory_.get());
   httpRequest.setOption(option_.get());
   httpRequest.setNoWantDigest(true);
-  auto p = std::make_shared<Piece>(0, 1_m);
-  auto segment = std::make_shared<PiecedSegment>(1_m, p);
+  auto p = std::make_shared<Piece>(0, static_cast<int32_t>(1_m));
+  auto segment = std::make_shared<PiecedSegment>(static_cast<int32_t>(1_m), p);
   httpRequest.setSegment(segment);
-  httpRequest.setEndOffsetOverride(1_g);
-  auto fileEntry = std::make_shared<FileEntry>("file", 10_g, 0);
+  httpRequest.setEndOffsetOverride(static_cast<int64_t>(1_g));
+  auto fileEntry = std::make_shared<FileEntry>("file", static_cast<int64_t>(10_g), 0);
   httpRequest.setFileEntry(fileEntry);
   // End byte is passed if it is not 0
   std::string expectedText = "GET /myfile HTTP/1.1\r\n"
@@ -640,8 +640,8 @@ void HttpRequestTest::testCreateProxyRequest()
 {
   auto request = std::make_shared<Request>();
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
-  auto p = std::make_shared<Piece>(0, 1_m);
-  auto segment = std::make_shared<PiecedSegment>(1_m, p);
+  auto p = std::make_shared<Piece>(0, static_cast<int32_t>(1_m));
+  auto segment = std::make_shared<PiecedSegment>(static_cast<int32_t>(1_m), p);
 
   auto proxyRequest = std::make_shared<Request>();
   CPPUNIT_ASSERT(proxyRequest->setUri("http://localhost:9000"));
@@ -706,9 +706,9 @@ void HttpRequestTest::testIsRangeSatisfied()
   request->supportsPersistentConnection(true);
   request->setUri("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
   request->setPipeliningHint(false); // default: false
-  auto p = std::make_shared<Piece>(0, 1_m);
-  auto segment = std::make_shared<PiecedSegment>(1_m, p);
-  auto fileEntry = std::make_shared<FileEntry>("file", 0, 0);
+  auto p = std::make_shared<Piece>(0, static_cast<int32_t>(1_m));
+  auto segment = std::make_shared<PiecedSegment>(static_cast<int32_t>(1_m), p);
+  auto fileEntry = std::make_shared<FileEntry>("file", static_cast<int64_t>(0), 0);
 
   HttpRequest httpRequest;
 
@@ -772,9 +772,9 @@ void HttpRequestTest::testIsRangeSatisfied_withSentCache()
   request->setUri("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
   request->setPipeliningHint(false);
 
-  auto p = std::make_shared<Piece>(1, 1_m);
-  auto segment = std::make_shared<PiecedSegment>(1_m, p);
-  auto fileEntry = std::make_shared<FileEntry>("file", 10_m, 0);
+  auto p = std::make_shared<Piece>(1, static_cast<int32_t>(1_m));
+  auto segment = std::make_shared<PiecedSegment>(static_cast<int32_t>(1_m), p);
+  auto fileEntry = std::make_shared<FileEntry>("file", static_cast<int64_t>(10_m), 0);
 
   HttpRequest httpRequest;
   httpRequest.disableContentEncoding();
@@ -802,8 +802,8 @@ void HttpRequestTest::testIsRangeSatisfied_withSentCache()
 
   // Test rangeSent_ reset: switch to piece 0 with no pipelining
   // getStartByte()=0, getEndByte()=0 → Range condition not met
-  auto p2 = std::make_shared<Piece>(0, 1_m);
-  auto segment2 = std::make_shared<PiecedSegment>(1_m, p2);
+  auto p2 = std::make_shared<Piece>(0, static_cast<int32_t>(1_m));
+  auto segment2 = std::make_shared<PiecedSegment>(static_cast<int32_t>(1_m), p2);
   httpRequest.setSegment(segment2);
 
   // createRequest() should reset rangeSent_ to false
@@ -821,9 +821,9 @@ void HttpRequestTest::testGetRange_withSentCache()
   request->setUri("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
   request->setPipeliningHint(false);
 
-  auto p = std::make_shared<Piece>(1, 1_m);
-  auto segment = std::make_shared<PiecedSegment>(1_m, p);
-  auto fileEntry = std::make_shared<FileEntry>("file", 10_m, 0);
+  auto p = std::make_shared<Piece>(1, static_cast<int32_t>(1_m));
+  auto segment = std::make_shared<PiecedSegment>(static_cast<int32_t>(1_m), p);
+  auto fileEntry = std::make_shared<FileEntry>("file", static_cast<int64_t>(10_m), 0);
 
   HttpRequest httpRequest;
   httpRequest.disableContentEncoding();
@@ -962,7 +962,7 @@ void HttpRequestTest::testEnableAcceptEncoding()
   acceptEncodings += "deflate, gzip";
 #endif // HAVE_ZLIB
 
-  std::string expectedTextHead = 
+  std::string expectedTextHead =
       "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
       "Host: localhost\r\n"
       "User-Agent: aria2\r\n"

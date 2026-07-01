@@ -287,7 +287,7 @@ void DefaultPieceStorageTest::testCancelPiece()
   auto file1 =
       std::make_shared<FileEntry>("src/file1.txt", totalLength, 0 /*, uris1*/);
 
-  auto dctx = std::make_shared<DownloadContext>(pieceLength, totalLength,
+  auto dctx = std::make_shared<DownloadContext>(static_cast<int32_t>(pieceLength), totalLength,
                                                 "src/file1.txt");
 
   DefaultPieceStorage ps{dctx, option_.get()};
@@ -308,7 +308,7 @@ void DefaultPieceStorageTest::testMarkPiecesDone()
 {
   size_t pieceLength = 256_k;
   int64_t totalLength = 4_m;
-  auto dctx = std::make_shared<DownloadContext>(pieceLength, totalLength);
+  auto dctx = std::make_shared<DownloadContext>(static_cast<int32_t>(pieceLength), totalLength);
 
   DefaultPieceStorage ps(dctx, option_.get());
 
@@ -335,7 +335,7 @@ void DefaultPieceStorageTest::testMarkPiecesDone()
 
 void DefaultPieceStorageTest::testGetCompletedLength()
 {
-  auto dctx = std::make_shared<DownloadContext>(1_m, 256_m);
+  auto dctx = std::make_shared<DownloadContext>(static_cast<int32_t>(1_m), static_cast<int64_t>(256_m));
 
   DefaultPieceStorage ps(dctx, option_.get());
 

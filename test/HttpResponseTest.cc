@@ -384,7 +384,7 @@ void HttpResponseTest::testValidateResponse_good_range()
 
   auto httpRequest = aria2::make_unique<HttpRequest>();
   auto p = std::make_shared<Piece>(1, 1_m);
-  auto segment = std::make_shared<PiecedSegment>(1_m, p);
+  auto segment = std::make_shared<PiecedSegment>(static_cast<int32_t>(1_m), p);
   httpRequest->setSegment(segment);
   auto fileEntry = std::make_shared<FileEntry>("file", 10_m, 0);
   httpRequest->setFileEntry(fileEntry);
@@ -413,9 +413,9 @@ void HttpResponseTest::testValidateResponse_bad_range()
 
   auto httpRequest = aria2::make_unique<HttpRequest>();
   auto p = std::make_shared<Piece>(1, 1_m);
-  auto segment = std::make_shared<PiecedSegment>(1_m, p);
+  auto segment = std::make_shared<PiecedSegment>(static_cast<int32_t>(1_m), p);
   httpRequest->setSegment(segment);
-  auto fileEntry = std::make_shared<FileEntry>("file", 10_m, 0);
+  auto fileEntry = std::make_shared<FileEntry>("file", static_cast<int64_t>(10_m), 0);
   httpRequest->setFileEntry(fileEntry);
   auto request = std::make_shared<Request>();
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
@@ -442,9 +442,9 @@ void HttpResponseTest::testValidateResponse_chunked()
 
     auto httpRequest = aria2::make_unique<HttpRequest>();
     auto p = std::make_shared<Piece>(1, 1_m);
-    auto segment = std::make_shared<PiecedSegment>(1_m, p);
+    auto segment = std::make_shared<PiecedSegment>(static_cast<int32_t>(1_m), p);
     httpRequest->setSegment(segment);
-    auto fileEntry = std::make_shared<FileEntry>("file", 10_m, 0);
+    auto fileEntry = std::make_shared<FileEntry>("file", static_cast<int64_t>(10_m), 0);
     httpRequest->setFileEntry(fileEntry);
     auto request = std::make_shared<Request>();
     request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
@@ -470,9 +470,9 @@ void HttpResponseTest::testValidateResponse_chunked()
 
     auto httpRequest = aria2::make_unique<HttpRequest>();
     auto p = std::make_shared<Piece>(1, 1_m);
-    auto segment = std::make_shared<PiecedSegment>(1_m, p);
+    auto segment = std::make_shared<PiecedSegment>(static_cast<int32_t>(1_m), p);
     httpRequest->setSegment(segment);
-    auto fileEntry = std::make_shared<FileEntry>("file", 10_m, 0);
+    auto fileEntry = std::make_shared<FileEntry>("file", static_cast<int64_t>(10_m), 0);
     httpRequest->setFileEntry(fileEntry);
     auto request = std::make_shared<Request>();
     request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
@@ -505,10 +505,10 @@ void HttpResponseTest::testValidateResponse_200_ignores_range()
 
   auto httpRequest = aria2::make_unique<HttpRequest>();
   httpRequest->disableContentEncoding();
-  auto p = std::make_shared<Piece>(1, 1_m);
-  auto segment = std::make_shared<PiecedSegment>(1_m, p);
+  auto p = std::make_shared<Piece>(1, static_cast<int32_t>(1_m));
+  auto segment = std::make_shared<PiecedSegment>(static_cast<int32_t>(1_m), p);
   httpRequest->setSegment(segment);
-  auto fileEntry = std::make_shared<FileEntry>("file", 10_m, 0);
+  auto fileEntry = std::make_shared<FileEntry>("file", static_cast<int64_t>(10_m), 0);
   httpRequest->setFileEntry(fileEntry);
   auto request = std::make_shared<Request>();
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");

@@ -76,7 +76,7 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage()
     auto valuesList = List::g();
     for (size_t i = 0; i < 4; ++i) {
       auto peer =
-          std::make_shared<Peer>("192.168.0." + util::uitos(i + 1), 6881 + i);
+          std::make_shared<Peer>("192.168.0." + util::uitos(i + 1), static_cast<uint16_t>(6881 + i));
       unsigned char buffer[COMPACT_LEN_IPV6];
       CPPUNIT_ASSERT_EQUAL(COMPACT_LEN_IPV4,
                            bittorrent::packcompact(buffer, peer->getIPAddress(),
@@ -139,7 +139,7 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage6()
     auto valuesList = List::g();
     for (size_t i = 0; i < 4; ++i) {
       auto peer =
-          std::make_shared<Peer>("2001::100" + util::uitos(i + 1), 6881 + i);
+          std::make_shared<Peer>("2001::100" + util::uitos(i + 1), static_cast<uint16_t>(6881 + i));
       unsigned char buffer[COMPACT_LEN_IPV6];
       CPPUNIT_ASSERT_EQUAL(COMPACT_LEN_IPV6,
                            bittorrent::packcompact(buffer, peer->getIPAddress(),
