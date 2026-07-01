@@ -36,6 +36,7 @@
 #define D_CHECK_INTEGRITY_COMMAND_H
 
 #include "RealtimeCommand.h"
+#include "AsyncTask.h"
 
 #include <memory>
 
@@ -47,6 +48,9 @@ class CheckIntegrityCommand : public RealtimeCommand {
   COMMAND_CLASSNAME(CheckIntegrityCommand)
 private:
   CheckIntegrityEntry* entry_;
+  AsyncTask asyncTask_;
+  // 工作线程写入，主线程读取（AsyncTask 保证 happens-before）
+  bool validationFinished_ = false;
 
 public:
   CheckIntegrityCommand(cuid_t cuid, RequestGroup* requestGroup,

@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "CheckIntegrityCommand.h"
 #include "CheckIntegrityEntry.h"
+#include "CheckIntegrityMan.h"
 #include "DownloadEngine.h"
 #include "RequestGroup.h"
 #include "Logger.h"
@@ -43,6 +44,7 @@
 #include "DownloadContext.h"
 #include "a2functional.h"
 #include "RecoverableException.h"
+#include "DlAbortEx.h"
 #include "util.h"
 #include "fmt.h"
 
@@ -58,43 +60,83 @@ CheckIntegrityCommand::CheckIntegrityCommand(cuid_t cuid,
 
 CheckIntegrityCommand::~CheckIntegrityCommand()
 {
+  // AsyncTask 析构函数会自动等待工作线程完成
   getDownloadEngine()->getCheckIntegrityMan()->dropPickedEntry();
 }
 
 bool CheckIntegrityCommand::executeInternal()
 {
   if (getRequestGroup()->isHaltRequested()) {
+    // 异步任务仍在执行时不直接返回，避免析构自旋阻塞主循环
+    if (asyncTask_.isRunning() && !asyncTask_.checkFinished()) {
+      getDownloadEngine()->addCommand(std::unique_ptr<Command>(this));
+      return false;
+    }
     return true;
   }
-  entry_->validateChunk();
-  if (entry_->finished()) {
-    // Enable control file saving here. See also
-    // RequestGroup::processCheckIntegrityEntry() to know why this is
-    // needed.
-    getRequestGroup()->enableSaveControlFile();
-    if (getRequestGroup()->downloadFinished()) {
-      A2_LOG_NOTICE(
-          fmt(MSG_VERIFICATION_SUCCESSFUL,
-              getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
-      std::vector<std::unique_ptr<Command>> commands;
-      entry_->onDownloadFinished(commands, getDownloadEngine());
-      getDownloadEngine()->addCommand(std::move(commands));
-    }
-    else {
-      A2_LOG_ERROR(
-          fmt(MSG_VERIFICATION_FAILED,
-              getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
-      std::vector<std::unique_ptr<Command>> commands;
-      entry_->onDownloadIncomplete(commands, getDownloadEngine());
-      getDownloadEngine()->addCommand(std::move(commands));
-    }
-    getDownloadEngine()->setNoWait(true);
-    return true;
+
+  // 提交 validateChunk 到 ThreadPool（磁盘读取 + 哈希计算）
+  if (!asyncTask_.isRunning()) {
+    validationFinished_ = false;
+    asyncTask_.submit(*getDownloadEngine()->getThreadPool(),
+      getDownloadEngine(),
+      [this]{
+        entry_->validateChunk();
+        validationFinished_ = entry_->finished();
+      });
   }
-  else {
-    getDownloadEngine()->addCommand(std::unique_ptr<Command>(this));
-    return false;
+
+  // 主线程检查工作线程是否完成
+  if (asyncTask_.checkFinished()) {
+    // 将非 RecoverableException 转换为 DlAbortEx，
+    // 确保 RealtimeCommand::execute() 的 catch 能捕获
+    if (asyncTask_.hasException()) {
+      try {
+        asyncTask_.rethrowIfException();
+      }
+      catch (RecoverableException&) {
+        throw;
+      }
+      catch (std::exception& e) {
+        throw DL_ABORT_EX(e.what());
+      }
+      catch (...) {
+        throw DL_ABORT_EX("unknown error in integrity check");
+      }
+    }
+
+    // 异步完成后再次检查 halt，避免为已取消的下载创建后续命令
+    if (getRequestGroup()->isHaltRequested()) {
+      return true;
+    }
+
+    if (validationFinished_) {
+      // 主线程：操作引擎状态
+      // Enable control file saving here. See also
+      // RequestGroup::processCheckIntegrityEntry() to know why this is
+      // needed.
+      getRequestGroup()->enableSaveControlFile();
+      std::vector<std::unique_ptr<Command>> commands;
+      if (getRequestGroup()->downloadFinished()) {
+        A2_LOG_NOTICE(
+            fmt(MSG_VERIFICATION_SUCCESSFUL,
+                getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
+        entry_->onDownloadFinished(commands, getDownloadEngine());
+      }
+      else {
+        A2_LOG_ERROR(
+            fmt(MSG_VERIFICATION_FAILED,
+                getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
+        entry_->onDownloadIncomplete(commands, getDownloadEngine());
+      }
+      getDownloadEngine()->addCommand(std::move(commands));
+      getDownloadEngine()->setNoWait(true);
+      return true;
+    }
   }
+
+  getDownloadEngine()->addCommand(std::unique_ptr<Command>(this));
+  return false;
 }
 
 bool CheckIntegrityCommand::handleException(Exception& e)
