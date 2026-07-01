@@ -63,6 +63,9 @@ HttpRequest::HttpRequest()
       authConfigFactory_(nullptr),
       option_(nullptr),
       endOffsetOverride_(0),
+      sentStartByte_(0),
+      sentEndByte_(0),
+      rangeSent_(false),
       userAgent_(USER_AGENT),
       contentEncodingEnabled_(true),
       acceptMetalink_(false),
@@ -111,9 +114,11 @@ int64_t HttpRequest::getEndByte() const
 
 Range HttpRequest::getRange() const
 {
-  // content-length is always 0
   if (!segment_) {
     return Range();
+  }
+  if (rangeSent_) {
+    return Range(sentStartByte_, sentEndByte_, fileEntry_->getLength());
   }
   return Range(getStartByte(), getEndByte(), fileEntry_->getLength());
 }
@@ -123,10 +128,10 @@ bool HttpRequest::isRangeSatisfied(const Range& range) const
   if (!segment_) {
     return true;
   }
-  return getStartByte() == range.startByte &&
-         (getEndByte() == 0 || getEndByte() == range.endByte) &&
-         (fileEntry_->getLength() == 0 ||
-          fileEntry_->getLength() == range.entityLength);
+  auto startByte = rangeSent_ ? sentStartByte_ : getStartByte();
+  auto endByte = rangeSent_ ? sentEndByte_ : getEndByte();
+  return startByte == range.startByte &&
+         (endByte == 0 || endByte == range.endByte);
 }
 
 namespace {
@@ -160,6 +165,11 @@ static const std::vector<std::string> headersSort = {
 
 std::string HttpRequest::createRequest()
 {
+  // 重置 rangeSent_
+  rangeSent_ = false;
+  sentStartByte_ = 0;
+  sentEndByte_ = 0;
+
   authConfig_ = authConfigFactory_->createAuthConfig(request_, option_);
   auto requestLine = request_->getMethod();
   requestLine += ' ';
@@ -218,15 +228,16 @@ std::string HttpRequest::createRequest()
   if (segment_ && segment_->getLength() > 0 &&
       (request_->isPipeliningEnabled() || getStartByte() > 0 ||
        getEndByte() > 0)) {
+    sentStartByte_ = getStartByte();
+    sentEndByte_ = getEndByte();
+    rangeSent_ = true;
+
     std::string rangeHeader = "bytes=";
-    rangeHeader += util::uitos(getStartByte());
+    rangeHeader += util::uitos(sentStartByte_);
     rangeHeader += '-';
 
-    if (request_->isPipeliningEnabled() || getEndByte() > 0) {
-      // FTP via http proxy does not support endbytes, but in that
-      // case, request_->isPipeliningEnabled() is false and
-      // getEndByte() is 0.
-      rangeHeader += util::itos(getEndByte());
+    if (request_->isPipeliningEnabled() || sentEndByte_ > 0) {
+      rangeHeader += util::itos(sentEndByte_);
     }
     builtinHds.emplace_back("Range:", rangeHeader);
   }

@@ -74,19 +74,19 @@ void HttpResponse::validateResponse() const
   switch (statusCode) {
   case 200: // OK
   case 206: // Partial Content
-    if (!httpHeader_->defined(HttpHeader::TRANSFER_ENCODING)) {
-      // compare the received range against the requested range
-      auto responseRange = httpHeader_->getRange();
-      if (!httpRequest_->isRangeSatisfied(responseRange)) {
-        throw DL_ABORT_EX2(
-            fmt(EX_INVALID_RANGE_HEADER, httpRequest_->getStartByte(),
-                httpRequest_->getEndByte(), httpRequest_->getEntityLength(),
-                responseRange.startByte, responseRange.endByte,
-                responseRange.entityLength),
-            error_code::CANNOT_RESUME);
-      }
+  {
+    auto responseRange = httpHeader_->getRange();
+    if (!httpRequest_->isRangeSatisfied(responseRange)) {
+      auto requestRange = httpRequest_->getRange();
+      throw DL_ABORT_EX2(
+          fmt(EX_INVALID_RANGE_HEADER, requestRange.startByte,
+              requestRange.endByte, requestRange.entityLength,
+              responseRange.startByte, responseRange.endByte,
+              responseRange.entityLength),
+          error_code::CANNOT_RESUME);
     }
     return;
+  }
   case 304: // Not Modified
     if (!httpRequest_->conditionalRequest()) {
       throw DL_ABORT_EX2("Got 304 without If-Modified-Since or If-None-Match",

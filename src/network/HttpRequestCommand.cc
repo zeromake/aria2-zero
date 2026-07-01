@@ -180,11 +180,13 @@ bool HttpRequestCommand::executeInternal()
               getRequestGroup()->getTotalLength() > 0 && getPieceStorage()) {
             size_t nextIndex =
                 getPieceStorage()->getNextUsedIndex(segment->getIndex());
+            auto globalOffset =
+                static_cast<int64_t>(segment->getSegmentLength()) * static_cast<int64_t>(nextIndex);
+            globalOffset = std::min(globalOffset, getFileEntry()->getLastOffset());
+            globalOffset = std::max(globalOffset, getFileEntry()->getOffset());
             endOffset =
                 std::min(getFileEntry()->getLength(),
-                         getFileEntry()->gtoloff(
-                             static_cast<int64_t>(segment->getSegmentLength()) *
-                             nextIndex));
+                         getFileEntry()->gtoloff(globalOffset));
           }
           httpConnection_->sendRequest(
               createHttpRequest(getRequest(), getFileEntry(), segment,

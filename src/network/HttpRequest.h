@@ -83,6 +83,10 @@ private:
   // bytes and it is also true if it is used via HTTP proxy.
   int64_t endOffsetOverride_;
 
+  int64_t sentStartByte_;
+  int64_t sentEndByte_;
+  bool rangeSent_;
+
   std::vector<std::string> headers_;
 
   std::string userAgent_;

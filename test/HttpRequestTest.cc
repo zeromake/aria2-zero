@@ -35,6 +35,8 @@ class HttpRequestTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreateRequest_wantDigest);
   CPPUNIT_TEST(testCreateProxyRequest);
   CPPUNIT_TEST(testIsRangeSatisfied);
+  CPPUNIT_TEST(testIsRangeSatisfied_withSentCache);
+  CPPUNIT_TEST(testGetRange_withSentCache);
   CPPUNIT_TEST(testUserAgent);
   CPPUNIT_TEST(testAddHeader);
   CPPUNIT_TEST(testAcceptMetalink);
@@ -66,6 +68,8 @@ public:
   void testCreateRequest_wantDigest();
   void testCreateProxyRequest();
   void testIsRangeSatisfied();
+  void testIsRangeSatisfied_withSentCache();
+  void testGetRange_withSentCache();
   void testUserAgent();
   void testAddHeader();
   void testAcceptMetalink();
@@ -728,9 +732,10 @@ void HttpRequestTest::testIsRangeSatisfied()
 
   CPPUNIT_ASSERT(httpRequest.isRangeSatisfied(range));
 
+  // entityLength mismatch is no longer checked at Range validation layer
   fileEntry->setLength(entityLength - 1);
 
-  CPPUNIT_ASSERT(!httpRequest.isRangeSatisfied(range));
+  CPPUNIT_ASSERT(httpRequest.isRangeSatisfied(range));
 
   fileEntry->setLength(entityLength);
 
@@ -738,6 +743,7 @@ void HttpRequestTest::testIsRangeSatisfied()
 
   request->setPipeliningHint(true);
 
+  // endByte mismatch: range.endByte is 0 but pipelining expects exact match
   CPPUNIT_ASSERT(!httpRequest.isRangeSatisfied(range));
 
   range =
@@ -746,15 +752,103 @@ void HttpRequestTest::testIsRangeSatisfied()
 
   CPPUNIT_ASSERT(httpRequest.isRangeSatisfied(range));
 
+  // entityLength=0 no longer causes failure; only startByte/endByte matter
   range = Range(segment->getPosition(),
                 segment->getPosition() + segment->getLength() - 1, 0);
 
-  CPPUNIT_ASSERT(!httpRequest.isRangeSatisfied(range));
+  CPPUNIT_ASSERT(httpRequest.isRangeSatisfied(range));
 
+  // startByte mismatch: range starts at 0 but segment starts at getPosition()
   range =
       Range(0, segment->getPosition() + segment->getLength() - 1, entityLength);
 
   CPPUNIT_ASSERT(!httpRequest.isRangeSatisfied(range));
+}
+
+void HttpRequestTest::testIsRangeSatisfied_withSentCache()
+{
+  auto request = std::make_shared<Request>();
+  request->supportsPersistentConnection(true);
+  request->setUri("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
+  request->setPipeliningHint(false);
+
+  auto p = std::make_shared<Piece>(1, 1_m);
+  auto segment = std::make_shared<PiecedSegment>(1_m, p);
+  auto fileEntry = std::make_shared<FileEntry>("file", 10_m, 0);
+
+  HttpRequest httpRequest;
+  httpRequest.disableContentEncoding();
+  httpRequest.setRequest(request);
+  httpRequest.setSegment(segment);
+  httpRequest.setFileEntry(fileEntry);
+  httpRequest.setAuthConfigFactory(authConfigFactory_.get());
+  httpRequest.setOption(option_.get());
+  httpRequest.setNoWantDigest(true);
+
+  // createRequest() caches sentStartByte_=1048576, rangeSent_=true
+  httpRequest.createRequest();
+
+  // Advance the write position so getStartByte() returns a different value
+  segment->updateWrittenLength(512);
+  // Now getStartByte() = 1048576 + 512 = 1049088, but cached = 1048576
+
+  // Should match against cached sentStartByte_ (1048576), not live value
+  Range range(1048576, 0, 10_m);
+  CPPUNIT_ASSERT(httpRequest.isRangeSatisfied(range));
+
+  // Should NOT match: 1049088 != cached 1048576
+  Range rangeMismatch(1049088, 0, 10_m);
+  CPPUNIT_ASSERT(!httpRequest.isRangeSatisfied(rangeMismatch));
+
+  // Test rangeSent_ reset: switch to piece 0 with no pipelining
+  // getStartByte()=0, getEndByte()=0 → Range condition not met
+  auto p2 = std::make_shared<Piece>(0, 1_m);
+  auto segment2 = std::make_shared<PiecedSegment>(1_m, p2);
+  httpRequest.setSegment(segment2);
+
+  // createRequest() should reset rangeSent_ to false
+  httpRequest.createRequest();
+
+  // Now uses live getStartByte()=0, not stale cache
+  Range rangeZero(0, 0, 0);
+  CPPUNIT_ASSERT(httpRequest.isRangeSatisfied(rangeZero));
+}
+
+void HttpRequestTest::testGetRange_withSentCache()
+{
+  auto request = std::make_shared<Request>();
+  request->supportsPersistentConnection(true);
+  request->setUri("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
+  request->setPipeliningHint(false);
+
+  auto p = std::make_shared<Piece>(1, 1_m);
+  auto segment = std::make_shared<PiecedSegment>(1_m, p);
+  auto fileEntry = std::make_shared<FileEntry>("file", 10_m, 0);
+
+  HttpRequest httpRequest;
+  httpRequest.disableContentEncoding();
+  httpRequest.setRequest(request);
+  httpRequest.setSegment(segment);
+  httpRequest.setFileEntry(fileEntry);
+  httpRequest.setAuthConfigFactory(authConfigFactory_.get());
+  httpRequest.setOption(option_.get());
+  httpRequest.setNoWantDigest(true);
+
+  // Before createRequest(), getRange() uses live values
+  Range rangeBefore = httpRequest.getRange();
+  CPPUNIT_ASSERT_EQUAL((int64_t)1048576, rangeBefore.startByte);
+
+  // createRequest() caches sentStartByte_=1048576
+  httpRequest.createRequest();
+
+  // Advance write position
+  segment->updateWrittenLength(512);
+
+  // getRange() should return cached startByte (1048576), not live (1049088)
+  Range rangeAfter = httpRequest.getRange();
+  CPPUNIT_ASSERT_EQUAL((int64_t)1048576, rangeAfter.startByte);
+  CPPUNIT_ASSERT_EQUAL((int64_t)0, rangeAfter.endByte);
+  CPPUNIT_ASSERT_EQUAL((int64_t)10_m, rangeAfter.entityLength);
 }
 
 void HttpRequestTest::testUserAgent()

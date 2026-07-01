@@ -48,6 +48,7 @@ class HttpResponseTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testValidateResponse_good_range);
   CPPUNIT_TEST(testValidateResponse_bad_range);
   CPPUNIT_TEST(testValidateResponse_chunked);
+  CPPUNIT_TEST(testValidateResponse_200_ignores_range);
   CPPUNIT_TEST(testValidateResponse_withIfModifiedSince);
   CPPUNIT_TEST(testProcessRedirect);
   CPPUNIT_TEST(testRetrieveCookie);
@@ -80,6 +81,7 @@ public:
   void testValidateResponse_good_range();
   void testValidateResponse_bad_range();
   void testValidateResponse_chunked();
+  void testValidateResponse_200_ignores_range();
   void testValidateResponse_withIfModifiedSince();
   void testProcessRedirect();
   void testRetrieveCookie();
@@ -433,10 +435,76 @@ void HttpResponseTest::testValidateResponse_bad_range()
 
 void HttpResponseTest::testValidateResponse_chunked()
 {
+  // chunked + correct Content-Range should pass validation
+  {
+    HttpResponse httpResponse;
+    httpResponse.setHttpHeader(aria2::make_unique<HttpHeader>());
+
+    auto httpRequest = aria2::make_unique<HttpRequest>();
+    auto p = std::make_shared<Piece>(1, 1_m);
+    auto segment = std::make_shared<PiecedSegment>(1_m, p);
+    httpRequest->setSegment(segment);
+    auto fileEntry = std::make_shared<FileEntry>("file", 10_m, 0);
+    httpRequest->setFileEntry(fileEntry);
+    auto request = std::make_shared<Request>();
+    request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
+    httpRequest->setRequest(request);
+    httpResponse.setHttpRequest(std::move(httpRequest));
+    httpResponse.getHttpHeader()->setStatusCode(206);
+    httpResponse.getHttpHeader()->put(HttpHeader::CONTENT_RANGE,
+                                      "bytes 1048576-10485760/10485760");
+    httpResponse.getHttpHeader()->put(HttpHeader::TRANSFER_ENCODING, "chunked");
+
+    try {
+      httpResponse.validateResponse();
+    }
+    catch (Exception& e) {
+      std::cerr << e.stackTrace() << std::endl;
+      CPPUNIT_FAIL("exception must not be thrown.");
+    }
+  }
+  // chunked + wrong Content-Range should throw
+  {
+    HttpResponse httpResponse;
+    httpResponse.setHttpHeader(aria2::make_unique<HttpHeader>());
+
+    auto httpRequest = aria2::make_unique<HttpRequest>();
+    auto p = std::make_shared<Piece>(1, 1_m);
+    auto segment = std::make_shared<PiecedSegment>(1_m, p);
+    httpRequest->setSegment(segment);
+    auto fileEntry = std::make_shared<FileEntry>("file", 10_m, 0);
+    httpRequest->setFileEntry(fileEntry);
+    auto request = std::make_shared<Request>();
+    request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
+    httpRequest->setRequest(request);
+    httpResponse.setHttpRequest(std::move(httpRequest));
+    httpResponse.getHttpHeader()->setStatusCode(206);
+    httpResponse.getHttpHeader()->put(HttpHeader::CONTENT_RANGE,
+                                      "bytes 0-10485760/10485761");
+    httpResponse.getHttpHeader()->put(HttpHeader::TRANSFER_ENCODING, "chunked");
+
+    try {
+      httpResponse.validateResponse();
+      CPPUNIT_FAIL("exception must be thrown.");
+    }
+    catch (Exception& e) {
+    }
+  }
+}
+
+void HttpResponseTest::testValidateResponse_200_ignores_range()
+{
+  // Server returns 200 (ignoring Range request) instead of 206.
+  // Validation should throw because startByte doesn't match.
   HttpResponse httpResponse;
   httpResponse.setHttpHeader(aria2::make_unique<HttpHeader>());
 
+  Option option;
+  option.put(PREF_HTTP_AUTH_CHALLENGE, A2_V_TRUE);
+  AuthConfigFactory authConfigFactory;
+
   auto httpRequest = aria2::make_unique<HttpRequest>();
+  httpRequest->disableContentEncoding();
   auto p = std::make_shared<Piece>(1, 1_m);
   auto segment = std::make_shared<PiecedSegment>(1_m, p);
   httpRequest->setSegment(segment);
@@ -445,18 +513,22 @@ void HttpResponseTest::testValidateResponse_chunked()
   auto request = std::make_shared<Request>();
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
-  httpResponse.setHttpRequest(std::move(httpRequest));
-  httpResponse.getHttpHeader()->setStatusCode(206);
-  httpResponse.getHttpHeader()->put(HttpHeader::CONTENT_RANGE,
-                                    "bytes 0-10485760/10485761");
-  httpResponse.getHttpHeader()->put(HttpHeader::TRANSFER_ENCODING, "chunked");
+  httpRequest->setAuthConfigFactory(&authConfigFactory);
+  httpRequest->setOption(&option);
+  httpRequest->setNoWantDigest(true);
 
-  // if transfer-encoding is specified, then range validation is skipped.
+  // Build request to cache sentStartByte_=1048576
+  httpRequest->createRequest();
+
+  httpResponse.setHttpRequest(std::move(httpRequest));
+  httpResponse.getHttpHeader()->setStatusCode(200);
+  httpResponse.getHttpHeader()->put(HttpHeader::CONTENT_LENGTH, "10485760");
+
   try {
     httpResponse.validateResponse();
+    CPPUNIT_FAIL("exception must be thrown.");
   }
   catch (Exception& e) {
-    CPPUNIT_FAIL("exception must not be thrown.");
   }
 }
 
