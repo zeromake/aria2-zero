@@ -292,6 +292,18 @@ class ProcessStoppedRequestGroup {
 private:
   DownloadEngine* e_;
   RequestGroupList& reservedGroups_;
+  GroupCleanupBatch& batch_;
+
+  void snapshotControlFile(const std::shared_ptr<RequestGroup>& group)
+  {
+    if (group->isSaveControlFileEnabled()) {
+      std::string data;
+      if (group->getProgressInfoFile()->serializeToBuffer(data)) {
+        batch_.controlFilesToSave.push_back(
+            {std::move(data), group->getProgressInfoFile()->getFilename()});
+      }
+    }
+  }
 
   void saveSignature(const std::shared_ptr<RequestGroup>& group)
   {
@@ -343,8 +355,9 @@ private:
 
 public:
   ProcessStoppedRequestGroup(DownloadEngine* e,
-                             RequestGroupList& reservedGroups)
-      : e_(e), reservedGroups_(reservedGroups)
+                             RequestGroupList& reservedGroups,
+                             GroupCleanupBatch& batch)
+      : e_(e), reservedGroups_(reservedGroups), batch_(batch)
   {
   }
 
@@ -369,13 +382,21 @@ public:
         dctx->resetDownloadStopTime();
       }
       try {
-        group->closeFile();
+        group->flushCacheOnly();
+        if (group->getPieceStorage()) {
+          auto adaptor = group->getPieceStorage()->getDiskAdaptor();
+          adaptor->detachOpenedFileCounter();
+          batch_.adaptors.push_back(std::move(adaptor));
+          group->setAsyncCleanupPending(true);
+          batch_.groupsToClearPending.push_back(group);
+        }
+
         if (group->isPauseRequested()) {
           if (!group->isRestartRequested()) {
             A2_LOG_NOTICE(fmt(_("Download GID#%s paused"),
                               GroupId::toHex(group->getGID()).c_str()));
           }
-          group->saveControlFile();
+          snapshotControlFile(group);
         }
         else if (group->downloadFinished() &&
                  !group->getDownloadContext()->isChecksumVerificationNeeded()) {
@@ -383,11 +404,12 @@ public:
           group->reportDownloadFinished();
           if (group->allDownloadFinished() &&
               !group->getOption()->getAsBool(PREF_FORCE_SAVE)) {
-            group->removeControlFile();
+            batch_.controlFilesToRemove.push_back(
+                group->getProgressInfoFile()->getFilename());
             saveSignature(group);
           }
           else {
-            group->saveControlFile();
+            snapshotControlFile(group);
           }
           std::vector<std::shared_ptr<RequestGroup>> nextGroups;
           group->postDownloadProcessing(nextGroups);
@@ -426,7 +448,7 @@ public:
               fmt(_("Download GID#%s not complete: %s"),
                   GroupId::toHex(group->getGID()).c_str(),
                   group->getDownloadContext()->getBasePath().c_str()));
-          group->saveControlFile();
+          snapshotControlFile(group);
         }
       }
       catch (RecoverableException& ex) {
@@ -473,10 +495,12 @@ public:
 };
 } // namespace
 
-void RequestGroupMan::removeStoppedGroup(DownloadEngine* e)
+void RequestGroupMan::removeStoppedGroup(DownloadEngine* e,
+                                         GroupCleanupBatch& batch)
 {
   size_t numPrev = requestGroups_.size();
-  requestGroups_.remove_if(ProcessStoppedRequestGroup(e, reservedGroups_));
+  requestGroups_.remove_if(
+      ProcessStoppedRequestGroup(e, reservedGroups_, batch));
   size_t numRemoved = numPrev - requestGroups_.size();
   if (numRemoved > 0) {
     A2_LOG_DEBUG(fmt("%lu RequestGroup(s) deleted.",
@@ -513,9 +537,10 @@ createInitialCommand(const std::shared_ptr<RequestGroup>& requestGroup,
 }
 } // namespace
 
-void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
+void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e,
+                                                    GroupCleanupBatch& batch)
 {
-  removeStoppedGroup(e);
+  removeStoppedGroup(e, batch);
 
   int maxConcurrentDownloads = optimizeConcurrentDownloads_
                                    ? optimizeConcurrentDownloads()
@@ -546,7 +571,9 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
     }
     std::shared_ptr<RequestGroup> groupToAdd = *reservedGroups_.begin();
     reservedGroups_.pop_front();
-    if ((keepRunning_ && groupToAdd->isPauseRequested()) ||
+    // 工作线程正在异步 fsync + close，此期间不可重新激活
+    if (groupToAdd->isAsyncCleanupPending() ||
+        (keepRunning_ && groupToAdd->isPauseRequested()) ||
         !groupToAdd->isDependencyResolved()) {
       pending.push_back(groupToAdd);
       continue;
@@ -616,6 +643,9 @@ std::unique_ptr<SaveSnapshot> RequestGroupMan::collectSaveSnapshot()
 {
   auto snapshot = make_unique<SaveSnapshot>();
   for (auto& rg : requestGroups_) {
+    if (rg->getNumCommand() == 0) {
+      continue;
+    }
     if (rg->allDownloadFinished() &&
         !rg->getDownloadContext()->isChecksumVerificationNeeded() &&
         !rg->getOption()->getAsBool(PREF_FORCE_SAVE)) {
@@ -673,6 +703,11 @@ void RequestGroupMan::writeSaveSnapshot(
         continue;
       }
       if (fp.write(item.data.data(), item.data.size()) != item.data.size()) {
+        A2_LOG_ERROR(fmt(EX_SEGMENT_FILE_WRITE, item.filePath.c_str()));
+        File(tempPath).remove();
+        continue;
+      }
+      if (fp.close() != 0) {
         A2_LOG_ERROR(fmt(EX_SEGMENT_FILE_WRITE, item.filePath.c_str()));
         File(tempPath).remove();
         continue;

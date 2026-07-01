@@ -202,6 +202,7 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
 
 size_t MultiDiskAdaptor::tryCloseFile(size_t numClose)
 {
+  std::lock_guard<std::mutex> lock(fileIoMutex_);
   size_t left = numClose;
   for (; !openedDiskWriterEntries_.empty() && left > 0; --left) {
     // Choose one DiskWriterEntry randomly and close it.
@@ -266,8 +267,18 @@ void MultiDiskAdaptor::openExistingFile()
   // Not need to call openIfNot here.
 }
 
+void MultiDiskAdaptor::detachOpenedFileCounter()
+{
+  auto& counter = getOpenedFileCounter();
+  if (counter) {
+    counter->reduceNumOfOpenedFile(openedDiskWriterEntries_.size());
+  }
+  DiskAdaptor::detachOpenedFileCounter();
+}
+
 void MultiDiskAdaptor::closeFile()
 {
+  std::lock_guard<std::mutex> lock(fileIoMutex_);
   for (auto& dwent : openedDiskWriterEntries_) {
     auto& dw = dwent->getDiskWriter();
     // required for unit test
@@ -441,6 +452,7 @@ void MultiDiskAdaptor::writeCache(const WrDiskCacheEntry* entry)
 
 void MultiDiskAdaptor::flushOSBuffers()
 {
+  std::lock_guard<std::mutex> lock(fileIoMutex_);
   for (auto& dwent : openedDiskWriterEntries_) {
     auto& dw = dwent->getDiskWriter();
     if (!dw) {

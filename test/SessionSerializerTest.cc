@@ -77,7 +77,7 @@ void SessionSerializerTest::testSave()
 
   DownloadEngine e(aria2::make_unique<SelectEventPoll>());
   e.setOption(option.get());
-  rgman.fillRequestGroupFromReserver(&e);
+  { GroupCleanupBatch batch; rgman.fillRequestGroupFromReserver(&e, batch); }
   CPPUNIT_ASSERT_EQUAL((size_t)1, rgman.getRequestGroups().size());
 
   std::string filename =

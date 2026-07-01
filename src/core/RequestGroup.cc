@@ -146,6 +146,7 @@ RequestGroup::RequestGroup(const std::shared_ptr<GroupId>& gid,
       haltReason_(RequestGroup::NONE),
       lastErrorCode_(error_code::UNDEFINED),
       saveControlFile_(true),
+      asyncCleanupPending_(false),
       preLocalFileCheckEnabled_(true),
       haltRequested_(false),
       forceHaltRequested_(false),
@@ -213,6 +214,13 @@ void RequestGroup::closeFile()
     pieceStorage_->flushWrDiskCacheEntry(true);
     pieceStorage_->getDiskAdaptor()->flushOSBuffers();
     pieceStorage_->getDiskAdaptor()->closeFile();
+  }
+}
+
+void RequestGroup::flushCacheOnly()
+{
+  if (pieceStorage_) {
+    pieceStorage_->flushWrDiskCacheEntry(true);
   }
 }
 

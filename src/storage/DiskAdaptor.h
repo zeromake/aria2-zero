@@ -140,6 +140,10 @@ public:
     return openedFileCounter_;
   }
 
+  // Pre-decrement counter and detach, so worker-thread closeFile() won't
+  // double-decrement after the group leaves requestGroups_.
+  virtual void detachOpenedFileCounter() { openedFileCounter_.reset(); }
+
 private:
   std::vector<std::shared_ptr<FileEntry>> fileEntries_;
 

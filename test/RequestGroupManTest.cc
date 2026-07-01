@@ -211,7 +211,7 @@ void RequestGroupManTest::testFillRequestGroupFromReserver()
   for (const auto& i : rgs) {
     rgman_->addReservedGroup(i);
   }
-  rgman_->fillRequestGroupFromReserver(e_.get());
+  { GroupCleanupBatch batch; rgman_->fillRequestGroupFromReserver(e_.get(), batch); }
 
   CPPUNIT_ASSERT_EQUAL((size_t)2, rgman_->getReservedGroups().size());
 }
@@ -231,7 +231,7 @@ void RequestGroupManTest::testFillRequestGroupFromReserver_uriParser()
       new UriListParser(A2_TEST_DIR "/filelist2.txt"));
   rgman_->setUriListParser(flp);
 
-  rgman_->fillRequestGroupFromReserver(e_.get());
+  { GroupCleanupBatch batch; rgman_->fillRequestGroupFromReserver(e_.get(), batch); }
 
   RequestGroupList::const_iterator itr;
   CPPUNIT_ASSERT_EQUAL((size_t)1, rgman_->getReservedGroups().size());

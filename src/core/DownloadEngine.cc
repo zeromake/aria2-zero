@@ -63,6 +63,10 @@
 #include "Command.h"
 #include "FileAllocationEntry.h"
 #include "CheckIntegrityEntry.h"
+#include "DiskAdaptor.h"
+#include "RecoverableException.h"
+#include "File.h"
+#include "BufferedFile.h"
 #include "BtProgressInfoFile.h"
 #include "DownloadContext.h"
 #include "fmt.h"
@@ -269,7 +273,53 @@ void DownloadEngine::calculateStatistics()
 
 void DownloadEngine::onEndOfRun()
 {
-  requestGroupMan_->removeStoppedGroup(this);
+  GroupCleanupBatch batch;
+  requestGroupMan_->removeStoppedGroup(this, batch);
+  for (auto& a : batch.adaptors) {
+    try {
+      a->flushOSBuffers();
+    }
+    catch (RecoverableException& ex) {
+      A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, ex);
+    }
+    try {
+      a->closeFile();
+    }
+    catch (RecoverableException& ex) {
+      A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, ex);
+    }
+  }
+  for (auto& cf : batch.controlFilesToSave) {
+    auto temp = cf.filePath + "__temp";
+    {
+      BufferedFile fp(temp.c_str(), IOFile::WRITE);
+      if (!fp) {
+        A2_LOG_ERROR(fmt(EX_SEGMENT_FILE_WRITE, cf.filePath.c_str()));
+        continue;
+      }
+      if (fp.write(cf.data.data(), cf.data.size()) != cf.data.size()) {
+        A2_LOG_ERROR(fmt(EX_SEGMENT_FILE_WRITE, cf.filePath.c_str()));
+        File(temp).remove();
+        continue;
+      }
+      if (fp.close() != 0) {
+        A2_LOG_ERROR(fmt(EX_SEGMENT_FILE_WRITE, cf.filePath.c_str()));
+        File(temp).remove();
+        continue;
+      }
+    }
+    if (!File(temp).renameTo(cf.filePath)) {
+      A2_LOG_ERROR(fmt(EX_SEGMENT_FILE_WRITE, cf.filePath.c_str()));
+    }
+  }
+  for (auto& path : batch.controlFilesToRemove) {
+    File(path).remove();
+  }
+  for (auto& wg : batch.groupsToClearPending) {
+    if (auto g = wg.lock()) {
+      g->setAsyncCleanupPending(false);
+    }
+  }
   requestGroupMan_->closeFile();
   requestGroupMan_->save();
 }

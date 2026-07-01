@@ -37,6 +37,8 @@
 
 #include "DiskAdaptor.h"
 
+#include <mutex>
+
 namespace aria2 {
 
 class DiskWriter;
@@ -46,6 +48,9 @@ class AbstractSingleDiskAdaptor : public DiskAdaptor {
 private:
   std::unique_ptr<DiskWriter> diskWriter_;
   int64_t totalLength_;
+  // Serializes flushOSBuffers/closeFile across worker threads
+  // (AutoSaveCommand worker vs FillRequestGroupCommand worker)
+  std::mutex fileIoMutex_;
   bool readOnly_;
 
 public:

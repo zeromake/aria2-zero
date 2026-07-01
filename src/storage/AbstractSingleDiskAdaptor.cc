@@ -63,7 +63,11 @@ void AbstractSingleDiskAdaptor::openFile()
   diskWriter_->openFile(totalLength_);
 }
 
-void AbstractSingleDiskAdaptor::closeFile() { diskWriter_->closeFile(); }
+void AbstractSingleDiskAdaptor::closeFile()
+{
+  std::lock_guard<std::mutex> lock(fileIoMutex_);
+  diskWriter_->closeFile();
+}
 
 void AbstractSingleDiskAdaptor::openExistingFile()
 {
@@ -106,6 +110,7 @@ void AbstractSingleDiskAdaptor::writeCache(const WrDiskCacheEntry* entry)
 
 void AbstractSingleDiskAdaptor::flushOSBuffers()
 {
+  std::lock_guard<std::mutex> lock(fileIoMutex_);
   diskWriter_->flushOSBuffers();
 }
 

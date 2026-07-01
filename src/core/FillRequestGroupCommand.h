@@ -36,6 +36,8 @@
 #define D_FILL_REQUEST_GROUP_COMMAND_H
 
 #include "Command.h"
+#include "AsyncTask.h"
+#include "RequestGroupMan.h"
 #include "a2time.h"
 #include "TimerA2.h"
 
@@ -49,6 +51,15 @@ class FillRequestGroupCommand : public Command {
 private:
   DownloadEngine* e_;
   Timer lastExecTime;
+  AsyncTask asyncTask_;
+  // 当前异步任务完成后需要清除 asyncCleanupPending_ 标志的 group
+  std::vector<std::weak_ptr<RequestGroup>> activeGroupClears_;
+  // asyncTask 忙时累积的待处理项
+  GroupCleanupBatch pendingBatch_;
+
+  void handleAsyncCompletion();
+  void drainPendingSynchronously();
+  void trySubmitPending();
 
 public:
   FillRequestGroupCommand(cuid_t cuid, DownloadEngine* e);

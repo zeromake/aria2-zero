@@ -7,7 +7,6 @@ namespace aria2 {
 void AsyncTask::submit(ThreadPool& pool, DownloadEngine* engine,
                        std::function<void()> work)
 {
-  running_ = true;
   finished_.store(false, std::memory_order_relaxed);
   exception_ = nullptr;
 
@@ -21,6 +20,7 @@ void AsyncTask::submit(ThreadPool& pool, DownloadEngine* engine,
     finished_.store(true, std::memory_order_release);
     engine->wakeupPoll();
   });
+  running_ = true;
 }
 
 } // namespace aria2

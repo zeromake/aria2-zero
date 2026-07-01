@@ -56,12 +56,31 @@ void OpenedFileCounter::ensureMaxOpenFileLimit(size_t numNewFiles)
     return;
   }
 
-  if (numOpenFiles_ + numNewFiles <= maxOpenFiles_) {
-    numOpenFiles_ += numNewFiles;
-    return;
+  size_t current = numOpenFiles_.load(std::memory_order_acquire);
+  while (current + numNewFiles <= maxOpenFiles_) {
+    if (numOpenFiles_.compare_exchange_weak(current, current + numNewFiles,
+                                            std::memory_order_release,
+                                            std::memory_order_acquire)) {
+      return;
+    }
   }
   assert(numNewFiles <= maxOpenFiles_);
-  size_t numClose = numOpenFiles_ + numNewFiles - maxOpenFiles_;
+
+  // Re-load after CAS loop to get a fresh value for eviction calculation.
+  // Another thread may have decremented numOpenFiles_ since the loop exited.
+  current = numOpenFiles_.load(std::memory_order_acquire);
+  if (current + numNewFiles <= maxOpenFiles_) {
+    // No longer need eviction — retry the fast path
+    while (current + numNewFiles <= maxOpenFiles_) {
+      if (numOpenFiles_.compare_exchange_weak(current, current + numNewFiles,
+                                              std::memory_order_release,
+                                              std::memory_order_acquire)) {
+        return;
+      }
+    }
+  }
+
+  size_t numClose = current + numNewFiles - maxOpenFiles_;
   size_t left = numClose;
 
   auto& requestGroups = rgman_->getRequestGroups();
@@ -95,7 +114,7 @@ void OpenedFileCounter::ensureMaxOpenFileLimit(size_t numNewFiles)
   }
 
   assert(left == 0);
-  numOpenFiles_ += numNewFiles - numClose;
+  numOpenFiles_.fetch_add(numNewFiles - numClose, std::memory_order_release);
 }
 
 void OpenedFileCounter::reduceNumOfOpenedFile(size_t numCloseFiles)
@@ -104,8 +123,8 @@ void OpenedFileCounter::reduceNumOfOpenedFile(size_t numCloseFiles)
     return;
   }
 
-  assert(numOpenFiles_ >= numCloseFiles);
-  numOpenFiles_ -= numCloseFiles;
+  assert(numOpenFiles_.load(std::memory_order_relaxed) >= numCloseFiles);
+  numOpenFiles_.fetch_sub(numCloseFiles, std::memory_order_release);
 }
 
 void OpenedFileCounter::deactivate() { rgman_ = nullptr; }

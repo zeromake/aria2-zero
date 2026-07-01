@@ -37,6 +37,8 @@
 
 #include "common.h"
 
+#include <atomic>
+
 namespace aria2 {
 
 class RequestGroupMan;
@@ -65,7 +67,7 @@ public:
 private:
   RequestGroupMan* rgman_;
   size_t maxOpenFiles_;
-  size_t numOpenFiles_;
+  std::atomic<size_t> numOpenFiles_;
 };
 
 } // namespace aria2

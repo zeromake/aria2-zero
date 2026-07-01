@@ -37,6 +37,8 @@
 
 #include "DiskAdaptor.h"
 
+#include <mutex>
+
 namespace aria2 {
 
 class MultiFileAllocationIterator;
@@ -106,6 +108,10 @@ private:
 
   std::vector<DiskWriterEntry*> openedDiskWriterEntries_;
 
+  // Serializes flushOSBuffers/closeFile across worker threads
+  // (AutoSaveCommand worker vs FillRequestGroupCommand worker)
+  std::mutex fileIoMutex_;
+
   bool readOnly_;
 
   void resetDiskWriterEntries();
@@ -173,6 +179,8 @@ public:
   }
 
   virtual size_t tryCloseFile(size_t numClose) CXX11_OVERRIDE;
+
+  virtual void detachOpenedFileCounter() CXX11_OVERRIDE;
 };
 
 } // namespace aria2

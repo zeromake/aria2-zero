@@ -39,21 +39,14 @@ aria2-zero 采用**单线程事件驱动架构**，所有 Command 的 `execute()
 
 ---
 
-### 3. FillRequestGroupCommand ⬤ CRITICAL
+### 3. ~~FillRequestGroupCommand~~ ✅ 已修复（fsync + close 卸载）
 
 **文件**: `src/core/FillRequestGroupCommand.cc`  
 **基类**: Command
 
-| 阻塞操作 | 位置 | 说明 |
-|----------|------|------|
-| 同步关闭文件 | `execute()` → `fillRequestGroupFromReserver()` → `removeStoppedGroup()` → `group->closeFile()` | 关闭所有已完成任务的文件句柄 |
-| 同步写入控制文件 | 同上 → `group->saveControlFile()` | 含 fsync + 写 .aria2 文件 |
-| 同步删除控制文件 | 同上 → `group->removeControlFile()` | 删除 .aria2 文件 |
-| 同步写入签名文件 | 同上 → `sig->save()` | 保存 Metalink 签名 |
-| 同步修改文件时间戳 | 同上 → `group->applyLastModifiedTimeToLocalFiles()` | utime/SetFileTime |
-| 同步删除 BT 未选择文件 | 同上 → `File(file->getPath()).remove()` | 删除 BT padding/未选中文件 |
+主要瓶颈 `closeFile()` 中的 fsync（占阻塞时间 >90%）已通过 AsyncTask 卸载到 ThreadPool。主线程执行 `flushCacheOnly()`（刷写 WrDiskCache）+ `serializeToBuffer()`（快照 .aria2 到内存）+ 其余轻量文件操作（各 <5ms）。工作线程执行 `flushOSBuffers()` + `closeFile()` + `writeControlFileSnapshots()`（fsync 后写 .aria2，保证崩溃一致性）+ 控制文件删除。`std::mutex fileIoMutex_` 序列化与 AutoSaveCommand worker 的并发访问（MultiDiskAdaptor + AbstractSingleDiskAdaptor），`asyncCleanupPending_` 标志防止 unpause 竞态，`collectSaveSnapshot()` 过滤 `numCommand==0` 的 group 防止 `__temp` 文件竞态。详见 `docs/fillrequestgroup-offload.md`。
 
-**详细分析**: 当多个下载同时完成时，`ProcessStoppedRequestGroup` 会对每个已完成任务执行一系列文件操作。这是所有 Command 中阻塞操作**种类最多**的一个，且没有异步替代路径。
+**残留主线程 I/O**（合计 <10ms，可接受）：`applyLastModifiedTime`（utime）、`saveSignature`（写 .sig）、BT 文件删除。
 
 ---
 
@@ -337,7 +330,7 @@ HTTP 响应头接收本身是非阻塞的（`receiveResponse()` 未完成时返�
 | **SChannel SSPI 内部网络请求** | 2 个（HttpRequestCommand, HttpResponseCommand） | 200ms ~ 30s（CRL/OCSP/AIA） |
 | **同步 DNS (getaddrinfo)** | 5 个（AbstractCommand, NameResolveCommand, DHTEntryPointNameResolveCommand, FtpNegotiationCommand, LpdDispatchMessageCommand） | 1ms ~ 30s |
 | **同步文件 I/O (open/stat/write/delete)** | 7 个（FillRequestGroupCommand, HttpResponseCommand, HttpRequestCommand, FtpNegotiationCommand, SftpNegotiationCommand, SaveSessionCommand, DHTAutoSaveCommand） | 0.1ms ~ 100ms |
-| **fsync / FlushFileBuffers** | 1 个（FillRequestGroupCommand） | 1ms ~ 500ms |
+| **fsync / FlushFileBuffers** | ~~1 个（FillRequestGroupCommand）~~（✅ 已卸载） | ~~1ms ~ 500ms~~ |
 | **同步磁盘读取 + 哈希** | ~~1 个（CheckIntegrityCommand）~~（✅ 已卸载） | ~~1ms ~ 1000ms~~ |
 | **CPU 密集（压缩/序列化）** | 1 个（HttpServerBodyCommand） | 1ms ~ 100ms |
 
@@ -347,7 +340,7 @@ HTTP 响应头接收本身是非阻塞的（`receiveResponse()` 未完成时返�
 |------|---------|------|
 | **每次 HTTPS 连接** | HttpRequestCommand (SChannel TLS 握手) | SSPI 内部 CRL/OCSP/AIA 同步网络请求，首次连接或证书缓存过期时触发 |
 | **每次下载启动** | HttpResponseCommand, FtpNegotiationCommand, SftpNegotiationCommand, HttpRequestCommand | 新连接文件准备时一次性阻塞 |
-| **每次下载完成** | FillRequestGroupCommand | 清理时阻塞，批量完成时叠加 |
+| **每次下载完成** | ~~FillRequestGroupCommand~~（✅ fsync 已卸载） | 残留主线程 I/O <15ms |
 | **定时循环（~60s）** | ~~AutoSaveCommand~~（✅ 已卸载）, SaveSessionCommand | SaveSessionCommand 仍周期性阻塞 |
 | **文件分配完成时** | ~~FileAllocationCommand~~（✅ 已卸载） | ✅ `saveControlFile()` 已通过 `flushIOAfterAllocation()` 卸载到工作线程 |
 | **定时循环（~30min）** | DHTAutoSaveCommand | 低频，单次影响有限 |
@@ -432,7 +425,7 @@ SChannel 实现（`src/tls/schannel/SChannelSession.cc`）的 socket I/O（`::se
 |---|---------|------|-------|--------|-------------|
 | 1 | ~~CheckIntegrityCommand~~ | `src/core/CheckIntegrityCommand.cc` | ~~YES~~ ✅ | ~~CRITICAL~~ | ✅ 已通过 AsyncTask 卸载到 ThreadPool |
 | 2 | ~~AutoSaveCommand~~ | `src/core/AutoSaveCommand.cc` | ~~YES~~ ✅ | ~~CRITICAL~~ | ✅ 已通过快照方案卸载到 ThreadPool |
-| 3 | FillRequestGroupCommand | `src/core/FillRequestGroupCommand.cc` | **YES** | **CRITICAL** | 关闭/写入/删除多个文件 |
+| 3 | ~~FillRequestGroupCommand~~ | `src/core/FillRequestGroupCommand.cc` | ~~YES~~ ✅ | ~~CRITICAL~~ | ✅ fsync + close 已卸载到 ThreadPool；残留主线程 I/O <15ms |
 | 4 | HttpRequestCommand | `src/network/HttpRequestCommand.cc` | **YES** | **HIGH** | SChannel `InitializeSecurityContextA()` 内部同步 CRL/OCSP/AIA 网络请求；stat 文件（条件 GET） |
 | 5 | HttpResponseCommand | `src/network/HttpResponseCommand.cc` | **YES** | **HIGH** | SChannel 重协商时同 #4；打开/创建/stat 文件 + 加载进度 |
 | 6 | FtpNegotiationCommand | `src/network/FtpNegotiationCommand.cc` | **YES** | **HIGH** | getaddrinfo + 打开/创建文件 |

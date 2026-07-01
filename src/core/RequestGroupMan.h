@@ -62,6 +62,52 @@ class UriListParser;
 class WrDiskCache;
 class OpenedFileCounter;
 class DiskAdaptor;
+class BtProgressInfoFile;
+
+struct ControlFileSaveEntry {
+  std::string data;
+  std::string filePath;
+};
+
+struct GroupCleanupBatch {
+  // fsync + close 由工作线程异步执行
+  std::vector<std::shared_ptr<DiskAdaptor>> adaptors;
+  // fsync 完成后写入的 .aria2 控制文件（快照）
+  std::vector<ControlFileSaveEntry> controlFilesToSave;
+  // fsync 完成后删除的 .aria2 控制文件路径
+  std::vector<std::string> controlFilesToRemove;
+  // 异步 cleanup 完成后需要清除 asyncCleanupPending_ 标志的 group
+  std::vector<std::weak_ptr<RequestGroup>> groupsToClearPending;
+
+  bool empty() const
+  {
+    return adaptors.empty() && controlFilesToSave.empty() &&
+           controlFilesToRemove.empty() && groupsToClearPending.empty();
+  }
+
+  void mergeFrom(GroupCleanupBatch& other)
+  {
+    adaptors.insert(adaptors.end(),
+                    std::make_move_iterator(other.adaptors.begin()),
+                    std::make_move_iterator(other.adaptors.end()));
+    controlFilesToSave.insert(
+        controlFilesToSave.end(),
+        std::make_move_iterator(other.controlFilesToSave.begin()),
+        std::make_move_iterator(other.controlFilesToSave.end()));
+    controlFilesToRemove.insert(
+        controlFilesToRemove.end(),
+        std::make_move_iterator(other.controlFilesToRemove.begin()),
+        std::make_move_iterator(other.controlFilesToRemove.end()));
+    groupsToClearPending.insert(
+        groupsToClearPending.end(),
+        std::make_move_iterator(other.groupsToClearPending.begin()),
+        std::make_move_iterator(other.groupsToClearPending.end()));
+    other.adaptors.clear();
+    other.controlFilesToSave.clear();
+    other.controlFilesToRemove.clear();
+    other.groupsToClearPending.clear();
+  }
+};
 
 // 控制文件保存快照，由主线程采集、工作线程写盘
 struct ControlFileSaveItem {
@@ -184,9 +230,10 @@ public:
 
   void forceHalt();
 
-  void removeStoppedGroup(DownloadEngine* e);
+  void removeStoppedGroup(DownloadEngine* e, GroupCleanupBatch& batch);
 
-  void fillRequestGroupFromReserver(DownloadEngine* e);
+  void fillRequestGroupFromReserver(DownloadEngine* e,
+                                    GroupCleanupBatch& batch);
 
   // Note that this method does not call addRequestGroupIndex(). This
   // method should be considered as private, but exposed for unit

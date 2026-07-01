@@ -171,6 +171,9 @@ private:
 
   bool saveControlFile_;
 
+  // 工作线程正在执行异步 fsync + close，此期间不可重新激活
+  bool asyncCleanupPending_;
+
   bool fileAllocationEnabled_;
 
   bool preLocalFileCheckEnabled_;
@@ -246,6 +249,9 @@ public:
   bool allDownloadFinished() const;
 
   void closeFile();
+
+  // 主线程调用：刷写 WrDiskCache（共享资源），不 fsync、不关闭文件
+  void flushCacheOnly();
 
   std::string getFirstFilePath() const;
 
@@ -461,6 +467,10 @@ public:
   void enableSaveControlFile() { saveControlFile_ = true; }
 
   void disableSaveControlFile() { saveControlFile_ = false; }
+
+  void setAsyncCleanupPending(bool v) { asyncCleanupPending_ = v; }
+
+  bool isAsyncCleanupPending() const { return asyncCleanupPending_; }
 
   const std::shared_ptr<BtProgressInfoFile>& getProgressInfoFile() const
   {
